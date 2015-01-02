@@ -1,0 +1,330 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+//#include "afxres.h"
+#include <windows.h>
+#define IDC_STATIC -1
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// ﾆｭｰﾄﾗﾙ resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(932)
+#endif //_WIN32
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 9,22,0,1
+ PRODUCTVERSION 9,22,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "Igor Pavlov's 7zS.sfx of 7-Zip Edit by Minoru Akita, Takeshi Ichimaru\0"
+            VALUE "FileDescription", "7z Setup SFX\0"
+            VALUE "FileVersion", "9, 22, 0, 1\0"
+            VALUE "InternalName", "7zSDJC.sfx\0"
+            VALUE "LegalCopyright", "Copyright (C) 2004-2014 Minoru Akita, Takeshi Ichimaru\0"
+            VALUE "OriginalFilename", "7zSDJC.sfx\0"
+            VALUE "ProductName", "7-Zip\0"
+            VALUE "ProductVersion", "9, 22, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // ﾆｭｰﾄﾗﾙ resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+#ifdef _WIN32
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_PROGRESS DIALOG DISCARDABLE  0, 0, 186, 55
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 9, "ＭＳ Ｐゴシック"
+BEGIN
+    PUSHBUTTON      "キャンセル",IDCANCEL,61,34,64,14
+    CONTROL         "Progress1",IDC_PROGRESS1,"msctls_progress32",PBS_SMOOTH | 
+                    WS_BORDER,7,7,172,14
+END
+
+IDD_DIALOG_EXTRACT DIALOG DISCARDABLE  0, 0, 228, 78
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 9, "ＭＳ Ｐゴシック"
+BEGIN
+    LTEXT           "",IDC_STATIC_EXTRACT_EXTRACT_TO,6,7,215,8
+    EDITTEXT        IDC_EXTRACT_COMBO_PATH,6,21,184,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_EXTRACT_BUTTON_SET_PATH,202,20,18,14,WS_GROUP
+    DEFPUSHBUTTON   "解凍",IDOK,110,56,50,14,WS_GROUP
+    PUSHBUTTON      "キャンセル",IDCANCEL,170,56,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DIALOG_PROGRESS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_DIALOG_EXTRACT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 221
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 71
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_SELECT_FOLDER_TITLE "ファイルの解凍先を指定してください。"
+    IDS_CANT_FIND_ARCHIVE   "書庫ファイルが見つかりません"
+    IDS_CANT_OPNE_ARCHIVE   "ファイルは不正な書庫ファイルです"
+    IDS_CANNOT_CREATE_FOLDER "フォルダが作成できません '{0}'"
+    IDS_PROGRESS_EXTRACTING "解凍中"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CANT_DELETE_FILE    "出力ファイルが削除できません"
+    IDS_CANT_OPEN_OUTPUT_FILE "出力ファイルを開けません"
+    IDS_UNSUPPORTED_METHOD  "サポートされてない形式です"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CANT_LOAD_CONFIG_INFO "設定情報が読み込めません"
+    IDS_CONFIG_FAILED       "設定異常"
+    IDS_CANT_CREATE_TEMP_FOLDER "一時フォルダアーカイブを作成できません"
+    IDS_EXTRACT_FRIENDLY_NAME "7-Zip 自己解凍書庫"
+    IDS_EXTRACT_INSTALL_PROMPT "解凍先(&X):"
+    IDS_EXTRACTION_ERROR_MESSAGE "ファイルが異常です"
+    IDS_EXTRACTION_ERROR_TITLE "抽出に失敗しました"
+    IDS_CANT_LOAD_CODECS    "コーデックが読み込めません"
+    IDS_CANT_OPEN_FILE      "ファイルを開けません"
+    IDS_CANT_FIND_SETUP     "setup.exeが見つかりません"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CONFIRM_CANSEL      "処理を中断しますか？"
+END
+
+#endif    // 日本語 resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 英語 (ｱﾒﾘｶ) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_PROGRESS DIALOG DISCARDABLE  0, 0, 186, 55
+STYLE DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+FONT 8, "MS Shell Dlg"
+BEGIN
+    PUSHBUTTON      "Cancel",IDCANCEL,61,34,64,14
+    CONTROL         "Progress1",IDC_PROGRESS1,"msctls_progress32",PBS_SMOOTH | 
+                    WS_BORDER,7,7,172,14
+END
+
+IDD_DIALOG_EXTRACT DIALOG DISCARDABLE  0, 0, 228, 78
+STYLE DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "",IDC_STATIC_EXTRACT_EXTRACT_TO,7,7,214,8
+    EDITTEXT        IDC_EXTRACT_COMBO_PATH,7,21,184,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_EXTRACT_BUTTON_SET_PATH,203,20,18,14,WS_GROUP
+    DEFPUSHBUTTON   "Extract",IDOK,111,57,50,14,WS_GROUP
+    PUSHBUTTON      "Cancel",IDCANCEL,171,57,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DIALOG_PROGRESS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_DIALOG_EXTRACT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 221
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 71
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON3               ICON    DISCARDABLE     "setup.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_SELECT_FOLDER_TITLE "Specify a location for extracted files."
+    IDS_CANT_FIND_ARCHIVE   "Can not find archive file"
+    IDS_CANT_OPNE_ARCHIVE   "File is not correct archive"
+    IDS_CANNOT_CREATE_FOLDER "Cannot create folder '{0}'"
+    IDS_PROGRESS_EXTRACTING "Extracting"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CANT_DELETE_FILE    "Can not delete output file"
+    IDS_CANT_OPEN_OUTPUT_FILE "Can not open output file"
+    IDS_UNSUPPORTED_METHOD  "Unsupported Method"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CANT_LOAD_CONFIG_INFO "Can't load config info"
+    IDS_CONFIG_FAILED       "Config failed"
+    IDS_CANT_CREATE_TEMP_FOLDER "Can not create temp folder archive"
+    IDS_EXTRACT_FRIENDLY_NAME "7-Zip self-extracting archive"
+    IDS_EXTRACT_INSTALL_PROMPT "E&xtract to:"
+    IDS_EXTRACTION_ERROR_MESSAGE "File is corrupt"
+    IDS_EXTRACTION_ERROR_TITLE "Extraction Failed"
+    IDS_CANT_LOAD_CODECS    "Can not load codecs"
+    IDS_CANT_OPEN_FILE      "Can not open file"
+    IDS_CANT_FIND_SETUP     "Can not find setup.exe"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CONFIRM_CANSEL      "Are you sure you want to cancel"
+END
+
+#endif    // 英語 (ｱﾒﾘｶ) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

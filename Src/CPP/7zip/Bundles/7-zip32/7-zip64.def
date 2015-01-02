@@ -1,0 +1,83 @@
+LIBRARY         7-zip64    ; Application's module name
+DESCRIPTION     '7-zip64 Library'
+
+EXPORTS
+		SevenZip						@1
+		SevenZipGetVersion				@2
+		SevenZipGetCursorMode			@3
+		SevenZipSetCursorMode			@4
+		SevenZipGetBackGroundMode		@5
+		SevenZipSetBackGroundMode		@6
+		SevenZipGetCursorInterval		@7
+		SevenZipSetCursorInterval		@8
+
+		SevenZipGetRunning				@10
+		SevenZipConfigDialog			@11
+		SevenZipCheckArchive			@12
+		SevenZipGetArchiveType			@13
+
+		SevenZipGetFileCount			@17
+		SevenZipQueryFunctionList		@18
+
+		SevenZipOpenArchive				@21
+		SevenZipCloseArchive			@22
+		SevenZipFindFirst				@23
+		SevenZipFindNext				@24
+
+		SevenZipGetArcFileName			@31
+		SevenZipGetArcFileSize			@32
+		SevenZipGetArcOriginalSize		@33
+		SevenZipGetArcCompressedSize	@34
+		SevenZipGetArcRatio				@35
+		SevenZipGetArcDate				@36
+		SevenZipGetArcTime				@37
+		SevenZipGetArcOSType			@38
+		SevenZipIsSFXFile				@39
+		SevenZipGetFileName				@40
+		SevenZipGetOriginalSize			@41
+		SevenZipGetCompressedSize		@42
+		SevenZipGetRatio				@43
+		SevenZipGetDate					@44
+		SevenZipGetTime					@45
+		SevenZipGetCRC					@46
+		SevenZipGetAttribute			@47
+		SevenZipGetOSType				@48
+
+		SevenZipGetMethod				@61
+		SevenZipGetWriteTime			@62
+		SevenZipGetCreateTime			@63
+		SevenZipGetAccessTime			@64
+		SevenZipGetWriteTimeEx			@65
+		SevenZipGetCreateTimeEx			@66
+		SevenZipGetAccessTimeEx			@67
+		SevenZipGetArcCreateTimeEx		@68
+		SevenZipGetArcAccessTimeEx		@69
+		SevenZipGetArcWriteTimeEx		@70
+
+
+		SevenZipSetOwnerWindow			@90
+		SevenZipClearOwnerWindow		@91
+		SevenZipSetOwnerWindowEx		@92
+		SevenZipKillOwnerWindowEx		@93
+		SevenZipGetSubVersion			@94
+
+		SevenZipGetArcFileSizeEx		@103
+		SevenZipGetArcOriginalSizeEx	@104
+		SevenZipGetArcCompressedSizeEx	@105
+		SevenZipGetOriginalSizeEx		@106
+		SevenZipGetCompressedSizeEx		@107
+		SevenZipSetOwnerWindowEx64		@108
+		SevenZipKillOwnerWindowEx64		@109
+
+		SevenZipSetPriority				@119
+
+		SevenZipGetLastError				@123
+
+		SevenZipSetDefaultPassword		@178
+		SevenZipGetDefaultPassword		@179
+		SevenZipPasswordDialog			@180
+
+		SevenZipSetUnicodeMode			@200
+
+		SevenZipSfxConfigDialog			@210
+		SevenZipSfxFileStoring			@211

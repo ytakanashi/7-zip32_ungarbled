@@ -1,0 +1,578 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+//#include "afxres.h"
+#include <windows.h>
+#define IDC_STATIC -1
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+#ifdef _WIN32
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PROGRESS DIALOG DISCARDABLE  0, 0, 211, 187
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 9, "ＭＳ Ｐゴシック"
+BEGIN
+    DEFPUSHBUTTON   "取り消し(&C)",IDCANCEL,149,80,50,14
+    CONTROL         "詳細情報(&M)",IDC_DETAIL,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,9,85,53,10
+    CONTROL         "List1",IDL_DETAIL,"SysListView32",LVS_REPORT | 
+                    LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,9,110,190,67
+    LTEXT           "書庫ファイル：",IDC_STATIC,10,15,41,8
+    CONTROL         "",IDS_ARCHIVE_FILE,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,52,15,156,8
+    LTEXT           "処理ファイル：",IDC_STATIC,10,30,41,8
+    CONTROL         "",IDS_WORK_FILE,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,52,30,156,8
+    CONTROL         "Progress1",IDP_PROGRESS,"msctls_progress32",PBS_SMOOTH | 
+                    WS_BORDER,9,45,190,14
+    RTEXT           "",IDS_PROCESS_SIZE,9,60,190,8
+    CONTROL         "バックグラウンド(&B)",IDC_BACK_GROUND,"Button",
+                    BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,85,80,61,14
+END
+
+IDD_CONFIG DIALOG DISCARDABLE  0, 0, 187, 65
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+#ifdef _WIN64
+CAPTION "7-zip64.dll バージョン情報"
+#else
+CAPTION "7-zip32.dll バージョン情報"
+#endif
+FONT 9, "ＭＳ Ｐゴシック"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,145,25,25,14
+    LTEXT           "",IDS_VERSION,25,15,99,8
+    LTEXT           "Copyright (C) 2002-2014 秋田 稔, 市丸 剛",IDC_STATIC,25,35,99,8
+#ifdef _WIN64
+    LTEXT           "7-zip64.dll using Igor Pavlov's 7-Zip",IDC_STATIC,25,45,
+                    106,8
+#else
+    LTEXT           "7-zip32.dll using Igor Pavlov's 7-Zip",IDC_STATIC,25,45,
+                    106,8
+#endif
+END
+
+IDD_PASSWORD DIALOG DISCARDABLE  0, 0, 183, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 9, "ＭＳ Ｐゴシック"
+BEGIN
+    LTEXT           "パスワードを入力してください。(&P)",IDC_STATIC,10,15,98,
+                    8
+    EDITTEXT        IDE_PASSWORD,10,30,165,14,ES_PASSWORD | ES_AUTOHSCROLL
+    CONTROL         "入力マスクを外す(&M)",IDC_MASK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,50,77,10
+    DEFPUSHBUTTON   "OK",IDOK,70,70,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,125,70,50,14
+END
+
+IDD_CONFIRMATION DIALOG DISCARDABLE  0, 0, 250, 165
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ファイルの上書き確認"
+FONT 9, "ＭＳ Ｐゴシック"
+BEGIN
+    PUSHBUTTON      "はい(&Y)",IDB_YES,25,120,50,14
+    PUSHBUTTON      "いいえ(&N)",IDB_NO,80,120,50,14
+    PUSHBUTTON      "全て上書き(&A)",IDB_YES_ALL,135,120,50,14
+    PUSHBUTTON      "全てスキップ(&S)",IDB_NO_ALL,190,120,50,14
+    PUSHBUTTON      "自動的に名前を変更(&U)",IDB_AUTO_RENAME,105,140,80,14
+    PUSHBUTTON      "中止(&Q)",IDCANCEL,190,140,50,14
+    ICON            "",IDS_REPLACE,10,10,20,20
+    LTEXT           "解凍先のフォルダには既にファイルが存在します。",
+                    IDC_STATIC,40,10,146,8
+    LTEXT           "既存のファイルを",IDC_STATIC,40,35,51,8
+    ICON            "",IDS_OLD_ICON,40,45,20,20
+    CONTROL         "%s\n更新日時:\t%.4hu/%.2hu/%.2hu %.2hu:%.2hu:%.2hu\nサイズ:\t\t%I64u バイト",
+                    IDS_OLD_FILE_INFO,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,65,45,180,25
+    LTEXT           "このファイルと置き換えますか？",IDC_STATIC,40,75,95,8
+    ICON            "",IDS_NEW_ICON,40,85,20,20
+    CONTROL         "%s\n更新日時:\t%.4hu/%.2hu/%.2hu %.2hu:%.2hu:%.2hu\nサイズ:\t\t%I64u バイト",
+                    IDS_NEW_FILE_INFO,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,65,85,180,25
+END
+
+IDD_SFX DIALOG DISCARDABLE  0, 0, 129, 259
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SFX設定"
+FONT 9, "ＭＳ Ｐゴシック"
+BEGIN
+    LTEXT           "タイトル(&T)",IDC_STATIC,9,10,32,8
+    EDITTEXT        IDE_TITLE,9,20,110,14,ES_AUTOHSCROLL
+    LTEXT           "開始メッセージ(&B)",IDC_STATIC,9,40,54,8
+    EDITTEXT        IDE_BEGIN_PROMPT,9,50,110,14,ES_AUTOHSCROLL
+    CONTROL         "インストーラを作成(&M)",IDC_IS_INSTALLER,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,9,70,80,10
+    LTEXT           "実行コマンド(&R)",IDC_STATIC,9,95,46,8
+    EDITTEXT        IDE_RUN_PROGRAM,9,105,110,14,ES_AUTOHSCROLL
+    LTEXT           "ディレクトリ(&D)",IDC_STATIC,9,125,43,8
+    EDITTEXT        IDE_DIRECTORY,9,135,110,14,ES_AUTOHSCROLL
+    LTEXT           "実行ファイル名(&E)",IDC_STATIC,9,155,54,8
+    EDITTEXT        IDE_EXECUTE_FILE,9,165,110,14,ES_AUTOHSCROLL
+    LTEXT           "実行ファイルのパラメータ(&X)",IDC_STATIC,9,185,83,8
+    EDITTEXT        IDE_EXECUTE_PARAMETERS,9,195,110,14,ES_AUTOHSCROLL
+    CONTROL         "解凍状況を表示(&P)",IDC_PROGRESS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,9,215,71,10
+    DEFPUSHBUTTON   "OK",IDOK,9,235,50,14
+    PUSHBUTTON      "キャンセル",IDCANCEL,69,235,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_PROGRESS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 204
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 180
+    END
+
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 58
+    END
+
+    IDD_PASSWORD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 176
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    IDD_CONFIRMATION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 243
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
+    END
+
+    IDD_SFX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 122
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 252
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 9,22,0,1
+ PRODUCTVERSION 9,22,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041104b0"
+        BEGIN
+#ifdef _WIN64
+            VALUE "Comments", "Common Archiver Project's 7-ZIP64.DLL using Igor Pavlov's 7-Zip\0"
+            VALUE "FileDescription", "7-zip64\0"
+#else
+            VALUE "Comments", "Common Archiver Project's 7-ZIP32.DLL using Igor Pavlov's 7-Zip\0"
+            VALUE "FileDescription", "7-zip32\0"
+#endif
+            VALUE "FileVersion", "9, 22, 0, 1\0"
+            VALUE "InternalName", "SevenZip\0"
+            VALUE "LegalCopyright", "Copyright (C) 2002-2014 by 秋田 稔, 市丸 剛\0"
+#ifdef _WIN64
+            VALUE "OriginalFilename", "7-zip64.dll\0"
+            VALUE "ProductName", "7-zip64\0"
+#else
+            VALUE "OriginalFilename", "7-zip32.dll\0"
+            VALUE "ProductName", "7-zip32\0"
+#endif
+            VALUE "ProductVersion", "9, 22, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x411, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// SFX
+//
+
+IDR_7ZSDJC              SFX     DISCARDABLE     "SFX\\ReleaseD\\7zSDJC.sfx"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROGRESS_COMPRESS   "圧縮状況"
+    IDS_PROGRESS_DECOMPRESS "解凍状況"
+    IDS_PROGRESS_DELETE     "削除状況"
+    IDS_PROGRESS_UPDATE     "更新状況"
+    IDS_DECRYPT             "ファイルの復号化"
+    IDS_ENCRYPT             "ファイルの暗号化"
+    IDS_PROPERTY            "プロパティ"
+    IDS_VALUE               "値"
+    IDS_COUNT_DOWN          "推定残り時間"
+    IDS_PROCESS_FILE_SIZE   "処理/ファイルサイズ"
+    IDS_FILE_TYPE           "ファイルの種類"
+    IDS_WRITE_TIME          "ファイル更新日時"
+    IDS_ATTRIBUTE           "ファイル属性"
+    IDS_RATIO               "圧縮率"
+    IDS_METHOD              "圧縮方式"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CRC                 "CRC"
+    IDS_ELAPSED_TIME        "経過時間"
+    IDS_PROCESSING_SPEED    "処理速度"
+    IDS_ENTER_PASSWORD      "パスワード入力"
+END
+
+#endif    // 日本語 resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 英語 (ｱﾒﾘｶ) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIG DIALOG DISCARDABLE  0, 0, 187, 65
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About 7-zip32.dll"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,145,25,25,14
+    LTEXT           "",IDS_VERSION,25,13,132,9
+    LTEXT           "Copyright (C) 2002-2014 Minoru Akita, Takeshi Ichimaru",IDC_STATIC,25,36,
+                    120,8
+#ifdef _WIN64
+    LTEXT           "7-zip64.dll using Igor Pavlov's 7-Zip",IDC_STATIC,25,45,
+                    124,9
+#else
+    LTEXT           "7-zip32.dll using Igor Pavlov's 7-Zip",IDC_STATIC,25,45,
+                    124,9
+#endif
+END
+
+IDD_CONFIRMATION DIALOG DISCARDABLE  0, 0, 251, 165
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Confirm File Replace"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "&Yes",IDB_YES,25,120,50,14
+    PUSHBUTTON      "&No",IDB_NO,80,120,50,14
+    PUSHBUTTON      "&Always",IDB_YES_ALL,135,120,50,14
+    PUSHBUTTON      "&Skip all",IDB_NO_ALL,190,120,50,14
+    PUSHBUTTON      "A&uto rename",IDB_AUTO_RENAME,105,140,80,14
+    PUSHBUTTON      "&Quit",IDCANCEL,190,140,50,14
+    ICON            "",IDS_REPLACE,10,10,20,20
+    LTEXT           "Destination folder already contains processed file.",
+                    IDC_STATIC,40,10,154,8
+    LTEXT           "Would you like to replace the existing file",IDC_STATIC,
+                    40,35,126,8
+    ICON            "",IDS_OLD_ICON,40,45,20,20
+    CONTROL         "%s\nmodified on:\t%.4hu/%.2hu/%.2hu %.2hu:%.2hu:%.2hu\nSize:\t\t%I64u bytes",
+                    IDS_OLD_FILE_INFO,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,65,45,180,25
+    LTEXT           "with this one?",IDC_STATIC,40,75,44,8
+    ICON            "",IDS_NEW_ICON,40,85,20,20
+    LTEXT           "%s\nmodified on:\t%.4hu/%.2hu/%.2hu %.2hu:%.2hu:%.2hu\nSize:\t\t%I64u bytes",
+                    IDS_NEW_FILE_INFO,65,85,180,25
+END
+
+IDD_PASSWORD DIALOG DISCARDABLE  0, 0, 183, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "&Enter password",IDC_STATIC,10,15,98,8
+    EDITTEXT        IDE_PASSWORD,10,30,165,14,ES_PASSWORD | ES_AUTOHSCROLL
+    CONTROL         "&Remove mask",IDC_MASK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,50,77,10
+    DEFPUSHBUTTON   "OK",IDOK,70,70,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,125,70,50,14
+END
+
+IDD_PROGRESS DIALOG DISCARDABLE  0, 0, 211, 187
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "&Cancel",IDCANCEL,149,80,50,14
+    CONTROL         "&More infomation",IDC_DETAIL,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,9,85,66,10
+    CONTROL         "List1",IDL_DETAIL,"SysListView32",LVS_REPORT | 
+                    LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,9,110,190,67
+    LTEXT           "ArchiveFile:",IDC_STATIC,10,15,40,8
+    CONTROL         "",IDS_ARCHIVE_FILE,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,50,15,161,8
+    LTEXT           "WorkingFile:",IDC_STATIC,10,30,40,8
+    CONTROL         "",IDS_WORK_FILE,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,50,30,161,8
+    CONTROL         "Progress1",IDP_PROGRESS,"msctls_progress32",PBS_SMOOTH | 
+                    WS_BORDER,10,45,190,14
+    RTEXT           "",IDS_PROCESS_SIZE,10,60,190,8
+    CONTROL         "&BackGround",IDC_BACK_GROUND,"Button",BS_AUTOCHECKBOX | 
+                    BS_PUSHLIKE | WS_TABSTOP,95,80,49,14
+END
+
+IDD_SFX DIALOG DISCARDABLE  0, 0, 131, 253
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SFX config"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "&Title",IDC_STATIC,10,9,14,8
+    EDITTEXT        IDE_TITLE,10,19,110,14,ES_AUTOHSCROLL
+    LTEXT           "&BeginPrompt",IDC_STATIC,10,39,41,8
+    EDITTEXT        IDE_BEGIN_PROMPT,10,49,110,14,ES_AUTOHSCROLL
+    CONTROL         "&Make installer",IDC_IS_INSTALLER,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,70,58,10
+    LTEXT           "&RunProgram",IDC_STATIC,10,90,40,8
+    EDITTEXT        IDE_RUN_PROGRAM,10,100,110,14,ES_AUTOHSCROLL
+    LTEXT           "&Directory",IDC_STATIC,10,120,30,8
+    EDITTEXT        IDE_DIRECTORY,10,130,110,14,ES_AUTOHSCROLL
+    LTEXT           "&ExecuteFile",IDC_STATIC,10,150,38,8
+    EDITTEXT        IDE_EXECUTE_FILE,10,160,110,14,ES_AUTOHSCROLL
+    LTEXT           "E&xecuteParameters",IDC_STATIC,10,180,63,8
+    EDITTEXT        IDE_EXECUTE_PARAMETERS,10,190,110,14,ES_AUTOHSCROLL
+    CONTROL         "&Progress",IDC_PROGRESS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,210,44,10
+    DEFPUSHBUTTON   "OK",IDOK,10,230,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,70,230,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 58
+    END
+
+    IDD_CONFIRMATION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 244
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
+    END
+
+    IDD_PASSWORD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 176
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    IDD_PROGRESS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 204
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 180
+    END
+
+    IDD_SFX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 124
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 246
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 9,22,0,1
+ PRODUCTVERSION 9,22,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+#ifdef _WIN64
+            VALUE "Comments", "Common Archiver Project's 7-ZIP64.DLL using Igor Pavlov's 7-Zip\0"
+            VALUE "FileDescription", "7-zip64\0"
+#else
+            VALUE "Comments", "Common Archiver Project's 7-ZIP32.DLL using Igor Pavlov's 7-Zip\0"
+            VALUE "FileDescription", "7-zip32\0"
+#endif
+            VALUE "FileVersion", "9, 22, 0, 1\0"
+            VALUE "InternalName", "SevenZip\0"
+            VALUE "LegalCopyright", "Copyright (C) 2002-2014 by Minoru Akita, Takeshi Ichimaru\0"
+#ifdef _WIN64
+            VALUE "OriginalFilename", "7-zip64.dll\0"
+            VALUE "ProductName", "7-zip64\0"
+#else
+            VALUE "OriginalFilename", "7-zip32.dll\0"
+            VALUE "ProductName", "7-zip32\0"
+#endif
+            VALUE "ProductVersion", "9, 22, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PROGRESS_COMPRESS   "Compressing"
+    IDS_PROGRESS_EXTRACT    "Extracting"
+    IDS_PROGRESS_DELETE     "Deleting"
+    IDS_PROGRESS_UPDATE     "Updating"
+    IDS_DECRYPT             "Decrypt"
+    IDS_ENCRYPT             "Encrypt"
+    IDS_PROPERTY            "Property"
+    IDS_VALUE               "Value"
+    IDS_COUNT_DOWN          "Remaining time"
+    IDS_PROCESS_FILE_SIZE   "Processed/File size"
+    IDS_FILE_TYPE           "Type"
+    IDS_WRITE_TIME          "Modified"
+    IDS_ATTRIBUTE           "Attributes"
+    IDS_RATIO               "Compress raito"
+    IDS_METHOD              "Method"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CRC                 "CRC"
+    IDS_ELAPSED_TIME        "Elapsed time"
+    IDS_PROCESSING_SPEED    "Processing speed"
+    IDS_ENTER_PASSWORD      "Enter password"
+END
+
+#endif    // 英語 (ｱﾒﾘｶ) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
