@@ -950,7 +950,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Windows\Error.cpp">
+    <ClCompile Include="..\..\..\..\Windows\ErrorMsg.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1713,7 +1713,7 @@
     <ClInclude Include="..\..\..\..\Common\UTFConvert.h" />
     <ClInclude Include="..\..\..\..\Common\Wildcard.h" />
     <ClInclude Include="..\..\..\..\Windows\DLL.h" />
-    <ClInclude Include="..\..\..\..\Windows\Error.h" />
+    <ClInclude Include="..\..\..\..\Windows\ErrorMsg.h" />
     <ClInclude Include="..\..\..\..\Windows\FileDir.h" />
     <ClInclude Include="..\..\..\..\Windows\FileFind.h" />
     <ClInclude Include="..\..\..\..\Windows\FileIO.h" />

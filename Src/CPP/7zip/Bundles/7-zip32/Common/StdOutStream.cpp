@@ -66,18 +66,49 @@ CStdOutStream & CStdOutStream::operator<<(char c)
 	return *this;
 }
 
-CStdOutStream & CStdOutStream::operator<<(int number)
+void StdOut_Convert_UString_to_AString(const UString &s, AString &temp)
 {
-	char textString[32];
-	ConvertInt64ToString(number, textString);
-	return operator<<(textString);
+  int codePage = g_CodePage;
+  if (codePage == -1)
+    codePage = CP_OEMCP;
+  if (codePage == CP_UTF8)
+    ConvertUnicodeToUTF8(s, temp);
+  else
+    UnicodeStringToMultiByte2(temp, s, (UINT)codePage);
 }
 
-CStdOutStream & CStdOutStream::operator<<(UINT64 number)
+void CStdOutStream::PrintUString(const UString &s, AString &temp)
 {
-  char textString[32];
-  ConvertInt64ToString(number, textString);
-  return operator<<(textString);
+  StdOut_Convert_UString_to_AString(s, temp);
+  *this << (const char *)temp;
+}
+
+CStdOutStream & CStdOutStream::operator<<(Int32 number) throw()
+{
+  char s[32];
+  ConvertInt64ToString(number, s);
+  return operator<<(s);
+}
+
+CStdOutStream & CStdOutStream::operator<<(Int64 number) throw()
+{
+  char s[32];
+  ConvertInt64ToString(number, s);
+  return operator<<(s);
+}
+
+CStdOutStream & CStdOutStream::operator<<(UInt32 number) throw()
+{
+  char s[16];
+  ConvertUInt32ToString(number, s);
+  return operator<<(s);
+}
+
+CStdOutStream & CStdOutStream::operator<<(UInt64 number) throw()
+{
+  char s[32];
+  ConvertUInt64ToString(number, s);
+  return operator<<(s);
 }
 
 
@@ -230,8 +261,8 @@ int CStdOutStream::WideCharToMultiByte(const UString &strWideChar, LPSTR lpMulti
 	else
 		dest = ::UnicodeStringToMultiByte(strWideChar, (UINT)codePage);
 	::lstrcpynA(lpMultiByteStr, dest, cchMultiByte);
-	if (dest.Length() >= cchMultiByte)
-		return dest.Length() + 1;
+	if (dest.Len() >= cchMultiByte)
+		return dest.Len() + 1;
 	return 0;
 }
 

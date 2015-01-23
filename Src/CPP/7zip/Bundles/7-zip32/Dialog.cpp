@@ -1,7 +1,7 @@
 // Dialog.cpp: ダイアログ関係
 //
 //////////////////////////////////////////////////////////////////////
-D
+
 #include "stdafx.h"
 #include "Dialog.h"
 #include "resource.h"
@@ -196,7 +196,7 @@ int CDialog::GetDlgItemTextW(int nID, UString& rString)
 		}
 		rString = GetUnicodeString(string);
 	}
-	return rString.Length();
+	return rString.Len();
 }
 
 // ダイアログのコントロールに入るようパスを短縮した文字列に変換
@@ -211,13 +211,13 @@ BOOL CDialog::PathGetDlgItemPathW(int nID, UString& rString)
 	::GetClientRect(hItemWnd, &rc);
 	if (g_IsNT)
 	{
-		nRes = ::DrawTextExW(hDC, rString.GetBuffer(rString.Length() + 4), rString.Length(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);
+		nRes = ::DrawTextExW(hDC, rString.GetBuffer(rString.Len() + 4), rString.Len(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);
 		rString.ReleaseBuffer();
 	}
 	else
 	{
 		AString string = GetOemString(rString);
-		nRes = ::DrawTextExA(hDC, string.GetBuffer(string.Length() + 4), string.Length(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);
+		nRes = ::DrawTextExA(hDC, string.GetBuffer(string.Len() + 4), string.Len(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);
 		string.ReleaseBuffer();
 		rString = GetUnicodeString(string);
 	}
@@ -724,7 +724,7 @@ void CProgressDialog::SetDetail(LPWORKFILEINFO lpWfi)
 void CProgressDialog::AddWorkFile(LPCWSTR lpSrcFileName, LPCWSTR lpDestFilePath, DWORD dwAttributes, bool bEncrypted, FILETIME ftLastWriteTime, UINT64 nSrcFileSize, UINT64 nCompFileSize, DWORD dwCRC, LPCWSTR lpMethod)
 {
 	UString strDestFilePath;
-	::NWindows::NFile::NDirectory::MyGetFullPathName(lpDestFilePath, strDestFilePath);
+	::NWindows::NFile::NDir::MyGetFullPathName(lpDestFilePath, strDestFilePath);
 	WORKFILEINFO wfi;
 	wfi.lpSrcFileName = _wcsdup(lpSrcFileName);
 	wfi.lpDestFilePath = _wcsdup(strDestFilePath);
@@ -912,7 +912,7 @@ BOOL CConfirmationDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			::GetDlgItemText(m_hWnd, IDS_NEW_FILE_INFO, lpFormat, 128);
 			UString strPath = m_strNewName;
 			PathGetDlgItemPathW(IDS_NEW_FILE_INFO, strPath);
-			swprintf(strFileInfo.GetBuffer(m_strNewName.Length() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_nNewSize);
+			swprintf(strFileInfo.GetBuffer(m_strNewName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_nNewSize);
 			strFileInfo.ReleaseBuffer();
 			MySHGetFileInfo(m_strNewName, FILE_ATTRIBUTE_NORMAL, &shFileInfoW, SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
 			::SendMessage(::GetDlgItem(m_hWnd, IDS_NEW_ICON), STM_SETICON, (WPARAM)shFileInfoW.hIcon, 0);
@@ -923,7 +923,7 @@ BOOL CConfirmationDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			::GetDlgItemText(m_hWnd, IDS_OLD_FILE_INFO, lpFormat, 128);
 			strPath = m_strOldName;
 			PathGetDlgItemPathW(IDS_OLD_FILE_INFO, strPath);
-			swprintf(strFileInfo.GetBuffer(m_strOldName.Length() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_nOldSize);
+			swprintf(strFileInfo.GetBuffer(m_strOldName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_nOldSize);
 			strFileInfo.ReleaseBuffer();
 			MySHGetFileInfo(m_strOldName, FILE_ATTRIBUTE_NORMAL, &shFileInfoW, SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
 			::SendMessage(::GetDlgItem(m_hWnd, IDS_OLD_ICON), STM_SETICON, (WPARAM)shFileInfoW.hIcon, 0);
@@ -956,7 +956,7 @@ BOOL CConfirmationDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 // ファイル情報の設定
 void CConfirmationDialog::SetFileInfo(LPCWSTR lpNewName, UINT64 nNewSize, const FILETIME &ftNewWrite, LPCWSTR lpOldName, UINT64 nOldSize, const FILETIME &ftOldWrite)
 {
-	::NWindows::NFile::NDirectory::MyGetFullPathName(lpOldName, m_strOldName);
+	::NWindows::NFile::NDir::MyGetFullPathName(lpOldName, m_strOldName);
 	m_strNewName = lpNewName;
 	m_nNewSize = nNewSize;
 	m_nOldSize = nOldSize;
@@ -1053,25 +1053,25 @@ BOOL CSfxDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 				UString strText;
 				m_strConfig += L";!@Install@!UTF-8!\r\n";
 				GetDlgItemTextW(IDE_TITLE, strText);
-				if (strText.Length())
+				if (strText.Len())
 					m_strConfig += L"Title=\"" + strText + L"\"\r\n";
 				GetDlgItemTextW(IDE_BEGIN_PROMPT, strText);
-				if (strText.Length())
+				if (strText.Len())
 					m_strConfig += L"BeginPrompt=\"" + strText + L"\"\r\n";
 				if (::IsDlgButtonChecked(m_hWnd, IDC_IS_INSTALLER))
 				{
 					m_strConfig += L"IsInstaller=\"yes\"\r\n";
 					GetDlgItemTextW(IDE_RUN_PROGRAM, strText);
-					if (strText.Length())
+					if (strText.Len())
 						m_strConfig += L"RunProgram=\"" + strText + L"\"\r\n";
 					GetDlgItemTextW(IDE_DIRECTORY, strText);
-					if (strText.Length())
+					if (strText.Len())
 						m_strConfig += L"Directory=\"" + strText + L"\"\r\n";
 					GetDlgItemTextW(IDE_EXECUTE_FILE, strText);
-					if (strText.Length())
+					if (strText.Len())
 						m_strConfig += L"ExecuteFile=\"" + strText + L"\"\r\n";
 					GetDlgItemTextW(IDE_EXECUTE_PARAMETERS, strText);
-					if (strText.Length())
+					if (strText.Len())
 						m_strConfig += L"ExecuteParameters=\"" + strText + L"\"\r\n";
 					m_strConfig += L"Progress=\"";
 					m_strConfig += ::IsDlgButtonChecked(m_hWnd, IDC_PROGRESS) ? L"yes" : L"no";

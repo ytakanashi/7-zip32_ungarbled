@@ -90,19 +90,7 @@
     <ClInclude Include="..\..\UI\Console\ConsoleClose.h">
       <Filter>Console</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\UI\Console\ExtractCallbackConsole.h">
-      <Filter>Console</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\UI\Console\List.h">
-      <Filter>Console</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\UI\Console\OpenCallbackConsole.h">
-      <Filter>Console</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\UI\Console\PercentPrinter.h">
-      <Filter>Console</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\UI\Console\UpdateCallbackConsole.h">
       <Filter>Console</Filter>
     </ClInclude>
     <ClInclude Include="7-zip32.h">
@@ -201,9 +189,6 @@
     <ClInclude Include="..\..\..\Windows\DLL.h">
       <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Windows\Error.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Windows\FileDir.h">
       <Filter>Windows</Filter>
     </ClInclude>
@@ -225,9 +210,6 @@
     <ClInclude Include="..\..\..\Windows\PropVariant.h">
       <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Windows\PropVariantConversions.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Windows\Synchronization.h">
       <Filter>Windows</Filter>
     </ClInclude>
@@ -235,9 +217,6 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Windows\Thread.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Windows\Time.h">
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\CreateCoder.h">
@@ -723,14 +702,47 @@
     <ClInclude Include="..\..\..\..\C\XzEnc.h">
       <Filter>C\Xz</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Windows\ErrorMsg.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Windows\TimeUtils.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Windows\PropVariantConv.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Windows\FileSystem.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\RegisterArc.h">
+      <Filter>7zip Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\RegisterCodec.h">
+      <Filter>7zip Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\UniqBlocks.h">
+      <Filter>7zip Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UI\Common\HashCalc.h">
+      <Filter>UI Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtractCallbackConsole.h">
+      <Filter>Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenCallbackConsole.h">
+      <Filter>Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="PercentPrinter.h">
+      <Filter>Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateCallbackConsole.h">
+      <Filter>Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="HashCon.h">
+      <Filter>Spec</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\UI\Console\List.cpp">
-      <Filter>Console</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\UI\Console\PercentPrinter.cpp">
-      <Filter>Console</Filter>
-    </ClCompile>
     <ClCompile Include="7-zip32.cpp">
       <Filter>Spec</Filter>
     </ClCompile>
@@ -809,9 +821,6 @@
     <ClCompile Include="..\..\..\Windows\DLL.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Windows\Error.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Windows\FileDir.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
@@ -830,16 +839,10 @@
     <ClCompile Include="..\..\..\Windows\PropVariant.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Windows\PropVariantConversions.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Windows\Synchronization.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Windows\System.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Windows\Time.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Common\CreateCoder.cpp">
@@ -1097,9 +1100,6 @@
     <ClCompile Include="..\..\Archive\Zip\ZipHandlerOut.cpp">
       <Filter>Archive\zip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Archive\Zip\ZipHeader.cpp">
-      <Filter>Archive\zip</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Archive\Zip\ZipIn.cpp">
       <Filter>Archive\zip</Filter>
     </ClCompile>
@@ -1327,6 +1327,57 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\C\XzIn.c">
       <Filter>C\Xz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Windows\ErrorMsg.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Windows\TimeUtils.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Windows\PropVariantConv.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\CrcReg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\Sha256Reg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\XzCrc64Reg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Windows\FileLink.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Windows\FileSystem.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\PropId.cpp">
+      <Filter>7zip Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\UniqBlocks.cpp">
+      <Filter>7zip Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\UI\Common\HashCalc.cpp">
+      <Filter>UI Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Crypto\MyAesReg.cpp">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Crypto\Sha1Reg.cpp">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\C\XzCrc64Opt.c">
+      <Filter>C\Xz</Filter>
+    </ClCompile>
+    <ClCompile Include="List.cpp">
+      <Filter>Spec</Filter>
+    </ClCompile>
+    <ClCompile Include="HashCon.cpp">
+      <Filter>Spec</Filter>
+    </ClCompile>
+    <ClCompile Include="PercentPrinter.cpp">
+      <Filter>Spec</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

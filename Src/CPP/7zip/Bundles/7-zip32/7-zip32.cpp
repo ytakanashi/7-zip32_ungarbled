@@ -47,7 +47,7 @@ int WINAPI SevenZip(const HWND _hwnd, LPCSTR _szCmdLine, LPSTR _szOutput, const 
 	if (!scl.Split(_szCmdLine))
 		return g_StdOut.SetLastError(ERROR_COMMAND_NAME);
 
-	NWindows::NFile::NDirectory::CTempFile sfxFile;
+	NWindows::NFile::NDir::CTempFile sfxFile;
 	if (scl.m_bSfx && scl.IsUpdateCommands())
 	{
 		CSfxDialog dlgSfx(_hwnd);
@@ -62,7 +62,7 @@ int WINAPI SevenZip(const HWND _hwnd, LPCSTR _szCmdLine, LPSTR _szOutput, const 
 		file.Write(lpResource, sfxSize, processedSize);
 		AString utf8String;
 		ConvertUnicodeToUTF8(dlgSfx.GetConfigText(), utf8String);
-		file.Write((const char*)utf8String, utf8String.Length(), processedSize);
+		file.Write((const char*)utf8String, utf8String.Len(), processedSize);
 		file.Close();
 	}
 
@@ -70,8 +70,8 @@ int WINAPI SevenZip(const HWND _hwnd, LPCSTR _szCmdLine, LPSTR _szOutput, const 
 	UString strCurrentDirectory;
 	if (scl.m_lpBaseDirectory)
 	{
-		::NWindows::NFile::NDirectory::MyGetCurrentDirectory(strCurrentDirectory);
-		if (::NWindows::NFile::NDirectory::MySetCurrentDirectory(::MultiByteToUnicodeString(scl.m_lpBaseDirectory, scl.m_codePage)) == false)
+		::NWindows::NFile::NDir::GetCurrentDir(strCurrentDirectory);
+		if (::NWindows::NFile::NDir::SetCurrentDir(::MultiByteToUnicodeString(scl.m_lpBaseDirectory, scl.m_codePage)) == false)
 		{
 			g_StdOut << "Base directory isn't found.";
 			g_StdOut.CopyBuf(_szOutput, _dwSize);
@@ -96,7 +96,7 @@ int WINAPI SevenZip(const HWND _hwnd, LPCSTR _szCmdLine, LPSTR _szOutput, const 
 	g_StdOut.ReSet();
 	g_CodePage = -1;
 	if (scl.m_lpBaseDirectory)
-		::NWindows::NFile::NDirectory::MySetCurrentDirectory(strCurrentDirectory);
+		::NWindows::NFile::NDir::SetCurrentDir(strCurrentDirectory);
     return dwThreadId;
 }
 
@@ -902,10 +902,10 @@ DWORD WINAPI SevenZipGetDefaultPassword(HARC _harc, LPSTR _szPassword, DWORD _dw
 		::ConvertUnicodeToUTF8(lpPassword, strPassword);
 	else
 		strPassword = ::GetOemString(lpPassword);
-	if ((DWORD)strPassword.Length() >= _dwSize)
+	if ((DWORD)strPassword.Len() >= _dwSize)
 	{
 		g_StdOut.SetLastError(ERROR_INVALID_VALUE);
-		return strPassword.Length() + 1;
+		return strPassword.Len() + 1;
 	}
 	::lstrcpyn(_szPassword, strPassword, _dwSize);
 	return 0;
@@ -925,7 +925,7 @@ int WINAPI SevenZipPasswordDialog(HWND _hwnd, LPSTR _szBuffer, DWORD _dwSize)
 	else
 		strPassword = ::GetOemString(dlg.GetPassword());
 	::lstrcpynA(_szBuffer, strPassword, _dwSize);
-	return g_StdOut.SetLastError((DWORD)strPassword.Length() < _dwSize ? 0 : ERROR_INVALID_VALUE);
+	return g_StdOut.SetLastError((DWORD)strPassword.Len() < _dwSize ? 0 : ERROR_INVALID_VALUE);
 }
 
 BOOL WINAPI SevenZipSetUnicodeMode(BOOL _bUnicode)
@@ -945,7 +945,7 @@ int WINAPI SevenZipSfxConfigDialog(HWND _hwnd, LPSTR _szBuffer, DWORD _dwSize)
 	AString utf8String;
 	ConvertUnicodeToUTF8(dlgSfx.GetConfigText(), utf8String);
 	::lstrcpynA(_szBuffer, utf8String, _dwSize);
-	return g_StdOut.SetLastError((DWORD)utf8String.Length() < _dwSize ? 0 : ERROR_INVALID_VALUE);
+	return g_StdOut.SetLastError((DWORD)utf8String.Len() < _dwSize ? 0 : ERROR_INVALID_VALUE);
 }
 
 BOOL WINAPI SevenZipSfxFileStoring(LPCSTR _szFileName)
