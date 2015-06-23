@@ -1,16 +1,18 @@
-// ExtractCallback.h
+// ExtractCallbackSfx.h
 
-#ifndef __EXTRACT_CALLBACK_H
-#define __EXTRACT_CALLBACK_H
+#ifndef __EXTRACT_CALLBACK_SFX_H
+#define __EXTRACT_CALLBACK_SFX_H
 
 #include "resource.h"
 
-#include "Windows/ResourceString.h"
+#include "../../../../Windows/ResourceString.h"			// パス変更
 
 #include "../../../Archive/IArchive.h"					// パス変更
 
 #include "../../../Common/FileStreams.h"				// パス変更
 #include "../../../ICoder.h"							// パス変更
+
+#include "../../../UI/FileManager/LangUtils.h"			// パス変更
 
 #ifndef _NO_PROGRESS
 #include "ProgressDialog.h"								// パス変更

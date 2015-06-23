@@ -13,7 +13,7 @@ static const char kNewLineChar =  '\n';
 extern int g_CodePage;
 
 CStdOutStream  g_StdOut;
-//CStdOutStream  g_StdErr;
+CStdOutStream  g_StdErr;	// ïœçX
 
 CStdOutStream ::CStdOutStream ()
 {
@@ -62,7 +62,7 @@ CStdOutStream & CStdOutStream::operator<<(const wchar_t *string)
 
 CStdOutStream & CStdOutStream::operator<<(char c)
 {
-	m_strLog += c;
+	m_strLog += (wchar_t)c;	// ïœçX
 	return *this;
 }
 

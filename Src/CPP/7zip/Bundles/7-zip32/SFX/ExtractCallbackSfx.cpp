@@ -1,18 +1,19 @@
-// ExtractCallback.h
+// ExtractCallbackSfx.h
 
 #include "StdAfx.h"
 
-#include "Common/Wildcard.h"
+#include "../../../../Common/Wildcard.h"		// パス変更
 
-#include "Windows/FileDir.h"
-#include "Windows/FileFind.h"
-#include "Windows/FileName.h"
-#include "Windows/PropVariant.h"
+#include "../../../../Windows/FileDir.h"		// パス変更
+#include "../../../../Windows/FileFind.h"		// パス変更
+#include "../../../../Windows/FileName.h"		// パス変更
+#include "../../../../Windows/PropVariant.h"	// パス変更
 
-#include "ExtractCallback.h"
+#include "ExtractCallbackSfx.h"
 
 using namespace NWindows;
 using namespace NFile;
+using namespace NDir;
 /*  削除
 static LPCWSTR kCantDeleteFile = L"Can not delete output file";
 static LPCWSTR kCantOpenFile = L"Can not open output file";
@@ -57,6 +58,11 @@ HRESULT CExtractCallbackImp::Open_SetCompleted(const UInt64 * /* numFiles */, co
   #endif
 }
 
+HRESULT CExtractCallbackImp::Open_Finished()
+{
+  return S_OK;
+}
+
 STDMETHODIMP CExtractCallbackImp::SetTotal(UInt64 size)
 {
   #ifndef _NO_PROGRESS
@@ -78,11 +84,11 @@ STDMETHODIMP CExtractCallbackImp::SetCompleted(const UInt64 *completeValue)
 void CExtractCallbackImp::CreateComplexDirectory(const UStringVector &dirPathParts)
 {
   FString fullPath = _directoryPath;
-  for (int i = 0; i < dirPathParts.Size(); i++)
+  FOR_VECTOR (i, dirPathParts)
   {
     fullPath += us2fs(dirPathParts[i]);
-    NDir::CreateDir(fullPath);
-    fullPath += FCHAR_PATH_SEPARATOR;
+    CreateDir(fullPath);
+    fullPath.Add_PathSepar();
   }
 }
 
@@ -94,18 +100,21 @@ STDMETHODIMP CExtractCallbackImp::GetStream(UInt32 index,
     return E_ABORT;
   #endif
   _outFileStream.Release();
-  NCOM::CPropVariant propVariantName;
-  RINOK(_archiveHandler->GetProperty(index, kpidPath, &propVariantName));
+
   UString fullPath;
-  if (propVariantName.vt == VT_EMPTY)
-    fullPath = _itemDefaultName;
-  else
   {
-    if (propVariantName.vt != VT_BSTR)
-      return E_FAIL;
-    fullPath = propVariantName.bstrVal;
+    NCOM::CPropVariant prop;
+    RINOK(_archiveHandler->GetProperty(index, kpidPath, &prop));
+    if (prop.vt == VT_EMPTY)
+      fullPath = _itemDefaultName;
+    else
+    {
+      if (prop.vt != VT_BSTR)
+        return E_FAIL;
+      fullPath.SetFromBstr(prop.bstrVal);
+    }
+    _filePath = fullPath;
   }
-  _filePath = fullPath;
 
   if (askExtractMode == NArchive::NExtract::NAskMode::kExtract)
   {
@@ -161,16 +170,16 @@ STDMETHODIMP CExtractCallbackImp::GetStream(UInt32 index,
       _diskFilePath = fullProcessedPath;
 
       if (isAnti)
-        NDir::RemoveDir(_diskFilePath);
+        RemoveDir(_diskFilePath);
       else
-        NDir::SetDirTime(_diskFilePath, NULL, NULL, &_processedFileInfo.MTime);
+        SetDirTime(_diskFilePath, NULL, NULL, &_processedFileInfo.MTime);
       return S_OK;
     }
 
     NFind::CFileInfo fileInfo;
     if (fileInfo.Find(fullProcessedPath))
     {
-      if (!NDir::DeleteFileAlways(fullProcessedPath))
+      if (!DeleteFileAlways(fullProcessedPath))
       {
         _message = NWindows::MyLoadString(IDS_CANT_DELETE_FILE);	// 変更
         return E_FAIL;
@@ -232,6 +241,6 @@ STDMETHODIMP CExtractCallbackImp::SetOperationResult(Int32 resultEOperationResul
   }
   _outFileStream.Release();
   if (_extractMode)
-    NDir::SetFileAttrib(_diskFilePath, _processedFileInfo.Attributes);
+    SetFileAttrib(_diskFilePath, _processedFileInfo.Attributes);
   return S_OK;
 }

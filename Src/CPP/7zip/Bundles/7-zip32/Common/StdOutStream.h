@@ -78,7 +78,7 @@ protected:
 CStdOutStream & endl(CStdOutStream & anOut);
 
 extern CStdOutStream g_StdOut;
-//extern CStdOutStream g_StdErr;
+extern CStdOutStream g_StdErr;	// ïœçX
 
 void StdOut_Convert_UString_to_AString(const UString &s, AString &temp);
 

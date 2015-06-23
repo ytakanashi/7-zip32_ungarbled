@@ -2,21 +2,22 @@
 
 #include "StdAfx.h"
 
-#include "Common/MyInitGuid.h"
+#include "../../../../Common/MyInitGuid.h"		// パス変更
 
-#include "Common/CommandLineParser.h"
-#include "Common/StringConvert.h"
-#include "Common/TextConfig.h"
+#include "../../../../Common/CommandLineParser.h"		// パス変更
+#include "../../../../Common/StringConvert.h"		// パス変更
+#include "../../../../Common/TextConfig.h"		// パス変更
 
-#include "Windows/DLL.h"
-#include "Windows/FileDir.h"
-#include "Windows/FileFind.h"
-#include "Windows/FileIO.h"
-#include "Windows/FileName.h"
-#include "Windows/NtCheck.h"
-#include "Windows/ResourceString.h"
+#include "../../../../Windows/DLL.h"		// パス変更
+#include "../../../../Windows/ErrorMsg.h"		// パス変更
+#include "../../../../Windows/FileDir.h"		// パス変更
+#include "../../../../Windows/FileFind.h"		// パス変更
+#include "../../../../Windows/FileIO.h"		// パス変更
+#include "../../../../Windows/FileName.h"		// パス変更
+#include "../../../../Windows/NtCheck.h"		// パス変更
+#include "../../../../Windows/ResourceString.h"		// パス変更
 
-#include "../../../UI/Explorer/MyMessages.h"
+#include "../../../UI/Explorer/MyMessages.h"		// パス変更
 
 #include "../../SFXSetup/ExtractEngine.h"		// パス変更
 
@@ -26,6 +27,8 @@
 #include "Windows/ResourceString.h"		// 追加
 
 using namespace NWindows;
+using namespace NFile;
+using namespace NDir;
 
 HINSTANCE g_hInstance;
 
@@ -37,7 +40,7 @@ static bool ReadDataString(CFSTR fileName, LPCSTR startID,
     LPCSTR endID, AString &stringResult)
 {
   stringResult.Empty();
-  NFile::NIO::CInFile inFile;
+  NIO::CInFile inFile;
   if (!inFile.Open(fileName))
     return false;
   const int kBufferSize = (1 << 12);
@@ -94,12 +97,11 @@ static bool ReadDataString(CFSTR fileName, LPCSTR startID,
   }
 }
 
-static char kStartID[] = ",!@Install@!UTF-8!";
-static char kEndID[] = ",!@InstallEnd@!";
+static char kStartID[] = { ',','!','@','I','n','s','t','a','l','l','@','!','U','T','F','-','8','!', 0 };
+static char kEndID[]   = { ',','!','@','I','n','s','t','a','l','l','E','n','d','@','!', 0 };
 
-class CInstallIDInit
+struct CInstallIDInit
 {
-public:
   CInstallIDInit()
   {
     kStartID[0] = ';';
@@ -108,18 +110,19 @@ public:
 } g_CInstallIDInit;
 
 
-#ifndef UNDER_CE
-class CCurrentDirRestorer
-{
-  FString m_CurrentDirectory;
-public:
-  CCurrentDirRestorer() { NFile::NDir::GetCurrentDir(m_CurrentDirectory); }
-  ~CCurrentDirRestorer() { RestoreDirectory();}
-  bool RestoreDirectory() const { return NFile::NDir::SetCurrentDir(m_CurrentDirectory); }
-};
-#endif
-
 #define NT_CHECK_FAIL_ACTION ShowErrorMessage(L"Unsupported Windows version"); return 1;
+
+static void ShowErrorMessageSpec(const UString &name)
+{
+  UString message = NError::MyFormatMessage(::GetLastError());
+  int pos = message.Find(L"%1");
+  if (pos >= 0)
+  {
+    message.Delete(pos, 2);
+    message.Insert(pos, name);
+  }
+  ShowErrorMessage(NULL, message);
+}
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     #ifdef UNDER_CE
@@ -146,10 +149,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
 
   switches.Trim();
   bool assumeYes = false;
-  if (switches.Left(2).IsEqualToNoCase(L"-y"))
+  if (switches.IsPrefixedBy_Ascii_NoCase("-y"))
   {
     assumeYes = true;
-    switches = switches.Mid(2, switches.Len() - 2);
+    switches = switches.Ptr(2);
     switches.Trim();
   }
 
@@ -157,7 +160,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
   if (!ReadDataString(fullPath, kStartID, kEndID, config))
   {
     if (!assumeYes)
-      ShowErrorMessageRes(IDS_CANT_LOAD_CONFIG_INFO);		// 変更
+      ShowErrorMessage(L"Can't load config info");
     return 1;
   }
 
@@ -178,11 +181,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     }
     friendlyName = GetTextConfigValue(pairs, L"Title");			// 変更
     installPrompt = GetTextConfigValue(pairs, L"BeginPrompt");	// 変更
-    isInstaller = GetTextConfigValue(pairs, L"IsInstaller").IsEqualToNoCase(L"yes");	// 追加
+    isInstaller = GetTextConfigValue(pairs, L"IsInstaller").IsEqualTo_NoCase(L"yes");	// 追加
     if (isInstaller)	// 追加
     {					// 追加
     UString progress = GetTextConfigValue(pairs, L"Progress");
-    if (progress.IsEqualToNoCase(L"no"))
+    if (progress.IsEqualTo_Ascii_NoCase("no"))
       showProgress = false;
     int index = FindTextConfigItem(pairs, L"Directory");
     if (index >= 0)
@@ -197,12 +200,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     
     #ifdef _SHELL_EXECUTE
     executeFile = GetTextConfigValue(pairs, L"ExecuteFile");
-    executeParameters = GetTextConfigValue(pairs, L"ExecuteParameters") + switches;
+    executeParameters = GetTextConfigValue(pairs, L"ExecuteParameters");
     #endif
 	}	// 追加
   }
 
-  NFile::NDir::CTempDir tempDir;
+  CTempDir tempDir;
 
   /* 追加 */
 	UString tempDirPath;
@@ -218,7 +221,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
 	}
 	else
 	{
-		tempDirPath = fullPath.Mid(0, fullPath.ReverseFind('\\') + 1);
+		tempDirPath = fullPath.Mid(0, fullPath.ReverseFind(L'\\') + 1);	// 変更
 		if (!assumeYes)
 		{
 			if (friendlyName.IsEmpty())
@@ -249,7 +252,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     return 1;
   }
 
-//  FString tempDirPath = tempDir.GetPath();　	// 削除
+//  const FString tempDirPath = tempDir.GetPath();	// 削除
+  // tempDirPath = L"M:\\1\\"; // to test low disk space
   {
     bool isCorrupt = false;
     UString errorMessage;
@@ -262,11 +266,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
       {
         if (result == S_FALSE || isCorrupt)
         {
-          errorMessage = NWindows::MyLoadString(IDS_EXTRACTION_ERROR_MESSAGE);
+          NWindows::MyLoadString(IDS_EXTRACTION_ERROR_MESSAGE, errorMessage);
           result = E_FAIL;
         }
-        if (result != E_ABORT && !errorMessage.IsEmpty())
+        if (result != E_ABORT)
+        {
+          if (errorMessage.IsEmpty())
+            errorMessage = NError::MyFormatMessage(result);
           ::MessageBoxW(0, errorMessage, NWindows::MyLoadString(IDS_EXTRACTION_ERROR_TITLE), MB_ICONERROR);
+        }
       }
       return 1;
     }
@@ -276,7 +284,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
 
   #ifndef UNDER_CE
   CCurrentDirRestorer currentDirRestorer;
-  if (!NFile::NDir::SetCurrentDir(tempDir.GetPath()))
+  if (!SetCurrentDir(tempDirPath))
     return 1;
   #endif
   
@@ -297,7 +305,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     execInfo.lpFile = filePath;
 
     if (!switches.IsEmpty())
+    {
+      executeParameters.Add_Space_if_NotEmpty();
       executeParameters += switches;
+    }
 
     CSysString parametersSys = GetSystemString(executeParameters);
     if (parametersSys.IsEmpty())
@@ -324,7 +335,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     if (appLaunched.IsEmpty())
     {
       appLaunched = L"setup.exe";
-      if (!NFile::NFind::DoesFileExist(us2fs(appLaunched)))
+      if (!NFind::DoesFileExist(us2fs(appLaunched)))
       {
         if (!assumeYes)
           ShowErrorMessageRes(IDS_CANT_FIND_SETUP);			// 変更
@@ -334,15 +345,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     
     {
       FString s2 = tempDirPath;
-      NFile::NName::NormalizeDirPathPrefix(s2);
+      NName::NormalizeDirPathPrefix(s2);
       appLaunched.Replace(L"%%T" WSTRING_PATH_SEPARATOR, fs2us(s2));
     }
     
+    UString appNameForError = appLaunched; // actually we need to rtemove parameters also
+
     appLaunched.Replace(L"%%T", fs2us(tempDirPath));
 
     if (!switches.IsEmpty())
     {
-      appLaunched += L' ';
+      appLaunched.Add_Space();
       appLaunched += switches;
     }
     STARTUPINFO startupInfo;
@@ -364,7 +377,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     if (createResult == 0)
     {
       if (!assumeYes)
-        ShowLastErrorMessage();
+      {
+        // we print name of exe file, if error message is
+        // ERROR_BAD_EXE_FORMAT: "%1 is not a valid Win32 application".
+        ShowErrorMessageSpec(appNameForError);
+      }
       return 1;
     }
     ::CloseHandle(processInformation.hThread);

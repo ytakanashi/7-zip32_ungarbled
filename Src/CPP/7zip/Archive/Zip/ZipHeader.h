@@ -54,6 +54,8 @@ namespace NFileHeader
       kLZMA = 14,
       kTerse = 18,
       kLz77 = 19,
+      
+      kXz = 0x5F,
       kJpeg = 0x60,
       kWavPack = 0x61,
       kPPMd = 0x62,
@@ -82,7 +84,7 @@ namespace NFileHeader
       kNTFS = 0x0A,
       kStrongEncrypt = 0x17,
       kUnixTime = 0x5455,
-      kInfoZipUnicodePath = 0x7075,
+      kInfoZipUnicodePath = 0x7075,	// ’Ç‰Á
       kWzAES = 0x9901
     };
   }

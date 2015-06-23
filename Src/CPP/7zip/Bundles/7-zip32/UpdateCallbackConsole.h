@@ -7,46 +7,99 @@
 
 #include "../../UI/Common/Update.h"		// ÉpÉXïœçX
 
-#include "PercentPrinter.h"
+//#include "PercentPrinter.h"	// çÌèú
+
+struct CErrorPathCodes
+{
+  FStringVector Paths;
+  CRecordVector<DWORD> Codes;
+
+  void AddError(const FString &path, DWORD systemError)
+  {
+    Paths.Add(path);
+    Codes.Add(systemError);
+  }
+  void Clear()
+  {
+    Paths.Clear();
+    Codes.Clear();
+  }
+};
 
 class CCallbackConsoleBase
 {
-  bool m_WarningsMode;
 protected:
-  CPercentPrinter m_PercentPrinter;
+//  CPercentPrinter _percent;	// çÌèú
 
-  CStdOutStream *OutStream;
-  HRESULT CanNotFindError_Base(const wchar_t *name, DWORD systemError);
+  CStdOutStream *_so;
+  CStdOutStream *_se;
+
+  void CommonError(const FString &path, DWORD systemError, bool isWarning);
+  
+  HRESULT ScanError_Base(const FString &path, DWORD systemError);
+  HRESULT OpenFileError_Base(const FString &name, DWORD systemError);
+  HRESULT ReadingFileError_Base(const FString &name, DWORD systemError);
+
 public:
-  bool EnablePercents;
+//  bool NeedPercents() const { return _percent._so != NULL; };	// çÌèú
+  bool NeedPercents() const { return false; };	// í«â¡
+
   bool StdOutMode;
 
+  bool NeedFlush;
+  unsigned PercentsNameLevel;
+  unsigned LogLevel;
+
+  AString _tempA;
+  UString _tempU;
+
   CCallbackConsoleBase():
-      m_PercentPrinter(1 << 16),
       StdOutMode(false),
-      EnablePercents(true),
-      m_WarningsMode(false)
+      NeedFlush(false),
+      PercentsNameLevel(1),
+      LogLevel(0)
       {}
   
-  void Init(CStdOutStream *outStream)
+//  void SetWindowWidth(unsigned width) { _percent.MaxLen = width - 1; }	// çÌèú
+  void SetWindowWidth(unsigned width) { }	// í«â¡
+
+  void Init(CStdOutStream *outStream, CStdOutStream *errorStream, CStdOutStream *percentStream)
   {
     FailedFiles.Clear();
-    FailedCodes.Clear();
-    OutStream = outStream;
-    m_PercentPrinter.OutStream = outStream;
+
+    _so = outStream;
+    _se = errorStream;
+//    _percent._so = percentStream;	// çÌèú
   }
 
-  UStringVector FailedFiles;
-  CRecordVector<HRESULT> FailedCodes;
+  void ClosePercents2()
+  {
+ /* çÌèúÇ±Ç±Ç©ÇÁ
+    if (NeedPercents())
+      _percent.ClosePrint(true);
+ çÌèúÇ±Ç±Ç‹Ç≈ */
+  }
 
-  UStringVector CantFindFiles;
-  CRecordVector<HRESULT> CantFindCodes;
+  void ClosePercents_for_so()
+  {
+ /* çÌèúÇ±Ç±Ç©ÇÁ
+    if (NeedPercents() && _so == _percent._so)
+      _percent.ClosePrint(false);
+ çÌèúÇ±Ç±Ç‹Ç≈ */
+  }
+
+
+  CErrorPathCodes FailedFiles;
+  CErrorPathCodes ScanErrors;
+
+  HRESULT PrintProgress(const wchar_t *name, const char *command, bool showInLog);
+
 };
 
 class CUpdateCallbackConsole: public IUpdateCallbackUI2, public CCallbackConsoleBase
 {
-  bool m_NeedBeClosed;
-  bool m_NeedNewLine;
+  // void PrintPropPair(const char *name, const wchar_t *val);
+
 public:
   #ifndef _NO_CRYPTO
   bool PasswordIsDefined;
@@ -54,21 +107,23 @@ public:
   bool AskPassword;
   #endif
 
+  bool DeleteMessageWasShown;
+
   CUpdateCallbackConsole()
+      : DeleteMessageWasShown(false)
       #ifndef _NO_CRYPTO
-      :
-      PasswordIsDefined(false),
-      AskPassword(false)
+      , PasswordIsDefined(false)
+      , AskPassword(false)
       #endif
       {}
   
+  /*
   void Init(CStdOutStream *outStream)
   {
-    m_NeedBeClosed = false;
-    m_NeedNewLine = false;
     CCallbackConsoleBase::Init(outStream);
   }
-  ~CUpdateCallbackConsole() { Finilize(); }
+  */
+  // ~CUpdateCallbackConsole() { if (NeedPercents()) _percent.ClosePrint(); }
   INTERFACE_IUpdateCallbackUI2(;)
 };
 

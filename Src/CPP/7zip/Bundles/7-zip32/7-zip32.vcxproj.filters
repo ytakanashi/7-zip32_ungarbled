@@ -85,11 +85,14 @@
     <Filter Include="C\Xz">
       <UniqueIdentifier>{f8867bc7-ef29-49c7-bada-7bf35a01d038}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archive\cab">
+      <UniqueIdentifier>{28195465-bea7-4fe7-9733-ac2ec17b7214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archive\tar">
+      <UniqueIdentifier>{2e73c8d0-f000-484e-a3dc-99fc2fbdaf7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\UI\Console\ConsoleClose.h">
-      <Filter>Console</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\UI\Console\List.h">
       <Filter>Console</Filter>
     </ClInclude>
@@ -300,9 +303,6 @@
     <ClInclude Include="..\..\Compress\BitmEncoder.h">
       <Filter>Compress</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Compress\BranchCoder.h">
-      <Filter>Compress</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Compress\BranchMisc.h">
       <Filter>Compress</Filter>
     </ClInclude>
@@ -489,9 +489,6 @@
     <ClInclude Include="..\..\Archive\Common\CoderMixer2.h">
       <Filter>Archive\Archive Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Archive\Common\CoderMixer2MT.h">
-      <Filter>Archive\Archive Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Archive\Common\DummyOutStream.h">
       <Filter>Archive\Archive Common</Filter>
     </ClInclude>
@@ -583,9 +580,6 @@
       <Filter>Crypto</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Crypto\RandGen.h">
-      <Filter>Crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Crypto\Sha1.h">
       <Filter>Crypto</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Crypto\WzAes.h">
@@ -732,15 +726,61 @@
     <ClInclude Include="OpenCallbackConsole.h">
       <Filter>Spec</Filter>
     </ClInclude>
-    <ClInclude Include="PercentPrinter.h">
-      <Filter>Spec</Filter>
-    </ClInclude>
     <ClInclude Include="UpdateCallbackConsole.h">
       <Filter>Spec</Filter>
     </ClInclude>
-    <ClInclude Include="HashCon.h">
+    <ClInclude Include="..\..\Archive\IArchive.h">
+      <Filter>Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UI\Console\ArError.h">
+      <Filter>Console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Cab\CabBlockInStream.h">
+      <Filter>Archive\cab</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Cab\CabHandler.h">
+      <Filter>Archive\cab</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Cab\CabHeader.h">
+      <Filter>Archive\cab</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Cab\CabIn.h">
+      <Filter>Archive\cab</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Cab\CabItem.h">
+      <Filter>Archive\cab</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Tar\TarUpdate.h">
+      <Filter>Archive\tar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Tar\TarHandler.h">
+      <Filter>Archive\tar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Tar\TarHeader.h">
+      <Filter>Archive\tar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Tar\TarIn.h">
+      <Filter>Archive\tar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Tar\TarItem.h">
+      <Filter>Archive\tar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Tar\TarOut.h">
+      <Filter>Archive\tar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UI\Console\CompressionMode.h">
+      <Filter>Console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\C\Sha1.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\StdInStream.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleClose.h">
       <Filter>Spec</Filter>
     </ClInclude>
+    <ClInclude Include="HashCon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="7-zip32.cpp">
@@ -924,9 +964,6 @@
       <Filter>Compress</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Compress\BitlDecoder.cpp">
-      <Filter>Compress</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Compress\BranchCoder.cpp">
       <Filter>Compress</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Compress\BranchMisc.cpp">
@@ -1118,9 +1155,6 @@
     <ClCompile Include="..\..\Archive\Common\CoderMixer2.cpp">
       <Filter>Archive\Archive Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Archive\Common\CoderMixer2MT.cpp">
-      <Filter>Archive\Archive Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Archive\Common\DummyOutStream.cpp">
       <Filter>Archive\Archive Common</Filter>
     </ClCompile>
@@ -1209,9 +1243,6 @@
       <Filter>Crypto</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Crypto\RandGen.cpp">
-      <Filter>Crypto</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Crypto\Sha1.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Crypto\WzAes.cpp">
@@ -1361,22 +1392,61 @@
     <ClCompile Include="..\..\UI\Common\HashCalc.cpp">
       <Filter>UI Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Crypto\MyAesReg.cpp">
-      <Filter>Crypto</Filter>
+    <ClCompile Include="List.cpp">
+      <Filter>Spec</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Crypto\Sha1Reg.cpp">
-      <Filter>Crypto</Filter>
+    <ClCompile Include="..\..\..\..\C\Bcj2Enc.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Cab\CabBlockInStream.cpp">
+      <Filter>Archive\cab</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Cab\CabHandler.cpp">
+      <Filter>Archive\cab</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Cab\CabHeader.cpp">
+      <Filter>Archive\cab</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Cab\CabIn.cpp">
+      <Filter>Archive\cab</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Cab\CabRegister.cpp">
+      <Filter>Archive\cab</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Tar\TarHandler.cpp">
+      <Filter>Archive\tar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Tar\TarHandlerOut.cpp">
+      <Filter>Archive\tar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Tar\TarHeader.cpp">
+      <Filter>Archive\tar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Tar\TarIn.cpp">
+      <Filter>Archive\tar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Tar\TarOut.cpp">
+      <Filter>Archive\tar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Tar\TarRegister.cpp">
+      <Filter>Archive\tar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Tar\TarUpdate.cpp">
+      <Filter>Archive\tar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\C\Sha1.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\Sha1Reg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\StdInStream.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\C\XzCrc64Opt.c">
       <Filter>C\Xz</Filter>
     </ClCompile>
-    <ClCompile Include="List.cpp">
-      <Filter>Spec</Filter>
-    </ClCompile>
     <ClCompile Include="HashCon.cpp">
-      <Filter>Spec</Filter>
-    </ClCompile>
-    <ClCompile Include="PercentPrinter.cpp">
       <Filter>Spec</Filter>
     </ClCompile>
   </ItemGroup>

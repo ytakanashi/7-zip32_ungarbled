@@ -5,7 +5,7 @@
 #include "ZipHeader.h"
 #include "ZipItem.h"
 #include "../Common/ItemNameUtils.h"
-#include "../../../../C/7zCrc.h"
+#include "../../../../C/7zCrc.h"	// ’Ç‰Á
 #include "../../../../C/CpuArch.h"
 
 namespace NArchive {
@@ -78,6 +78,7 @@ bool CExtraSubBlock::ExtractUnixTime(bool isCentral, unsigned index, UInt32 &res
   return false;
 }
 
+/* ’Ç‰Á‚±‚±‚©‚ç */
 bool CExtraSubBlock::ExtractInfoZipUnicodePath(AString &name, AString &res) const
 {
   res.Empty();
@@ -91,13 +92,14 @@ bool CExtraSubBlock::ExtractInfoZipUnicodePath(AString &name, AString &res) cons
   int size = (int)Data.Size() - sizeof(short) * 2 - sizeof(Byte);
   if (size > 0)
   {
-    char *p = res.GetBuffer(size + 1);
+    char *p = res.GetBuf(size + 1);
     memcpy(p, (const Byte *)Data + sizeof(short) * 2 + sizeof(Byte), size);
     p[size] = '\0';
-    res.ReleaseBuffer();
+    res.ReleaseBuf_SetLen(size);
   }
   return true;
 }
+/* ’Ç‰Á‚±‚±‚Ü‚Å */
 
 bool CLocalItem::IsDir() const
 {
@@ -136,7 +138,7 @@ bool CItem::IsDir() const
     case NHostOS::kMVS:
       return false; // change it throw kUnknownAttributes;
     case NHostOS::kUnix:
-      return (highAttrib & NUnixAttrib::kIFDIR) != 0;
+      return ((highAttrib & NUnixAttrib::kIFMT) == NUnixAttrib::kIFDIR);
     default:
       return false;
   }
@@ -151,6 +153,11 @@ UInt32 CItem::GetWinAttrib() const
     case NHostOS::kNTFS:
       if (FromCentral)
         winAttrib = ExternalAttrib;
+      break;
+    case NHostOS::kUnix:
+      // do we need to clear 16 low bits in this case?
+      if (FromCentral)
+        winAttrib = ExternalAttrib & 0xFFFF0000;
       break;
   }
   if (IsDir()) // test it;

@@ -2,7 +2,7 @@
 
 #include "StdAfx.h"
 
-#include "Common/IntToString.h"
+#include "../../../../Common/IntToString.h"		// ÉpÉXïœçX
 
 #include "resource.h"
 
@@ -19,13 +19,6 @@ static const UINT kTimerElapse = 100;
 
 #ifdef LANG
 #include "LangUtils.h"
-#endif
-
-#ifdef LANG
-static CIDLangPair kIDLangPairs[] =
-{
-  { IDCANCEL, 0x02000711 }
-};
 #endif
 
 HRESULT CProgressSync::ProcessStopAndPause()
@@ -56,15 +49,14 @@ void CProgressDialog::AddToTitle(LPCWSTR s)
 
 bool CProgressDialog::OnInit()
 {
-  _range = (UInt64)-1;
+  _range = (UInt64)(Int64)-1;
   _prevPercentValue = -1;
 
   _wasCreated = true;
   _dialogCreatedEvent.Set();
 
   #ifdef LANG
-  // LangSetWindowText(HWND(*this), 0x02000C00);
-  LangSetDlgItemsText(HWND(*this), kIDLangPairs, sizeof(kIDLangPairs) / sizeof(kIDLangPairs[0]));
+  LangSetDlgItems(*this, NULL, 0);
   #endif
 
   m_ProgressBar.Attach(GetItem(IDC_PROGRESS1));

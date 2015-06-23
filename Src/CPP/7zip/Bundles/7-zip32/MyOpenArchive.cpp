@@ -20,6 +20,9 @@
 
 static COpenArchive* pOATail;
 
+extern CStdOutStream *g_StdStream;	// 追加
+extern CStdOutStream *g_ErrStream;	// 追加
+
 //////////////////////////////////////////////////////////////////////
 // 構築/消滅
 //////////////////////////////////////////////////////////////////////
@@ -90,7 +93,8 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 		CIntVector excludedFormats;		// 変更
 		CStdOutStream stdOut;
 		COpenCallbackConsole openCallback;
-		openCallback.OutStream = &stdOut;
+//		openCallback.OutStream = &stdOut;	// 削除
+		openCallback.Init(g_StdStream, g_ErrStream, NULL);		// 追加
 		if (m_lpPassword || g_StdOut.GetDefaultPassword())
 		{
 			openCallback.PasswordIsDefined = true;
@@ -103,10 +107,10 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 				CExtractCallbackConsole *ecs = new CExtractCallbackConsole;
 				CMyComPtr<IFolderArchiveExtractCallback> extractCallback = ecs;
 				
-				ecs->OutStream = &stdOut;
+//				ecs->OutStream = &stdOut;	// 削除
 				ecs->PasswordIsDefined = openCallback.PasswordIsDefined;
 				ecs->Password = openCallback.Password;
-				ecs->Init();
+				ecs->Init(g_StdStream, g_ErrStream, NULL);	// 変更
 				
 				CArcCmdLineOptions options;
 				CArcCmdLineParser parser;			// 変更
@@ -157,13 +161,15 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 					RINOK(hb.SetMethods(EXTERNAL_CODECS_VARS options.HashMethods));
 					hb.Init();
 				}
+				UStringVector ArchivePathsSorted;
+				UStringVector ArchivePathsFullSorted;
 				/* 追加ここまで */
 				result = Extract(		// 変更
 					codecs,
 					types,				// 追加
 					excludedFormats,	// 変更
-					options.ArchivePathsSorted, 
-					options.ArchivePathsFullSorted,
+					ArchivePathsSorted, // 変更
+					ArchivePathsFullSorted,	// 変更
 					options.Censor.Pairs.Front().Head,			// 変更
 					eo, &openCallback, ecs, hashCalc, errorMessage, stat);	// 変更
 				if ((ecs->NumArcsWithError != 0 || ecs->NumFileErrors != 0) && result == S_OK)	// 変更
@@ -184,7 +190,7 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 				result = m_archiveLink.Open2(options, &openCallback);
 				if (result != S_OK)
 				{
-					if (dwMode == CHECKARCHIVE_RAPID && openCallback.Open_WasPasswordAsked())
+					if (dwMode == CHECKARCHIVE_RAPID && m_archiveLink.PasswordWasAsked)	// 変更
 					{
 						m_nArchiveType = ARCHIVETYPE_7Z;
 						return ERROR_PASSWORD_FILE;
@@ -201,9 +207,9 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 		}
 
         const CArc &arc = m_archiveLink.Arcs.Back();
-		if (codecs->Formats[arc.FormatIndex].Name.IsEqualToNoCase(L"7z"))	// 変更	// arc.FormatIndexがnArchiveTypeに対応するかも。しかし将来の互換性で問題出るか？
+		if (codecs->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"7z"))	// 変更	// arc.FormatIndexがnArchiveTypeに対応するかも。しかし将来の互換性で問題出るか？
 			m_nArchiveType = ARCHIVETYPE_7Z;
-		else if (codecs->Formats[arc.FormatIndex].Name.IsEqualToNoCase(L"Zip"))	// 変更
+		else if (codecs->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Zip"))	// 変更
 			m_nArchiveType = ARCHIVETYPE_ZIP;
 		else
 			m_nArchiveType = 0;
@@ -296,6 +302,8 @@ int COpenArchive::FindFirst(LPCWSTR lpszWildName, INDIVIDUALINFO *lpSubInfo)
 	return FindNext(lpSubInfo);
 }
 
+bool CensorNode_CheckPath2(const NWildcard::CCensorNode &node, const CReadArcItem &item, bool &include);	// 追加
+
 int COpenArchive::FindNext(INDIVIDUALINFO *lpSubInfo)
 {
 	if (!m_bSearchMode)
@@ -314,12 +322,28 @@ int COpenArchive::FindNext(INDIVIDUALINFO *lpSubInfo)
 		if (arc.GetItemPath(m_aItemPos, m_aFileName) == S_OK)
 		{
 			bool isFolder = false;
-			Archive_IsItem_Folder(arc.Archive, m_aItemPos, isFolder);	// 変更
+			Archive_IsItem_Dir(arc.Archive, m_aItemPos, isFolder);	// 変更
 			/* 追加ここから */
 			bool isAltStream;
 			Archive_IsItem_AltStream(arc.Archive, m_aItemPos, isAltStream);
+			CReadArcItem item;
+			arc.GetItem(m_aItemPos, item);
+			bool pathOk = false;
+			FOR_VECTOR (i, m_pWildcardCensor->Pairs)
+			{
+				bool include;
+				if (CensorNode_CheckPath2(m_pWildcardCensor->Pairs[i].Head, item, include))
+				{
+				if (!include)
+				{
+					pathOk=false;
+					break;
+				}
+				pathOk = true;
+				}
+			}
 			/* 追加ここまで */
-			if (m_pWildcardCensor->CheckPath(isAltStream, m_aFileName, !isFolder))
+//			if (Censor_CheckPath(*m_pWildcardCensor, item))	// 変更,削除
 			{
 				if (isFolder)
 				{

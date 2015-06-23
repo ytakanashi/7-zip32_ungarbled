@@ -88,7 +88,7 @@ void CDialog::ListView_SetItemTextW(HWND hwnd, int i, int iSubItem, LPCWSTR pszT
 	else
 	{
 		AString strOem = ::GetOemString(pszText);
-		ListView_SetItemText(hwnd, i, iSubItem, strOem.GetBuffer(0));
+		ListView_SetItemText(hwnd, i, iSubItem, strOem.GetBuf(0));	// 変更
 	}
 }
 
@@ -180,8 +180,8 @@ int CDialog::GetDlgItemTextW(int nID, UString& rString)
 		if (nLen)
 		{
 			++nLen;
-			::GetDlgItemTextW(m_hWnd, nID, rString.GetBuffer(nLen), nLen);
-			rString.ReleaseBuffer();
+			::GetDlgItemTextW(m_hWnd, nID, rString.GetBuf(nLen), nLen);	// 変更
+			rString.ReleaseBuf_SetEnd(nLen);	// 変更
 		}
 	}
 	else
@@ -191,8 +191,8 @@ int CDialog::GetDlgItemTextW(int nID, UString& rString)
 		if (nLen)
 		{
 			++nLen;
-			::GetDlgItemTextA(m_hWnd, nID, string.GetBuffer(nLen), nLen);
-			string.ReleaseBuffer();
+			::GetDlgItemTextA(m_hWnd, nID, string.GetBuf(nLen), nLen);	// 変更
+			string.ReleaseBuf_SetEnd(nLen);	// 変更
 		}
 		rString = GetUnicodeString(string);
 	}
@@ -211,15 +211,26 @@ BOOL CDialog::PathGetDlgItemPathW(int nID, UString& rString)
 	::GetClientRect(hItemWnd, &rc);
 	if (g_IsNT)
 	{
-		nRes = ::DrawTextExW(hDC, rString.GetBuffer(rString.Len() + 4), rString.Len(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);
-		rString.ReleaseBuffer();
+  /* 追加ここから */
+		UString buffer(rString);
+		buffer.GetBuf(rString.Len() + 4);
+		MyStringCopy(const_cast<wchar_t*>(buffer.Ptr()),rString);
+  /* 追加ここまで */
+		nRes = ::DrawTextExW(hDC, const_cast<wchar_t*>(buffer.Ptr()), buffer.Len(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);	// 変更
+//		rString.ReleaseBuffer();	// 削除
+		rString=buffer;	// 追加
 	}
 	else
 	{
 		AString string = GetOemString(rString);
-		nRes = ::DrawTextExA(hDC, string.GetBuffer(string.Len() + 4), string.Len(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);
-		string.ReleaseBuffer();
-		rString = GetUnicodeString(string);
+  /* 追加ここから */
+		AString buffer(string);
+		buffer.GetBuf(string.Len() + 4);
+		MyStringCopy(const_cast<char*>(buffer.Ptr()),string);
+  /* 追加ここまで */
+		nRes = ::DrawTextExA(hDC, const_cast<char*>(buffer.Ptr()), buffer.Len(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);	// 変更
+//		string.ReleaseBuffer();	// 削除
+		rString = GetUnicodeString(buffer);
 	}
 	::SelectObject(hDC, hOldFont);
 	::ReleaseDC(hItemWnd, hDC);
@@ -906,14 +917,15 @@ BOOL CConfirmationDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			TCHAR lpFormat[128];
 			UString strFileInfo;
 			SHFILEINFOW shFileInfoW;
+			unsigned len;	// 追加
 			
 			::FileTimeToLocalFileTime(&m_ftNewWrite, &ftLocal);
 			::FileTimeToSystemTime(&ftLocal, &stWrite);
 			::GetDlgItemText(m_hWnd, IDS_NEW_FILE_INFO, lpFormat, 128);
 			UString strPath = m_strNewName;
 			PathGetDlgItemPathW(IDS_NEW_FILE_INFO, strPath);
-			swprintf(strFileInfo.GetBuffer(m_strNewName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_nNewSize);
-			strFileInfo.ReleaseBuffer();
+			len = swprintf(strFileInfo.GetBuf(m_strNewName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_nNewSize);	// 変更
+			strFileInfo.ReleaseBuf_SetEnd(len);	// 変更
 			MySHGetFileInfo(m_strNewName, FILE_ATTRIBUTE_NORMAL, &shFileInfoW, SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
 			::SendMessage(::GetDlgItem(m_hWnd, IDS_NEW_ICON), STM_SETICON, (WPARAM)shFileInfoW.hIcon, 0);
 			SetDlgItemTextW(IDS_NEW_FILE_INFO, strFileInfo);
@@ -923,8 +935,8 @@ BOOL CConfirmationDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			::GetDlgItemText(m_hWnd, IDS_OLD_FILE_INFO, lpFormat, 128);
 			strPath = m_strOldName;
 			PathGetDlgItemPathW(IDS_OLD_FILE_INFO, strPath);
-			swprintf(strFileInfo.GetBuffer(m_strOldName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_nOldSize);
-			strFileInfo.ReleaseBuffer();
+			len = swprintf(strFileInfo.GetBuf(m_strOldName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_nOldSize);	// 変更
+			strFileInfo.ReleaseBuf_SetEnd(len);	// 変更
 			MySHGetFileInfo(m_strOldName, FILE_ATTRIBUTE_NORMAL, &shFileInfoW, SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
 			::SendMessage(::GetDlgItem(m_hWnd, IDS_OLD_ICON), STM_SETICON, (WPARAM)shFileInfoW.hIcon, 0);
 			SetDlgItemTextW(IDS_OLD_FILE_INFO, strFileInfo);

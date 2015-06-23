@@ -28,7 +28,7 @@ struct CExtraSubBlock
 
   bool ExtractNtfsTime(unsigned index, FILETIME &ft) const;
   bool ExtractUnixTime(bool isCentral, unsigned index, UInt32 &res) const;
-  bool ExtractInfoZipUnicodePath(AString &name, AString &res) const;
+  bool ExtractInfoZipUnicodePath(AString &name, AString &res) const;	// ’Ç‰Á
 };
 
 const unsigned k_WzAesExtra_Size = 7;
@@ -178,6 +178,7 @@ struct CExtraBlock
     return false;
   }
 
+  /* ’Ç‰Á‚±‚±‚©‚ç */
   bool GetInfoZipUnicodePath(AString &name, AString &res) const
   {
     FOR_VECTOR (i, SubBlocks)
@@ -188,12 +189,16 @@ struct CExtraBlock
     }
     return false;
   }
+  /* ’Ç‰Á‚±‚±‚Ü‚Å */
 
   void RemoveUnknownSubBlocks()
   {
-    for (int i = SubBlocks.Size() - 1; i >= 0; i--)
+    for (unsigned i = SubBlocks.Size(); i != 0;)
+    {
+      i--;
       if (SubBlocks[i].ID != NFileHeader::NExtraID::kWzAES)
         SubBlocks.Delete(i);
+    }
   }
 };
 
@@ -216,8 +221,8 @@ public:
 
   bool IsUtf8() const { return (Flags & NFileHeader::NFlags::kUtf8) != 0; }
   bool IsEncrypted() const { return (Flags & NFileHeader::NFlags::kEncrypted) != 0; }
-  bool IsStrongEncrypted() const { return IsEncrypted() && (Flags & NFileHeader::NFlags::kStrongEncrypted) != 0; };
-  bool IsAesEncrypted() const { return IsEncrypted() && (IsStrongEncrypted() || Method == NFileHeader::NCompressionMethod::kWzAES); };
+  bool IsStrongEncrypted() const { return IsEncrypted() && (Flags & NFileHeader::NFlags::kStrongEncrypted) != 0; }
+  bool IsAesEncrypted() const { return IsEncrypted() && (IsStrongEncrypted() || Method == NFileHeader::NCompressionMethod::kWzAES); }
   bool IsLzmaEOS() const { return (Flags & NFileHeader::NFlags::kLzmaEOS) != 0; }
   bool HasDescriptor() const { return (Flags & NFileHeader::NFlags::kDescriptorUsedMask) != 0; }
   
@@ -249,6 +254,7 @@ public:
   void ClearFlags() { Flags = 0; }
   void SetEncrypted(bool encrypted) { SetFlag(NFileHeader::NFlags::kEncrypted, encrypted); }
   void SetUtf8(bool isUtf8) { SetFlag(NFileHeader::NFlags::kUtf8, isUtf8); }
+  void SetDescriptorMode(bool useDescriptor) { SetFlag(NFileHeader::NFlags::kDescriptorUsedMask, useDescriptor); }
 
   UINT GetCodePage() const { return CP_OEMCP; }
 };
@@ -289,6 +295,7 @@ public:
   void GetUnicodeString(const AString &s, UString &res, bool useSpecifiedCodePage, UINT codePage) const
   {
     bool isUtf8 = IsUtf8();
+    bool ignore_Utf8_Errors = true;
 
     #ifdef _WIN32
     if (!isUtf8)
@@ -299,31 +306,35 @@ public:
       {
         /* Some ZIP archives in Unix use UTF-8 encoding without Utf8 flag in header.
            We try to get name as UTF-8.
-          Do we need to do it in POSIX version also? */
+           Do we need to do it in POSIX version also? */
         isUtf8 = true;
+        ignore_Utf8_Errors = false;
       }
     }
     #endif
 
     if (isUtf8)
-      if (ConvertUTF8ToUnicode(s, res))
+      if (ConvertUTF8ToUnicode(s, res) || ignore_Utf8_Errors)
+//        return;	// íœ
+       /* ’Ç‰Á‚±‚±‚©‚ç */
       {
         if (!IsNormalizedString(NormalizationC, res, res.Len() + 1))
         {
           UString src(res);
           int destLen = NormalizeString(NormalizationC, src, src.Len(), NULL, 0);
-          wchar_t *p = res.GetBuffer(destLen);
+          wchar_t *p = res.GetBuf(destLen);
           destLen = NormalizeString(NormalizationC, src, src.Len(), p, destLen);
           if (destLen > 0)
           {
             p[destLen] = 0;
-            res.ReleaseBuffer();
+            res.ReleaseBuf_SetLen(destLen);
             return;
           } else res.Empty();
         }
       } else res.Empty();
     if (res.IsEmpty())
-      MultiByteToUnicodeString2(res, s, useSpecifiedCodePage ? codePage : GetCodePage());
+    /* ’Ç‰Á‚±‚±‚Ü‚Å */
+    MultiByteToUnicodeString2(res, s, useSpecifiedCodePage ? codePage : GetCodePage());
   }
 
   bool IsThereCrc() const

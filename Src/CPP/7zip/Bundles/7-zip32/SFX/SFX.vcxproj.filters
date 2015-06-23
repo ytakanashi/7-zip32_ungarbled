@@ -65,9 +65,6 @@
     <ClCompile Include="..\..\..\Archive\7z\7zHandler.cpp">
       <Filter>7z</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Archive\7z\7zHeader.cpp">
-      <Filter>7z</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Archive\7z\7zIn.cpp">
       <Filter>7z</Filter>
     </ClCompile>
@@ -75,9 +72,6 @@
       <Filter>7z</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Archive\Common\CoderMixer2.cpp">
-      <Filter>Archive Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Archive\Common\CoderMixer2MT.cpp">
       <Filter>Archive Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Archive\Common\CrossThreadProgress.cpp">
@@ -101,9 +95,6 @@
     <ClCompile Include="..\..\..\Compress\BcjRegister.cpp">
       <Filter>Compress</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Compress\BranchCoder.cpp">
-      <Filter>Compress</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Compress\CopyCoder.cpp">
       <Filter>Compress</Filter>
     </ClCompile>
@@ -122,19 +113,10 @@
     <ClCompile Include="..\..\..\Compress\LzmaRegister.cpp">
       <Filter>Compress</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Compress\PpmdDecoder.cpp">
-      <Filter>Compress</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Compress\PpmdRegister.cpp">
-      <Filter>Compress</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Common\CommandLineParser.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Common\CRC.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\CWrappers.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Common\IntToString.cpp">
@@ -164,9 +146,6 @@
     <ClCompile Include="..\..\..\..\Windows\DLL.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Windows\Error.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Windows\FileDir.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
@@ -183,9 +162,6 @@
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Windows\ResourceString.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Windows\Shell.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Windows\Synchronization.cpp">
@@ -210,9 +186,6 @@
       <Filter>7z Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\LimitedStreams.cpp">
-      <Filter>7z Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\LockedStream.cpp">
       <Filter>7z Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\OutBuffer.cpp">
@@ -272,20 +245,44 @@
     <ClCompile Include="..\..\..\..\..\C\LzmaDec.c">
       <Filter>C</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\C\Ppmd7.c">
-      <Filter>C</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\C\Ppmd7Dec.c">
-      <Filter>C</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\C\Threads.c">
       <Filter>C</Filter>
     </ClCompile>
-    <ClCompile Include="ExtractCallback.cpp" />
     <ClCompile Include="ExtractDialog.cpp" />
     <ClCompile Include="ExtractEngine.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="ProgressDialog.cpp" />
+    <ClCompile Include="ExtractCallbackSfx.cpp" />
+    <ClCompile Include="SfxSetup.cpp" />
+    <ClCompile Include="..\..\..\..\..\C\Bcj2.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\C\Bra.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\C\BraIA64.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\C\Delta.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Compress\BranchMisc.cpp">
+      <Filter>Compress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Compress\BranchRegister.cpp">
+      <Filter>Compress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Windows\ErrorMsg.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\PropId.cpp">
+      <Filter>7z Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Compress\DeltaFilter.cpp">
+      <Filter>Compress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Windows\Shell.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -312,9 +309,6 @@
     <ClInclude Include="..\..\..\Archive\Common\CoderMixer2.h">
       <Filter>Archive Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Archive\Common\CoderMixer2MT.h">
-      <Filter>Archive Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Archive\Common\CrossThreadProgress.h">
       <Filter>Archive Common</Filter>
     </ClInclude>
@@ -331,9 +325,6 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\CRC.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\CWrappers.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\IntToString.h">
@@ -363,9 +354,6 @@
     <ClInclude Include="..\..\..\..\Windows\DLL.h">
       <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Windows\Error.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Windows\FileDir.h">
       <Filter>Windows</Filter>
     </ClInclude>
@@ -382,9 +370,6 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Windows\ResourceString.h">
-      <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Windows\Shell.h">
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Windows\Synchronization.h">
@@ -409,9 +394,6 @@
       <Filter>7z Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\LimitedStreams.h">
-      <Filter>7z Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\LockedStream.h">
       <Filter>7z Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\OutBuffer.h">
@@ -471,16 +453,28 @@
     <ClInclude Include="..\..\..\..\..\C\LzmaDec.h">
       <Filter>C</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\C\Ppmd7.h">
-      <Filter>C</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\C\Threads.h">
       <Filter>C</Filter>
     </ClInclude>
-    <ClInclude Include="ExtractCallback.h" />
     <ClInclude Include="ExtractDialog.h" />
     <ClInclude Include="ProgressDialog.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ExtractCallbackSfx.h" />
+    <ClInclude Include="..\..\..\..\..\C\Bcj2.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\C\Delta.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Compress\BranchMisc.h">
+      <Filter>Compress</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\UI\FileManager\LangUtils.h">
+      <Filter>File Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Windows\ErrorMsg.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="setup.ico" />

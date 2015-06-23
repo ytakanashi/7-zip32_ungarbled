@@ -2,44 +2,100 @@
 
 #include "StdAfx.h"
 
-#include "OpenCallbackConsole.h"					// パス変更
+#include "OpenCallbackConsole.h"
 
-#include "../../UI/Console/ConsoleClose.h"			// パス変更
+#include "ConsoleClose.h"
 //#include "UserInputUtils.h"						// 削除
 
 #include "resource.h"								// 追加
 
+static HRESULT CheckBreak2()
+{
+  return NConsoleClose::TestBreakSignal() ? E_ABORT : S_OK;
+}
+
 HRESULT COpenCallbackConsole::Open_CheckBreak()
 {
-  if (NConsoleClose::TestBreakSignal())
-    return E_ABORT;
+  return CheckBreak2();
+}
+
+HRESULT COpenCallbackConsole::Open_SetTotal(const UInt64 *files, const UInt64 *bytes)
+{
+  if (!MutiArcMode && NeedPercents())
+  {
+    if (files)
+    {
+      _totalFilesDefined = true;
+      // _totalFiles = *files;
+//      _percent.Total = *files;	// 削除
+    }
+    else
+      _totalFilesDefined = false;
+
+    if (bytes)
+    {
+      _totalBytesDefined = true;
+      // _totalBytes = *bytes;
+ /* 削除ここから
+      if (!files)
+        _percent.Total = *bytes;
+ 削除ここまで */
+    }
+    else
+      _totalBytesDefined = false;
+  }
+
+  return CheckBreak2();
+}
+
+HRESULT COpenCallbackConsole::Open_SetCompleted(const UInt64 *files, const UInt64 *bytes)
+{
+ /* 削除ここから
+  if (!MutiArcMode && NeedPercents())
+  {
+    if (files)
+    {
+      _percent.Files = *files;
+      if (_totalFilesDefined)
+        _percent.Completed = *files;
+    }
+
+    if (bytes)
+    {
+      if (!_totalFilesDefined)
+        _percent.Completed = *bytes;
+    }
+    _percent.Print();
+  }
+ 削除ここまで */
+
+  return CheckBreak2();
+}
+
+HRESULT COpenCallbackConsole::Open_Finished()
+{
+  ClosePercents();
   return S_OK;
 }
 
-HRESULT COpenCallbackConsole::Open_SetTotal(const UInt64 *, const UInt64 *)
-{
-  return Open_CheckBreak();
-}
 
-HRESULT COpenCallbackConsole::Open_SetCompleted(const UInt64 *, const UInt64 *)
-{
-  return Open_CheckBreak();
-}
- 
 #ifndef _NO_CRYPTO
 
 HRESULT COpenCallbackConsole::Open_CryptoGetTextPassword(BSTR *password)
 {
-  PasswordWasAsked = true;
-  RINOK(Open_CheckBreak());
+  *password = NULL;
+  RINOK(CheckBreak2());
+
   if (!PasswordIsDefined)
   {
+    ClosePercents();
     RINOK(GetPassword(Password, IDS_DECRYPT));		// 変更
     PasswordIsDefined = true;
   }
   return StringToBstr(Password, password);
 }
 
+/*
 HRESULT COpenCallbackConsole::Open_GetPasswordIfAny(bool &passwordIsDefined, UString &password)
 {
   passwordIsDefined = PasswordIsDefined;
@@ -52,9 +108,10 @@ bool COpenCallbackConsole::Open_WasPasswordAsked()
   return PasswordWasAsked;
 }
 
-void COpenCallbackConsole::Open_ClearPasswordWasAskedFlag()
+void COpenCallbackConsole::Open_Clear_PasswordWasAsked_Flag ()
 {
   PasswordWasAsked = false;
 }
+*/
 
 #endif
