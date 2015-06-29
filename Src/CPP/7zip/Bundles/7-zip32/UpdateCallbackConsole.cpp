@@ -362,7 +362,8 @@ HRESULT CUpdateCallbackConsole::DeletingAfterArchiving(const FString &path, bool
         _tempA.Add_Space();
         *_so << _tempA;
         _tempU = fs2us(path);
-        _so->PrintUString(_tempU, _tempA);
+//        _so->PrintUString(_tempU, _tempA);	// çÌèú
+        *_so << _tempU;							// í«â¡
         *_so << endl;
         if (NeedFlush)
           _so->Flush();

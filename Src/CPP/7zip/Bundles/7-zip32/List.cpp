@@ -240,7 +240,8 @@ static void PrintUString(EAdjustment adj, unsigned width, const UString &s, AStr
     numSpaces -= numLeftSpaces;
   }
   
-  g_StdOut.PrintUString(s, temp);
+//  g_StdOut.PrintUString(s, temp);	// íœ
+  g_StdOut << s;					// ’Ç‰Á
   PrintSpaces(numSpaces);
 }
 
@@ -563,7 +564,8 @@ HRESULT CFieldPrinter::PrintItemInfo(UInt32 index, const CListStat &st)
     {
       if (!techMode)
         g_StdOut << temp;
-      g_StdOut.PrintUString(FilePath, TempAString);
+//        g_StdOut.PrintUString(FilePath, TempAString); // íœ
+        g_StdOut << FilePath;							// ’Ç‰Á
       if (techMode)
         g_StdOut << MY_ENDL;
       continue;
@@ -600,7 +602,8 @@ HRESULT CFieldPrinter::PrintItemInfo(UInt32 index, const CListStat &st)
           if (ConvertNtReparseToString((const Byte *)data, dataSize, s))
           {
             needPrint = false;
-            g_StdOut.PrintUString(s, TempAString);
+//            g_StdOut.PrintUString(s, TempAString);	// íœ
+            g_StdOut << s;								// ’Ç‰Á
           }
         }
       
@@ -677,7 +680,8 @@ HRESULT CFieldPrinter::PrintItemInfo(UInt32 index, const CListStat &st)
         if (techMode)
         {
           // replace CR/LF here.
-          g_StdOut.PrintUString(TempWString, TempAString);
+//          g_StdOut.PrintUString(TempWString, TempAString);	// íœ
+          g_StdOut <<TempWString;								// ’Ç‰Á
         }
         else
           PrintUString(f.TextAdjustment, width, TempWString, TempAString);
