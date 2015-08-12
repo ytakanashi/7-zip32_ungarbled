@@ -5,6 +5,8 @@
 #undef sprintf
 #undef printf
 
+#include "../../../../C/Alloc.h"
+
 #include "../../../Common/ComTry.h"
 #include "../../../Common/IntToString.h"
 #include "../../../Common/StringConvert.h"
@@ -24,6 +26,7 @@
 #endif
 
 #include "../../Common/FilePathAutoRename.h"
+// #include "../../Common/StreamUtils.h"
 
 #include "../../UI/Common/ExtractingFilePath.h"			// ïœçX
 #include "../../UI/Common/PropIDUtils.h"				// ïœçX
@@ -550,11 +553,54 @@ static FString MakePath_from_2_Parts(const FString &prefix, const FString &path)
   return s;
 }
 
+
+/*
+#ifdef SUPPORT_LINKS
+
+struct CTempMidBuffer
+{
+  void *Buf;
+
+  CTempMidBuffer(size_t size): Buf(NULL) { Buf = ::MidAlloc(size); }
+  ~CTempMidBuffer() { ::MidFree(Buf); }
+};
+
+HRESULT CArchiveExtractCallback::MyCopyFile(ISequentialOutStream *outStream)
+{
+  const size_t kBufSize = 1 << 16;
+  CTempMidBuffer buf(kBufSize);
+  if (!buf.Buf)
+    return E_OUTOFMEMORY;
+  
+  NIO::CInFile inFile;
+  NIO::COutFile outFile;
+  
+  if (!inFile.Open(_CopyFile_Path))
+    return SendMessageError_with_LastError("Open error", _CopyFile_Path);
+    
+  for (;;)
+  {
+    UInt32 num;
+    
+    if (!inFile.Read(buf.Buf, kBufSize, num))
+      return SendMessageError_with_LastError("Read error", _CopyFile_Path);
+      
+    if (num == 0)
+      return S_OK;
+      
+      
+    RINOK(WriteStream(outStream, buf.Buf, num));
+  }
+}
+
+#endif
+*/
+
 STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index, ISequentialOutStream **outStream, Int32 askExtractMode)
 {
   COM_TRY_BEGIN
 
-  *outStream = 0;
+  *outStream = NULL;
 
   #ifndef _SFX
   if (_hashStream)
@@ -571,6 +617,11 @@ STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index, ISequentialOutStre
   _curSize = 0;
   _curSizeDefined = false;
   _index = index;
+
+  #ifdef SUPPORT_LINKS
+  // _CopyFile_Path.Empty();
+  linkPath.Empty();
+  #endif
 
   IInArchive *archive = _arc->Archive;
 
@@ -605,43 +656,52 @@ STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index, ISequentialOutStre
 
   #ifdef SUPPORT_LINKS
   
+  // bool isCopyLink = false;
   bool isHardLink = false;
   bool isJunction = false;
   bool isRelative = false;
 
-  UString linkPath;
-  // RINOK(Archive_GetItemBoolProp(archive, index, kpidIsHardLink, isHardLink));
-  // if (isHardLink)
   {
     NCOM::CPropVariant prop;
     RINOK(archive->GetProperty(index, kpidHardLink, &prop));
     if (prop.vt == VT_BSTR)
     {
       isHardLink = true;
+      // isCopyLink = false;
+      isRelative = false; // RAR5, TAR: hard links are from root folder of archive
       linkPath.SetFromBstr(prop.bstrVal);
-      isRelative = false; // TAR: hard links are from root folder of archive
     }
-    else if (prop.vt == VT_EMPTY)
-    {
-      // linkPath.Empty();
-    }
-    else
+    else if (prop.vt != VT_EMPTY)
       return E_FAIL;
   }
+  
+  /*
+  {
+    NCOM::CPropVariant prop;
+    RINOK(archive->GetProperty(index, kpidCopyLink, &prop));
+    if (prop.vt == VT_BSTR)
+    {
+      isHardLink = false;
+      isCopyLink = true;
+      isRelative = false; // RAR5: copy links are from root folder of archive
+      linkPath.SetFromBstr(prop.bstrVal);
+    }
+    else if (prop.vt != VT_EMPTY)
+      return E_FAIL;
+  }
+  */
+
   {
     NCOM::CPropVariant prop;
     RINOK(archive->GetProperty(index, kpidSymLink, &prop));
     if (prop.vt == VT_BSTR)
     {
       isHardLink = false;
+      // isCopyLink = false;
+      isRelative = true; // RAR5, TAR: symbolic links can be relative
       linkPath.SetFromBstr(prop.bstrVal);
-      isRelative = true; // TAR: symbolic links are relative
     }
-    else if (prop.vt == VT_EMPTY)
-    {
-      // linkPath.Empty();
-    }
-    else
+    else if (prop.vt != VT_EMPTY)
       return E_FAIL;
   }
 
@@ -663,6 +723,7 @@ STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index, ISequentialOutStre
       if (isOkReparse)
       {
         isHardLink = false;
+        // isCopyLink = false;
         linkPath = reparse.GetPath();
         isJunction = reparse.IsMountPoint();
         isRelative = reparse.IsRelative();
@@ -678,6 +739,13 @@ STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index, ISequentialOutStre
     #ifdef _WIN32
     linkPath.Replace(L'/', WCHAR_PATH_SEPARATOR);
     #endif
+
+    // rar5 uses "\??\" prefix for absolute links
+    if (linkPath.IsPrefixedBy(WSTRING_PATH_SEPARATOR L"??" WSTRING_PATH_SEPARATOR))
+    {
+      isRelative = false;
+      linkPath.DeleteFrontal(4);
+    }
     
     for (;;)
     // while (NName::IsAbsolutePath(linkPath))
@@ -1135,7 +1203,7 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
         else
         {
           FString existPath;
-          if (isHardLink || !isRelative)
+          if (isHardLink /* || isCopyLink */ || !isRelative)
           {
             if (!NName::GetFullPath(_dirPathPrefix_Full, us2fs(relatPath), existPath))
             {
@@ -1149,13 +1217,37 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
           
           if (!existPath.IsEmpty())
           {
-            if (isHardLink)
+            if (isHardLink /* || isCopyLink */)
             {
-              if (!MyCreateHardLink(fullProcessedPath, existPath))
+              // if (isHardLink)
               {
-                RINOK(SendMessageError2("Can not create hard link", fullProcessedPath, existPath));
-                // return S_OK;
+                if (!MyCreateHardLink(fullProcessedPath, existPath))
+                {
+                  RINOK(SendMessageError2("Can not create hard link", fullProcessedPath, existPath));
+                  // return S_OK;
+                }
               }
+              /*
+              else
+              {
+                NFind::CFileInfo fi;
+                if (!fi.Find(existPath))
+                {
+                  RINOK(SendMessageError2("Can not find the file for copying", existPath, fullProcessedPath));
+                }
+                else
+                {
+                  if (_curSizeDefined && _curSize == fi.Size)
+                    _CopyFile_Path = existPath;
+                  else
+                  {
+                    RINOK(SendMessageError2("File size collision for file copying", existPath, fullProcessedPath));
+                  }
+
+                  // RINOK(MyCopyFile(existPath, fullProcessedPath));
+                }
+              }
+              */
             }
             else if (_ntOptions.SymLinks.Val)
             {
@@ -1188,7 +1280,8 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
         
         #endif
       }
-      else
+      
+      if (linkPath.IsEmpty() /* || !_CopyFile_Path.IsEmpty() */)
       #endif // SUPPORT_LINKS
       {
         bool needWriteFile = true;
@@ -1278,7 +1371,26 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
   #endif
 
   if (outStreamLoc)
+  {
+    /*
+    #ifdef SUPPORT_LINKS
+    
+    if (!_CopyFile_Path.IsEmpty())
+    {
+      RINOK(PrepareOperation(askExtractMode));
+      RINOK(MyCopyFile(outStreamLoc));
+      return SetOperationResult(NArchive::NExtract::NOperationResult::kOK);
+    }
+
+    if (isCopyLink && _testMode)
+      return S_OK;
+    
+    #endif
+    */
+
     *outStream = outStreamLoc.Detach();
+  }
+  
   return S_OK;
   COM_TRY_END
 }
@@ -1394,7 +1506,9 @@ STDMETHODIMP CArchiveExtractCallback::SetOperationResult(Int32 opRes)
 
   if (_extractMode && _fi.AttribDefined)
     SetFileAttrib(_diskFilePath, _fi.Attrib);
+  
 //  RINOK(_extractCallback2->SetOperationResult(opRes, BoolToInt(_encrypted)));		// çÌèú
+  
   /* í«â¡ Ç±Ç±Ç©ÇÁ */
   HRESULT res = _extractCallback2->SetOperationResult(opRes, BoolToInt(_encrypted));
   if (res == ERROR_PASSWORD_FILE)

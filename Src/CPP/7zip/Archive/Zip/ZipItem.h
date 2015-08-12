@@ -12,6 +12,9 @@
 
 #include "ZipHeader.h"
 
+#include<mlang.h>	// ’Ç‰Á
+
+
 namespace NArchive {
 namespace NZip {
 
@@ -332,9 +335,38 @@ public:
           } else res.Empty();
         }
       } else res.Empty();
+
     if (res.IsEmpty())
+    {
+      Int32 codepage = useSpecifiedCodePage ? codePage : 50001;
+      UINT srcLen = s.Len();
+      char* srcChar = const_cast<char*>(s.Ptr());
+      CoInitialize(NULL);
+      IMultiLanguage2* lang = NULL;
+      HRESULT hr = CoCreateInstance(CLSID_CMultiLanguage, NULL, CLSCTX_ALL, IID_IMultiLanguage2, (LPVOID*)&lang);
+
+      DWORD mode = 0;
+      UINT destLen = 0;
+      if (SUCCEEDED(hr))
+        hr = lang->ConvertStringToUnicode(&mode, codepage, srcChar, &srcLen, NULL, &destLen);
+
+      wchar_t* p;
+      if (SUCCEEDED(hr))
+      {
+        p = res.GetBuf(destLen);
+
+        hr = lang->ConvertStringToUnicode(&mode, codepage, srcChar, &srcLen, p, &destLen);
+        p[destLen] = 0;
+        res.ReleaseBuf_SetLen(destLen);
+      }
+
+      if (lang)
+        lang->Release();
+      CoUninitialize();
+      if(FAILED(hr))
     /* ’Ç‰Á‚±‚±‚Ü‚Å */
     MultiByteToUnicodeString2(res, s, useSpecifiedCodePage ? codePage : GetCodePage());
+    }	// ’Ç‰Á
   }
 
   bool IsThereCrc() const

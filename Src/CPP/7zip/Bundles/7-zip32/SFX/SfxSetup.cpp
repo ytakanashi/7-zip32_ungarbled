@@ -2,6 +2,8 @@
 
 #include "StdAfx.h"
 
+#include "../../../../Common/MyWindows.h"		// パス変更
+
 #include "../../../../Common/MyInitGuid.h"		// パス変更
 
 #include "../../../../Common/CommandLineParser.h"		// パス変更

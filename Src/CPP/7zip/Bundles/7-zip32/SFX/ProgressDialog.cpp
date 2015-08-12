@@ -186,7 +186,7 @@ void CProgressDialog::CheckNeedClose()
 {
   if (_needClose)
   {
-    PostMessage(kCloseMessage);
+    PostMsg(kCloseMessage);
     _needClose = false;
   }
 }

@@ -4,7 +4,11 @@
 
 #include "ConsoleClose.h"
 
-// namespace NConsoleClose {							// íœ
+#if !defined(UNDER_CE) && defined(_WIN32)
+#include "../../../Common/MyWindows.h"
+#endif
+
+//namespace NConsoleClose {							// íœ
 
 unsigned g_BreakCounter = 0;
 static const unsigned kBreakAbortThreshold = 2;

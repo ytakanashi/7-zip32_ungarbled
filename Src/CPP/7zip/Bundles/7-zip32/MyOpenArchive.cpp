@@ -17,11 +17,15 @@
 #include "OpenCallbackConsole.h"		// パス変更
 #include "ExtractCallbackConsole.h"		// パス変更
 #include "Common/UTFConvert.h"
+#include "../../UI/Common/SetProperties.h"	// 追加
+#include "Common/IntToString.h"				// 追加
 
 static COpenArchive* pOATail;
 
 extern CStdOutStream *g_StdStream;	// 追加
 extern CStdOutStream *g_ErrStream;	// 追加
+
+extern UINT32 g_iArcCodePage;		// 追加
 
 //////////////////////////////////////////////////////////////////////
 // 構築/消滅
@@ -264,6 +268,19 @@ BOOL COpenArchive::Open(LPCWSTR lpFileName, DWORD dwMode)
 		m_bSolid = VARIANT_BOOLToBool(aPropVariant.boolVal);
 	}
 	g_StdOut.SetLastError(0);
+ /* 追加ここから */
+	//書庫のコードページを指定
+	if(g_iArcCodePage){
+		CObjectVector<CProperty> properties;
+		CProperty prop;
+		wchar_t value[16];
+		prop.Name = L"cp";
+		ConvertUInt32ToString(g_iArcCodePage, value);
+		prop.Value = value;
+		properties.Add(prop);
+		SetProperties(arc.Archive, properties);
+	}
+ /* 追加ここまで */
 	return TRUE;
 }
 
