@@ -182,9 +182,6 @@
     <ClCompile Include="..\..\Archive\DllExports2.cpp">
       <Filter>Spec</Filter>
     </ClCompile>
-    <ClCompile Include="StdAfx.cpp">
-      <Filter>Spec</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\CRC.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -887,6 +884,24 @@
     <ClCompile Include="..\..\..\Windows\TimeUtils.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\C\Blake2s.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Compress\Rar5Decoder.cpp">
+      <Filter>Compress\Rar Compress</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Spec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Rar\Rar5Handler.cpp">
+      <Filter>Archive\Rar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Crypto\Rar5Aes.cpp">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Crypto\HmacSha256.cpp">
+      <Filter>Crypto</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
@@ -1502,6 +1517,27 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Windows\TimeUtils.h">
       <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\C\Blake2.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Compress\Rar5Decoder.h">
+      <Filter>Compress\Rar Compress</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Rar\Rar5Handler.h">
+      <Filter>Archive\Rar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Crypto\Rar5Aes.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Crypto\HmacSha256.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\Rar\RarVol.h">
+      <Filter>Archive\Rar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Defs.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
