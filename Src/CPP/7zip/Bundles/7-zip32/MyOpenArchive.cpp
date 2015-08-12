@@ -25,7 +25,7 @@ static COpenArchive* pOATail;
 extern CStdOutStream *g_StdStream;	// 追加
 extern CStdOutStream *g_ErrStream;	// 追加
 
-extern UINT32 g_iArcCodePage;		// 追加
+extern UINT32 g_ArcCodePage;		// 追加
 
 //////////////////////////////////////////////////////////////////////
 // 構築/消滅
@@ -268,19 +268,19 @@ BOOL COpenArchive::Open(LPCWSTR lpFileName, DWORD dwMode)
 		m_bSolid = VARIANT_BOOLToBool(aPropVariant.boolVal);
 	}
 	g_StdOut.SetLastError(0);
- /* 追加ここから */
+	/* 追加ここから */
 	//書庫のコードページを指定
-	if(g_iArcCodePage){
+	if(g_ArcCodePage){
 		CObjectVector<CProperty> properties;
 		CProperty prop;
 		wchar_t value[16];
 		prop.Name = L"cp";
-		ConvertUInt32ToString(g_iArcCodePage, value);
+		ConvertUInt32ToString(g_ArcCodePage, value);
 		prop.Value = value;
 		properties.Add(prop);
 		SetProperties(arc.Archive, properties);
 	}
- /* 追加ここまで */
+	/* 追加ここまで */
 	return TRUE;
 }
 

@@ -112,7 +112,17 @@ bool CItem::IsDir() const
     return true;
   if (!FromCentral)
     return false;
-  
+  /* ’Ç‰Á‚±‚±‚©‚ç */
+  AString a=Name, t;
+  UString u;
+  if (CentralExtra.GetInfoZipUnicodePath(a, t))
+    GetUnicodeString(t, u, true, CP_UTF8);
+  else
+    GetUnicodeString(a, u, false, GetCodePage());
+  UnicodeStringToMultiByte2(a, u, CP_OEMCP);
+  if (NItemName::HasTailSlash(a, GetCodePage()))
+    return true;
+  /* ’Ç‰Á‚±‚±‚Ü‚Å */
   UInt16 highAttrib = (UInt16)((ExternalAttrib >> 16 ) & 0xFFFF);
 
   Byte hostOS = GetHostOS();

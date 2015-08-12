@@ -12,7 +12,7 @@
 #include "Windows/FileDir.h"
 
 extern int g_CodePage;
-UINT32 g_iArcCodePage;	// ’Ç‰Á
+UINT32 g_ArcCodePage;	// ’Ç‰Á
 
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
@@ -932,8 +932,10 @@ int WINAPI SevenZipPasswordDialog(HWND _hwnd, LPSTR _szBuffer, DWORD _dwSize)
 BOOL WINAPI SevenZipSetUnicodeMode(BOOL _bUnicode)
 {
 	/* ’Ç‰Á‚±‚±‚©‚ç */
-	if(_bUnicode != TRUE && _bUnicode != FALSE)
-		g_iArcCodePage=_bUnicode;
+	if(_bUnicode > TRUE){
+		g_ArcCodePage = _bUnicode;
+		return _bUnicode;
+	}else
 	/* ’Ç‰Á‚±‚±‚Ü‚Å */
 	return g_StdOut.SetUnicodeMode(_bUnicode);
 }
