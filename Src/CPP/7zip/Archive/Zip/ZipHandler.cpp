@@ -248,7 +248,8 @@ STDMETHODIMP CHandler::GetProperty(UInt32 index, PROPID propID, PROPVARIANT *val
       UString res;
   /* ’Ç‰Á‚±‚±‚©‚ç */
       AString r;
-      if (item.CentralExtra.GetInfoZipUnicodePath(m_Items[index].Name, r))
+      if (!_forceCodePage &&
+		  item.CentralExtra.GetInfoZipUnicodePath(m_Items[index].Name, r))
         item.GetUnicodeString(r, res, true, CP_UTF8);
       else
   /* ’Ç‰Á‚±‚±‚Ü‚Å */
