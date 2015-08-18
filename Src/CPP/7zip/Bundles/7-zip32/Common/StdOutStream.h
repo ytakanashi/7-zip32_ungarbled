@@ -50,6 +50,7 @@ public:
 	int SetPriority(const int nPriority);
 	int GetLastError(LPDWORD lpdwSystemError);
 	int SetLastError(int nErrorCode);
+	void SetStdOutMode(BOOL bStdOut){ m_bStdOut = bStdOut; }	// ’Ç‰Á
 
 	CProgressDialog* GetProgressDialog() { return m_pDlgProgress; }
 	void CloseProgressDialog() { ::PostMessage(m_pDlgProgress->m_hWnd, WM_CLOSE, 0, 1); }
@@ -61,6 +62,7 @@ public:
 	void CreateMainThread() { UINT thrdaddr; m_hThread = (HANDLE)_beginthreadex(NULL, 0, Main, NULL, CREATE_SUSPENDED, &thrdaddr); }
 	int GetPriority() { return m_nPriority; }
 	void SetSfxPath(FString strSfxPath) { m_strSfxPath = strSfxPath; }
+	BOOL GetStdOutMode(BOOL* bStdOut){ return m_bStdOut; }	// ’Ç‰Á
 
 protected:
 	LPWSTR m_lpCommandLine;
@@ -73,6 +75,9 @@ protected:
 	HANDLE m_hThread;
 	DWORD m_dwSystemError;
 	int m_nLastError;
+	/* ’Ç‰Á‚±‚±‚©‚ç */
+	BOOL m_bStdOut;
+	/* ’Ç‰Á‚±‚±‚Ü‚Å */
 };
 
 CStdOutStream & endl(CStdOutStream & anOut);

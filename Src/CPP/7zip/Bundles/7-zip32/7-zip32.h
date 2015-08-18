@@ -1,7 +1,7 @@
 #if !defined(SEVENZIP_H)
 #define SEVENZIP_H
 
-#define SEVENZIP32_VERSION	15060001
+#define SEVENZIP32_VERSION	15060002
 
 #ifndef FNAME_MAX32
 #define FNAME_MAX32		512
@@ -139,6 +139,7 @@ extern "C" {
 	WORD  WINAPI SevenZipGetCursorInterval();
 	BOOL  WINAPI SevenZipSetCursorInterval(const WORD _Interval);
 	BOOL  WINAPI SevenZipGetRunning();
+	int   WINAPI SevenZipExtractMem(HWND _hwnd, LPCSTR _szCmdLine, LPBYTE _szBuffer, const DWORD _dwSize, time_t * _lpTime, LPWORD _lpwAttr, LPDWORD _lpdwWriteSize);	// 追加
 
 	/* 統合アーカイバ共通API */
 	BOOL  WINAPI SevenZipConfigDialog(const HWND _hwnd, LPSTR _szOptionBuffer, const int _iMode);

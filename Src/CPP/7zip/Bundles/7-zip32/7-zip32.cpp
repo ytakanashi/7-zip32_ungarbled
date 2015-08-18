@@ -11,6 +11,8 @@
 #include "Common/UTFConvert.h"
 #include "Windows/FileDir.h"
 
+#include <io.h>			// 追加
+
 extern int g_CodePage;
 UINT32 g_ArcCodePage;	// 追加
 
@@ -123,6 +125,34 @@ BOOL WINAPI SevenZipGetRunning()
 	g_StdOut.SetLastError(0);
 	return (g_StdOut.GetThread() != NULL);
 }
+
+/* 追加ここから */
+int WINAPI SevenZipExtractMem(HWND _hwnd, LPCSTR _szCmdLine, LPBYTE _szBuffer, const DWORD _dwSize, time_t * _lpTime, LPWORD _lpwAttr, LPDWORD _lpdwWriteSize){
+	HANDLE readPipe = NULL, writePipe=NULL, readTemp=NULL;
+	HANDLE savedStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	::CreatePipe(&readTemp, &writePipe, NULL, INFINITE);
+	::DuplicateHandle(::GetCurrentProcess(), readTemp, ::GetCurrentProcess(), &readPipe, 0, FALSE, DUPLICATE_SAME_ACCESS);
+	::CloseHandle(readTemp);
+	::SetStdHandle(STD_OUTPUT_HANDLE, writePipe);
+
+	int saved_stdout = dup(1);
+	int fd = ::_open_osfhandle((intptr_t)::GetStdHandle(STD_OUTPUT_HANDLE), 0);
+	::dup2(fd, 1);
+
+	g_StdOut.SetStdOutMode(TRUE);
+	SevenZip(_hwnd, _szCmdLine, NULL, 0);
+
+	DWORD availBytes = 0, readBytes = 0;
+	if (! (::PeekNamedPipe(readPipe, NULL, 0, NULL, &availBytes, NULL) && availBytes && ::ReadFile(readPipe, _szBuffer, _dwSize, &readBytes, NULL)))
+		return ERROR_CANNOT_READ;
+
+	::dup2(saved_stdout, 1);
+	::_close(fd);
+	::SetStdHandle(STD_OUTPUT_HANDLE, savedStdOut);
+	return 0;
+}
+/* 追加ここまで */
 
 // バージョン情報を表示
 BOOL WINAPI SevenZipConfigDialog(const HWND _hwnd, LPSTR _szOptionBuffer, const int _iMode)

@@ -26,6 +26,9 @@ CStdOutStream ::CStdOutStream ()
 	m_nPriority = THREAD_PRIORITY_NORMAL;
 	m_dwSystemError = 0;
 	m_nLastError = 0;
+	/* ’Ç‰Á‚±‚±‚©‚ç */
+	m_bStdOut = FALSE;
+	/* ’Ç‰Á‚±‚±‚Ü‚Å */
 	ReSet();
 }
 
@@ -237,6 +240,10 @@ void CStdOutStream::SetCommandLine(const CSplitCmdLine& scl)
 		else
 			strCmdLine += L" -sccWIN";
 	}
+	/* ’Ç‰Á‚±‚±‚©‚ç */
+	if (m_bStdOut)
+		strCmdLine += L" -so";
+	/* ’Ç‰Á‚±‚±‚Ü‚Å */
 	for (int i = 1; i < scl.m_argc; ++i)
 	{
 		strCmdLine += L" \"";
