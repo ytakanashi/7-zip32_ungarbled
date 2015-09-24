@@ -405,9 +405,6 @@
     <ClInclude Include="..\..\Compress\Lzx.h">
       <Filter>Compress\LZX</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Compress\Lzx86Converter.h">
-      <Filter>Compress\LZX</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Compress\LzxDecoder.h">
       <Filter>Compress\LZX</Filter>
     </ClInclude>
@@ -780,7 +777,9 @@
     <ClInclude Include="ConsoleClose.h">
       <Filter>Spec</Filter>
     </ClInclude>
-    <ClInclude Include="HashCon.h" />
+    <ClInclude Include="HashCon.h">
+      <Filter>Console</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="7-zip32.cpp">
@@ -1052,9 +1051,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Compress\ZDecoder.cpp">
       <Filter>Compress\Z</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Compress\Lzx86Converter.cpp">
-      <Filter>Compress\LZX</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Compress\LzxDecoder.cpp">
       <Filter>Compress\LZX</Filter>
@@ -1454,7 +1450,7 @@
     <None Include="7-zip32.def">
       <Filter>Spec</Filter>
     </None>
-    <None Include="SFX\ReleaseD\7zSDJC.sfx" />
+    <None Include="SFX\Release\SFX.exe" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">

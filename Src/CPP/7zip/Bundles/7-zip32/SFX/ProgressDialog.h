@@ -136,7 +136,7 @@ public:
   INT_PTR Create(const UString &title, NWindows::CThread &thread, HWND wndParent = 0)
   {
     _title = title;
-    INT_PTR res = CModalDialog::Create(IDD_PROGRESS, wndParent);
+    INT_PTR res = CModalDialog::Create(IDD_DIALOG_PROGRESS, wndParent);	// ïœçX
     thread.Wait();
     return res;
   }

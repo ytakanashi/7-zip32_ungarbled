@@ -1026,7 +1026,7 @@ BOOL CConfigDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 LPVOID CSfxDialog::LoadSfxResource(UInt32& size)
 {
 	size = 0;
-	HRSRC hResInfo = ::FindResource(g_hInstance, MAKEINTRESOURCE(IDR_7ZSDJC), "SFX");
+	HRSRC hResInfo = ::FindResource(g_hInstance, MAKEINTRESOURCE(IDR_SFX), "SFX");	// ïœçX
 	if (!hResInfo)
 		return NULL;
 	HGLOBAL hResData = ::LoadResource(g_hInstance, hResInfo);

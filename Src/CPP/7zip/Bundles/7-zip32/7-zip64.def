@@ -42,6 +42,7 @@ EXPORTS
 		SevenZipGetCRC					@46
 		SevenZipGetAttribute			@47
 		SevenZipGetOSType				@48
+		SevenZipExtractMem				@49
 
 		SevenZipGetMethod				@61
 		SevenZipGetWriteTime			@62

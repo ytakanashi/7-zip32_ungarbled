@@ -9,6 +9,7 @@
 #include "../../../UI/Common/OpenArchive.h"		// パス変更
 
 #include "../../../UI/FileManager/FormatUtils.h"	// パス変更
+#include "../../../UI/FileManager/LangUtils.h"	// パス変更
 
 #include "ExtractCallbackSfx.h"
 #include "../../SFXSetup/ExtractEngine.h"	// パス変更

@@ -217,10 +217,9 @@ void CArchiveExtractCallback::Init(
   // _progressTotal = 0;
   // _progressTotal_Defined = false;
   
-  _progressTotal = _packTotal;
-  _progressTotal_Defined = true;
-
   _packTotal = packSize;
+  _progressTotal = packSize;
+  _progressTotal_Defined = true;
 
   _extractCallback2 = extractCallback2;
   _compressProgress.Release();
@@ -968,7 +967,12 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
     bool isAnti = false;
     RINOK(_arc->IsItemAnti(index, isAnti));
 
-    Correct_FsPath(_pathMode == NExtract::NPathMode::kAbsPaths, pathParts, _item.MainIsDir);
+    #ifdef SUPPORT_ALT_STREAMS
+    if (!_item.IsAltStream
+        || !pathParts.IsEmpty()
+        || !(_removePartsForAltStreams || _pathMode == NExtract::NPathMode::kNoPathsAlt))
+    #endif
+      Correct_FsPath(_pathMode == NExtract::NPathMode::kAbsPaths, pathParts, _item.MainIsDir);
 
     #ifdef SUPPORT_ALT_STREAMS
     
@@ -976,12 +980,18 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
     {
       UString s = _item.AltStreamName;
       Correct_AltStream_Name(s);
-      bool needColon = ((!_removePartsForAltStreams && _pathMode != NExtract::NPathMode::kNoPathsAlt) || !pathParts.IsEmpty());
+      bool needColon = true;
+
       if (pathParts.IsEmpty())
+      {
         pathParts.AddNew();
-      if (_pathMode == NExtract::NPathMode::kAbsPaths &&
+        if (_removePartsForAltStreams || _pathMode == NExtract::NPathMode::kNoPathsAlt)
+          needColon = false;
+      }
+      else if (_pathMode == NExtract::NPathMode::kAbsPaths &&
           NWildcard::GetNumPrefixParts_if_DrivePath(pathParts) == pathParts.Size())
         pathParts.AddNew();
+
       UString &name = pathParts.Back();
       if (needColon)
         name += (wchar_t)(_ntOptions.ReplaceColonForAltStream ? L'_' : L':');

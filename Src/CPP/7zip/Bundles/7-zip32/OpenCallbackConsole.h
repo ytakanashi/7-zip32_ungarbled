@@ -28,7 +28,7 @@ protected:
 
 public:
 
-  bool MutiArcMode;
+  bool MultiArcMode;
 
   void ClosePercents()
   {
@@ -41,7 +41,7 @@ public:
   COpenCallbackConsole():
       _totalFilesDefined(false),
       _totalBytesDefined(false),
-      MutiArcMode(false)
+      MultiArcMode(false)
       
       #ifndef _NO_CRYPTO
       , PasswordIsDefined(false)

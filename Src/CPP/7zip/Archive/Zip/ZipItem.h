@@ -336,9 +336,9 @@ public:
         }
       } else res.Empty();
 
-    if (res.IsEmpty())
+    if (useSpecifiedCodePage || res.IsEmpty())
     {
-      Int32 codepage = useSpecifiedCodePage ? codePage : 50001;
+      Int32 codepage = codePage;
       UINT srcLen = s.Len();
       char* srcChar = const_cast<char*>(s.Ptr());
       CoInitialize(NULL);
@@ -363,10 +363,11 @@ public:
       if (lang)
         lang->Release();
       CoUninitialize();
-      if(FAILED(hr))
+      if (SUCCEEDED(hr))
+          return;
+    }
     /* ’Ç‰Á‚±‚±‚Ü‚Å */
     MultiByteToUnicodeString2(res, s, useSpecifiedCodePage ? codePage : GetCodePage());
-    }	// ’Ç‰Á
   }
 
   bool IsThereCrc() const
