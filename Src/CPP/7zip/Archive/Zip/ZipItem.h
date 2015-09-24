@@ -336,7 +336,7 @@ public:
         }
       } else res.Empty();
 
-    if (useSpecifiedCodePage || res.IsEmpty())
+    if (useSpecifiedCodePage && res.IsEmpty())
     {
       Int32 codepage = codePage;
       UINT srcLen = s.Len();
