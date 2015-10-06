@@ -365,7 +365,7 @@ public:
       CoUninitialize();
       if (SUCCEEDED(hr))
           return;
-    }
+    }else if (res.IsEmpty())
     /* ’Ç‰Á‚±‚±‚Ü‚Å */
     MultiByteToUnicodeString2(res, s, useSpecifiedCodePage ? codePage : GetCodePage());
   }

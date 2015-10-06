@@ -30,7 +30,7 @@ BOOL HandlerRoutine()									// ’Ç‰Á
     return TRUE;
   return FALSE;
   /*
-  switch(ctrlType)
+  switch (ctrlType)
   {
     case CTRL_C_EVENT:
     case CTRL_BREAK_EVENT:
@@ -54,7 +54,7 @@ void CheckCtrlBreak()
 CCtrlHandlerSetter::CCtrlHandlerSetter()
 {
   #if !defined(UNDER_CE) && defined(_WIN32)
-//  if(!SetConsoleCtrlHandler(HandlerRoutine, TRUE))	// íœ
+//  if (!SetConsoleCtrlHandler(HandlerRoutine, TRUE))	// íœ
 //    throw "SetConsoleCtrlHandler fails";				// íœ
   #endif
 }
@@ -62,7 +62,7 @@ CCtrlHandlerSetter::CCtrlHandlerSetter()
 CCtrlHandlerSetter::~CCtrlHandlerSetter()
 {
   #if !defined(UNDER_CE) && defined(_WIN32)
-//  if(!SetConsoleCtrlHandler(HandlerRoutine, FALSE))	// íœ
+//  if (!SetConsoleCtrlHandler(HandlerRoutine, FALSE))	// íœ
 //    throw "SetConsoleCtrlHandler fails";				// íœ
 	g_BreakCounter = 0;									// ’Ç‰Á
   #endif

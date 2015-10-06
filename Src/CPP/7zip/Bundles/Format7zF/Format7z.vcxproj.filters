@@ -359,9 +359,6 @@
     <ClCompile Include="..\..\Compress\PpmdRegister.cpp">
       <Filter>Compress\7z Compress</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Compress\Lzx86Converter.cpp">
-      <Filter>Compress\Cab Compress</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Compress\LzxDecoder.cpp">
       <Filter>Compress\Cab Compress</Filter>
     </ClCompile>
@@ -902,6 +899,16 @@
     <ClCompile Include="..\..\Crypto\HmacSha256.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Compress\LzmsDecoder.cpp" />
+    <ClCompile Include="..\..\Compress\XpressDecoder.cpp" />
+    <ClCompile Include="..\..\Archive\GptHandler.cpp" />
+    <ClCompile Include="..\..\Archive\HandlerCont.cpp" />
+    <ClCompile Include="..\..\Archive\QcowHandler.cpp" />
+    <ClCompile Include="..\..\Archive\VdiHandler.cpp" />
+    <ClCompile Include="..\..\Archive\VmdkHandler.cpp" />
+    <ClCompile Include="..\..\Archive\ExtHandler.cpp">
+      <Filter>Archive</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
@@ -1081,9 +1088,6 @@
       <Filter>Compress\7z Compress</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Compress\Lzx.h">
-      <Filter>Compress\Cab Compress</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Compress\Lzx86Converter.h">
       <Filter>Compress\Cab Compress</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Compress\LzxDecoder.h">
@@ -1537,6 +1541,12 @@
       <Filter>Archive\Rar</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\Defs.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Compress\LzmsDecoder.h" />
+    <ClInclude Include="..\..\Compress\XpressDecoder.h" />
+    <ClInclude Include="..\..\Archive\HandlerCont.h" />
+    <ClInclude Include="..\..\..\Common\MyLinux.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
