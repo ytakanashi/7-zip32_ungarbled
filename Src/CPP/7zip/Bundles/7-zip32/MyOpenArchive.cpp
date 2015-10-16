@@ -27,6 +27,79 @@ extern CStdOutStream *g_ErrStream;	// 追加
 
 extern UINT32 g_ArcCodePage;		// 追加
 
+/* 追加ここから */
+#ifndef _7ZIP_ST
+#include "../../../Windows/Synchronization.h"
+#endif
+
+using namespace NWindows;
+
+CCodecs *g_CodecsObj;
+
+#ifdef EXTERNAL_CODECS
+  CExternalCodecs g_ExternalCodecs;
+  CCodecs::CReleaser g_CodecsReleaser;
+#else
+  CMyComPtr<IUnknown> g_CodecsRef;
+#endif
+
+#ifndef _7ZIP_ST
+static NSynchronization::CCriticalSection g_CriticalSection;
+#define MT_LOCK NSynchronization::CCriticalSectionLock lock(g_CriticalSection);
+#else
+#define MT_LOCK
+#endif
+
+void FreeGlobalCodecs()
+{
+  MT_LOCK
+
+  #ifdef EXTERNAL_CODECS
+  if (g_CodecsObj)
+  {
+    g_CodecsObj->CloseLibs();
+  }
+  g_CodecsReleaser.Set(NULL);
+  g_CodecsObj = NULL;
+  g_ExternalCodecs.ClearAndRelease();
+  #else
+  g_CodecsRef.Release();
+  #endif
+}
+
+HRESULT LoadGlobalCodecs()
+{
+  MT_LOCK
+
+  if (g_CodecsObj)
+    return S_OK;
+
+  g_CodecsObj = new CCodecs;
+
+  #ifdef EXTERNAL_CODECS
+  g_ExternalCodecs.GetCodecs = g_CodecsObj;
+  g_ExternalCodecs.GetHashers = g_CodecsObj;
+  g_CodecsReleaser.Set(g_CodecsObj);
+  #else
+  g_CodecsRef.Release();
+  g_CodecsRef = g_CodecsObj;
+  #endif
+
+  RINOK(g_CodecsObj->Load());
+  if (g_CodecsObj->Formats.IsEmpty())
+  {
+    FreeGlobalCodecs();
+    return E_NOTIMPL;
+  }
+
+  #ifdef EXTERNAL_CODECS
+  RINOK(g_ExternalCodecs.Load());
+  #endif
+
+  return S_OK;
+}
+/* 追加ここまで */
+
 //////////////////////////////////////////////////////////////////////
 // 構築/消滅
 //////////////////////////////////////////////////////////////////////
@@ -61,6 +134,7 @@ COpenArchive::~COpenArchive()
 // 消し忘れのオブジェクトを削除
 void COpenArchive::RemoveAll()
 {
+	FreeGlobalCodecs();		// 追加
 	while (pOATail)
 		delete pOATail;
 }
@@ -83,6 +157,7 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 	HRESULT result;
 	try
 	{
+		/* 削除ここから
 		CCodecs *codecs = new CCodecs;
 		CMyComPtr<
 			#ifdef EXTERNAL_CODECS
@@ -91,7 +166,9 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 			IUnknown
 			#endif
 			> compressCodecsInfo = codecs;
-		RINOK(codecs->Load());
+		削除ここまで */
+
+		RINOK(LoadGlobalCodecs());		// 追加
 
 		CObjectVector<COpenType> types;
 		CIntVector excludedFormats;		// 変更
@@ -125,13 +202,13 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 				parser.Parse2(options);
 
 				/* 追加ここから */
-				if (!ParseOpenTypes(*codecs, options.ArcType, types))
+				if (!ParseOpenTypes(*g_CodecsObj, options.ArcType, types))
 					return ERROR_NOT_ARC_FILE;
 
 				FOR_VECTOR (k, options.ExcludedArcTypes)
 				{
 					CIntVector tempIndices;
-					if (!codecs->FindFormatForArchiveType(options.ExcludedArcTypes[k], tempIndices)
+					if (!g_CodecsObj->FindFormatForArchiveType(options.ExcludedArcTypes[k], tempIndices)
 						|| tempIndices.Size() != 1)
 						return ERROR_NOT_ARC_FILE;
 					excludedFormats.AddToUniqueSorted(tempIndices[0]);
@@ -162,14 +239,15 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 				if (!options.HashMethods.IsEmpty())
 				{
 					hashCalc = &hb;
-					RINOK(hb.SetMethods(EXTERNAL_CODECS_VARS options.HashMethods));
+					RINOK(hb.SetMethods(EXTERNAL_CODECS_VARS_G options.HashMethods));
 					hb.Init();
 				}
+
 				UStringVector ArchivePathsSorted;
 				UStringVector ArchivePathsFullSorted;
 				/* 追加ここまで */
 				result = Extract(		// 変更
-					codecs,
+					g_CodecsObj,		// 変更
 					types,				// 追加
 					excludedFormats,	// 変更
 					ArchivePathsSorted, // 変更
@@ -186,7 +264,7 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 			{
 				COpenOptions options;
 				options.props = NULL;
-				options.codecs = codecs;
+				options.codecs = g_CodecsObj;	// 変更
 				options.types = &types;
 				options.excludedFormats = &excludedFormats;
 				options.stdInMode = false;
@@ -211,10 +289,112 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 		}
 
         const CArc &arc = m_archiveLink.Arcs.Back();
-		if (codecs->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"7z"))	// 変更	// arc.FormatIndexがnArchiveTypeに対応するかも。しかし将来の互換性で問題出るか？
+		if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"7z"))	// 変更	// arc.FormatIndexがnArchiveTypeに対応するかも。しかし将来の互換性で問題出るか？
 			m_nArchiveType = ARCHIVETYPE_7Z;
-		else if (codecs->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Zip"))	// 変更
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Zip"))	// 変更
 			m_nArchiveType = ARCHIVETYPE_ZIP;
+		/* 追加ここから */
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"APM"))
+			m_nArchiveType = ARCHIVETYPE_APM;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Ar"))
+			m_nArchiveType = ARCHIVETYPE_AR;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Arj"))
+			m_nArchiveType = ARCHIVETYPE_ARJ;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"bzip2"))
+			m_nArchiveType = ARCHIVETYPE_BZIP2;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Compound"))
+			m_nArchiveType = ARCHIVETYPE_COMPOUND;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Cpio"))
+			m_nArchiveType = ARCHIVETYPE_CPIO;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"CramFS"))
+			m_nArchiveType = ARCHIVETYPE_CRAMFS;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Dmg"))
+			m_nArchiveType = ARCHIVETYPE_DMG;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"ELF"))
+			m_nArchiveType = ARCHIVETYPE_ELF;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Ext"))
+			m_nArchiveType = ARCHIVETYPE_EXT;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"FAT"))
+			m_nArchiveType = ARCHIVETYPE_FAT;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"FLV"))
+			m_nArchiveType = ARCHIVETYPE_FLV;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"gzip"))
+			m_nArchiveType = ARCHIVETYPE_GZIP;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"GPT"))
+			m_nArchiveType = ARCHIVETYPE_GPT;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"HFS"))
+			m_nArchiveType = ARCHIVETYPE_HFS;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Lzh"))
+			m_nArchiveType = ARCHIVETYPE_LZH;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"lzma"))
+			m_nArchiveType = ARCHIVETYPE_LZMA;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"lzma86"))
+			m_nArchiveType = ARCHIVETYPE_LZMA86;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"MachO"))
+			m_nArchiveType = ARCHIVETYPE_MACHO;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"MBR"))
+			m_nArchiveType = ARCHIVETYPE_MBR;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"MsLZ"))
+			m_nArchiveType = ARCHIVETYPE_MSLZ;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"MuB"))
+			m_nArchiveType = ARCHIVETYPE_MUB;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"NTFS"))
+			m_nArchiveType = ARCHIVETYPE_NTFS;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"PE"))
+			m_nArchiveType = ARCHIVETYPE_PE;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"TE"))
+			m_nArchiveType = ARCHIVETYPE_TE;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Ppmd"))
+			m_nArchiveType = ARCHIVETYPE_PPMD;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"QCOW"))
+			m_nArchiveType = ARCHIVETYPE_QCOW;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Rpm"))
+			m_nArchiveType = ARCHIVETYPE_RPM;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Split"))
+			m_nArchiveType = ARCHIVETYPE_SPLIT;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"SquashFS"))
+			m_nArchiveType = ARCHIVETYPE_SQUASHFS;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"SWFc"))
+			m_nArchiveType = ARCHIVETYPE_SWFC;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"SWF"))
+			m_nArchiveType = ARCHIVETYPE_SWF;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"UEFIc"))
+			m_nArchiveType = ARCHIVETYPE_UEFIC;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"UEFIf"))
+			m_nArchiveType = ARCHIVETYPE_UEFIF;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"VDI"))
+			m_nArchiveType = ARCHIVETYPE_VDI;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"VHD"))
+			m_nArchiveType = ARCHIVETYPE_VHD;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"VMDK"))
+			m_nArchiveType = ARCHIVETYPE_VMDK;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Xar"))
+			m_nArchiveType = ARCHIVETYPE_XAR;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"xz"))
+			m_nArchiveType = ARCHIVETYPE_XZ;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Z"))
+			m_nArchiveType = ARCHIVETYPE_Z;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Cab"))
+			m_nArchiveType = ARCHIVETYPE_CAB;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Chm"))
+			m_nArchiveType = ARCHIVETYPE_CHM;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Hxs"))
+			m_nArchiveType = ARCHIVETYPE_HXS;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Iso"))
+			m_nArchiveType = ARCHIVETYPE_ISO;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Nsis"))
+			m_nArchiveType = ARCHIVETYPE_NSIS;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Rar"))
+			m_nArchiveType = ARCHIVETYPE_RAR;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Rar5"))
+			m_nArchiveType = ARCHIVETYPE_RAR5;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"tar"))
+			m_nArchiveType = ARCHIVETYPE_TAR;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Udf"))
+			m_nArchiveType = ARCHIVETYPE_UDF;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"wim"))
+			m_nArchiveType = ARCHIVETYPE_WIM;
+		/* 追加ここまで */
 		else
 			m_nArchiveType = 0;
 	}

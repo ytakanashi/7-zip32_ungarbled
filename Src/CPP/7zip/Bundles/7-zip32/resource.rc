@@ -220,8 +220,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 15,08,0,1
- PRODUCTVERSION 15,08,0,1
+ FILEVERSION 15,08,0,2
+ PRODUCTVERSION 15,08,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -238,12 +238,20 @@ BEGIN
         BEGIN
 #ifdef _WIN64
             VALUE "Comments", "Common Archiver Project's 7-ZIP64.DLL using Igor Pavlov's 7-Zip\0"
+#ifndef EXTERNAL_CODECS		// ’Ç‰Á
             VALUE "FileDescription", "7-zip64\0"
+#else				// ’Ç‰Á
+            VALUE "FileDescription", "7-zip64 using 7z.dll\0"
+#endif	// EXTERNAL_CODECS	// ’Ç‰Á
 #else
             VALUE "Comments", "Common Archiver Project's 7-ZIP32.DLL using Igor Pavlov's 7-Zip\0"
+#ifndef EXTERNAL_CODECS		// ’Ç‰Á
             VALUE "FileDescription", "7-zip32\0"
+#else				// ’Ç‰Á
+            VALUE "FileDescription", "7-zip32 using 7z.dll\0"
+#endif	// EXTERNAL_CODECS	// ’Ç‰Á
 #endif
-            VALUE "FileVersion", "15, 08, 0, 1\0"
+            VALUE "FileVersion", "15, 08, 0, 2\0"
             VALUE "InternalName", "SevenZip\0"
             VALUE "LegalCopyright", "Copyright (C) 2002-2014 by H“c –«, ŽsŠÛ „\0"
 #ifdef _WIN64
@@ -253,7 +261,7 @@ BEGIN
             VALUE "OriginalFilename", "7-zip32.dll\0"
             VALUE "ProductName", "7-zip32\0"
 #endif
-            VALUE "ProductVersion", "15, 08, 0, 1\0"
+            VALUE "ProductVersion", "15, 08, 0, 2\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -270,8 +278,9 @@ END
 // SFX
 //
 
-IDR_SFX                 SFX     DISCARDABLE     "SFX\\Release\\SFX.exe"	// ’Ç‰Á
-IDR_7ZSDJC              SFX     DISCARDABLE     "SFX\\ReleaseD\\7zSDJC.sfx"
+#ifndef EXTERNAL_CODECS	// ’Ç‰Á
+IDR_SFX                 SFX     DISCARDABLE     "SFX\\Release\\SFX.exe"	// •ÏX
+#endif	// !EXTERNAL_CODECS ’Ç‰Á
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -485,8 +494,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 15,08,0,1
- PRODUCTVERSION 15,08,0,1
+ FILEVERSION 15,08,0,2
+ PRODUCTVERSION 15,08,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -503,12 +512,20 @@ BEGIN
         BEGIN
 #ifdef _WIN64
             VALUE "Comments", "Common Archiver Project's 7-ZIP64.DLL using Igor Pavlov's 7-Zip\0"
+#ifndef EXTERNAL_CODECS		// ’Ç‰Á
             VALUE "FileDescription", "7-zip64\0"
+#else				// ’Ç‰Á
+            VALUE "FileDescription", "7-zip64 using 7z.dll\0"
+#endif	// EXTERNAL_CODECS	// ’Ç‰Á
 #else
             VALUE "Comments", "Common Archiver Project's 7-ZIP32.DLL using Igor Pavlov's 7-Zip\0"
+#ifndef EXTERNAL_CODECS		// ’Ç‰Á
             VALUE "FileDescription", "7-zip32\0"
+#else				// ’Ç‰Á
+            VALUE "FileDescription", "7-zip32 using 7z.dll\0"
+#endif	// EXTERNAL_CODECS	// ’Ç‰Á
 #endif
-            VALUE "FileVersion", "15, 08, 0, 1\0"
+            VALUE "FileVersion", "15, 08, 0, 2\0"
             VALUE "InternalName", "SevenZip\0"
             VALUE "LegalCopyright", "Copyright (C) 2002-2014 by Minoru Akita, Takeshi Ichimaru\0"
 #ifdef _WIN64
@@ -518,7 +535,7 @@ BEGIN
             VALUE "OriginalFilename", "7-zip32.dll\0"
             VALUE "ProductName", "7-zip32\0"
 #endif
-            VALUE "ProductVersion", "15, 08, 0, 1\0"
+            VALUE "ProductVersion", "15, 08, 0, 2\0"
         END
     END
     BLOCK "VarFileInfo"

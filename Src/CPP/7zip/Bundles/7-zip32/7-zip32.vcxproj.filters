@@ -91,6 +91,9 @@
     <Filter Include="Archive\tar">
       <UniqueIdentifier>{2e73c8d0-f000-484e-a3dc-99fc2fbdaf7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Asm">
+      <UniqueIdentifier>{ce98ec6a-8e43-4662-b5b0-aa5f2dd3b121}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\UI\Console\List.h">
@@ -780,6 +783,48 @@
     <ClInclude Include="HashCon.h">
       <Filter>Console</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Windows\FileMapping.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UI\Common\DirItem.h">
+      <Filter>UI Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UI\Common\IFileExtractCallback.h">
+      <Filter>UI Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UI\Common\Property.h">
+      <Filter>UI Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UI\Common\ZipRegistry.h">
+      <Filter>UI Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Windows\NtCheck.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Windows\Registry.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IDecl.h">
+      <Filter>7-zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UI\Common\ExitCode.h">
+      <Filter>UI Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UI\Common\ExtractMode.h">
+      <Filter>UI Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Common.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\MyBuffer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\MyTypes.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\C\7zTypes.h">
+      <Filter>C</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="7-zip32.cpp">
@@ -876,9 +921,6 @@
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Windows\PropVariant.cpp">
-      <Filter>Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Windows\Synchronization.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Windows\System.cpp">
@@ -1445,6 +1487,9 @@
     <ClCompile Include="HashCon.cpp">
       <Filter>Spec</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Windows\Registry.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="7-zip32.def">
@@ -1456,5 +1501,13 @@
     <ResourceCompile Include="resource.rc">
       <Filter>Spec</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\..\Asm\x86\7zAsm.asm">
+      <Filter>Asm</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\..\Asm\x86\7zCrcOpt.asm">
+      <Filter>Asm</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

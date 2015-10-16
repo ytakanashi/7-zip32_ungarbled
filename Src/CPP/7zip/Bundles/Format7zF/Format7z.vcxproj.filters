@@ -899,15 +899,29 @@
     <ClCompile Include="..\..\Crypto\HmacSha256.cpp">
       <Filter>Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Compress\LzmsDecoder.cpp" />
-    <ClCompile Include="..\..\Compress\XpressDecoder.cpp" />
-    <ClCompile Include="..\..\Archive\GptHandler.cpp" />
-    <ClCompile Include="..\..\Archive\HandlerCont.cpp" />
-    <ClCompile Include="..\..\Archive\QcowHandler.cpp" />
-    <ClCompile Include="..\..\Archive\VdiHandler.cpp" />
-    <ClCompile Include="..\..\Archive\VmdkHandler.cpp" />
     <ClCompile Include="..\..\Archive\ExtHandler.cpp">
       <Filter>Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\GptHandler.cpp">
+      <Filter>Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\HandlerCont.cpp">
+      <Filter>Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\VmdkHandler.cpp">
+      <Filter>Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\VdiHandler.cpp">
+      <Filter>Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\QcowHandler.cpp">
+      <Filter>Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Compress\LzmsDecoder.cpp">
+      <Filter>Compress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Compress\XpressDecoder.cpp">
+      <Filter>Compress</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1543,11 +1557,17 @@
     <ClInclude Include="..\..\..\Common\Defs.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Compress\LzmsDecoder.h" />
-    <ClInclude Include="..\..\Compress\XpressDecoder.h" />
-    <ClInclude Include="..\..\Archive\HandlerCont.h" />
     <ClInclude Include="..\..\..\Common\MyLinux.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Archive\HandlerCont.h">
+      <Filter>Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Compress\LzmsDecoder.h">
+      <Filter>Compress</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Compress\XpressDecoder.h">
+      <Filter>Compress</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
