@@ -1,6 +1,6 @@
 ﻿_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 【 ソフト名 】　7-zip32.dll/7-zip64.dll/7z.dll文字化け対策版
-【バージョン】　15.08.00.02 beta
+【バージョン】　15.09.00.01 beta
 【 製作者名 】　x@rgs
 【 動作環境 】　Windows XP以降
 【 製作言語 】　C++
@@ -18,7 +18,7 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
  またMLangによる文字コード変換機能を追加したものです。
  RarやCab書庫等々も処理できる7z.dll対応版「7-zip32.dll」「7-zip64.dll」も同梱しています。
 
- このバージョンは7-Zip 15.08 betaと7-zip32.dll Ver.9.22.00.01をベースにしています。
+ このバージョンは7-Zip 15.09 betaと7-zip32.dll Ver.9.22.00.01をベースにしています。
  辛うじてビルド出来るように修正したのみで、何が起こるかわかりません。
  不安な方は、オリジナルの7-zip32.dll/7-zip64.dllが公開されるまでお待ちくださいませ。
 
@@ -43,7 +43,7 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 ●インストール
  0.インストーラー版は以下1,2の作業は不要です。
- 1.「7z1508002b_ungarbled.zip」を適当なディレクトリに解凍して下さい。
+ 1.「7z1509001b_ungarbled.zip」を適当なディレクトリに解凍して下さい。
  2.「7-zip32.dll」「7-zip64.dll」をシステムディレクトリにコピーして下さい。
    「7z.dll」は7-Zipをインストールしたディレクトリ(例: C:\Program Files\7-Zip )にコピーして下さい。
  3.7z.dll対応版「7-zip32.dll」「7-zip64.dll」の動作には7-Zipのインストールが必要です。
@@ -64,19 +64,19 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 
 ●ビルド方法(開発者向け)
- ・7-Zipは15.08 beta、7-zip32.dllはVer.9.22.00.01、
+ ・7-Zipは15.09 beta、7-zip32.dllはVer.9.22.00.01、
    コンパイラはMicrosoft Visual C++ 2015を想定しています。
- 1.「7z1508-src.7z」( http://sourceforge.net/projects/sevenzip/files/ )をダウンロード、
-   「7z1508」ディレクトリを作成し、その中に解凍します。
+ 1.「7z1509-src.7z」( http://sourceforge.net/projects/sevenzip/files/ )をダウンロード、
+   「7z1509」ディレクトリを作成し、その中に解凍します。
  2.「7-zip32.dll」「7-zip64.dll」をビルドする場合、
-    1.「7z1508/CPP/7zip/Bundles」に「7-zip32」ディレクトリを作成します。
+    1.「7z1509/CPP/7zip/Bundles」に「7-zip32」ディレクトリを作成します。
     2.「7z922001.zip」( http://akky.xrea.jp/ )をダウンロード、解凍します。
     3.「src.7z」を解凍し、作成した「7-zip32」ディレクトリにファイルをコピーします。
- 3.本ライブラリの「Src.7z」を解凍し、ファイルを「7z1508」に上書きします。
+ 3.本ライブラリの「Src.7z」を解凍し、ファイルを「7z1509」に上書きします。
  4.「7-zip32.dll」「7-zip64.dll」は
-     「7z1508/CPP/7zip/Bundles/7-zip32/7-zip32.sln」
+     「7z1509/CPP/7zip/Bundles/7-zip32/7-zip32.sln」
    「7z.dll」は
-     「7z1508/CPP/7zip/Bundles/Format7zF/Format7z.sln」
+     「7z1509/CPP/7zip/Bundles/Format7zF/Format7z.sln」
    を開きます。
  5.「ビルド」->「ソリューションのビルド」でビルドを開始します。
 
@@ -86,19 +86,20 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
  ・MLangによる文字コード変換を行うには「-mcp」でコードページを指定します。
    例: -mcp=51932
        (EUC-JPを指定)
- ・SevenZip()以外、SevenZipFindFirst()等々も使用する場合、SevenZipSetUnicodeMode()でコードページを渡して下さい。
-   例: SevenZipSetUnicodeMode(51932)
+ ・SevenZip()以外、SevenZipFindFirst()等々も使用する場合、SevenZipSetCP()でコードページを渡して下さい。
+   例: SevenZipSetCP(51932)
 
 
 
 ●7z.dll対応版の「7-zip32.dll」「7-zip64.dll」仕様
  ・動作には7-Zipのインストールが必要です。
- ・本家7-Zipで対応している形式すべてを扱える...はずです。(以下公式日本語サイトより引用)
+ ・本家7-Zipで対応している形式すべてを扱える...はずです。(以下公式日本語サイト( https://sevenzip.osdn.jp/ )より引用)
       圧縮/解凍(展開): 7z, XZ, BZIP2, GZIP, TAR, ZIP, WIM
       解凍(展開)のみ: AR, ARJ, CAB, CHM, CPIO, CramFS, DMG, EXT, FAT, GPT, HFS, IHEX, ISO, LZH, LZMA, MBR, MSI, NSIS, NTFS, QCOW2, RAR, RPM, SquashFS, UDF, UEFI, VDI, VHD, VMDK, WIM, XAR, Z
  ・7-zip32.dllオリジナルのSFXモジュールは使用できません。デフォルトでは「7zCon.sfx」を使用します。
  ・INDIVIDUALINFO構造体のszModeに圧縮形式は格納されません。(オリジナルで対応しているZipと7zは除く)
  ・SevenZipGetArchiveType()で返される形式は将来変更される可能性があります。(勝手に追加したため)
+ ・SevenZipExists7zdll()を実装しています。書庫処理前に呼び出し、「7z.dll」が存在するか確認してください。
 
 
 
@@ -165,6 +166,11 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 
 ●開発履歴
+ ○Ver.15.09.00.01 beta - 2015/10/21
+ ・7-Zip 15.09 betaをベースにビルド。
+ ・SevenZipSetCP(),SevenZipGetCP()を追加し、SevenZipSetUnicodeMode()でのコードページ指定を廃止。
+ ・7z.dll対応版「7-zip32.dll」「7-zip64.dll」について、SevenZipExists7zdll()を追加し、通常版と7z.dll対応版の判別、及び7z.dllの存在を確認出来るように。
+
  ○Ver.15.08.00.02 beta - 2015/10/15
  ・余計なSFXモジュールを誤って内蔵していたのを修正。
  ・7z.dll対応版「7-zip32.dll」「7-zip64.dll」追加。

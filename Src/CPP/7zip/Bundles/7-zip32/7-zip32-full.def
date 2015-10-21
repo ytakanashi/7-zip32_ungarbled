@@ -10,7 +10,7 @@ EXPORTS
 		SevenZipSetBackGroundMode		@6
 		SevenZipGetCursorInterval		@7
 		SevenZipSetCursorInterval		@8
-
+		SevenZipExists7zdll				@9	; ’Ç‰Á
 		SevenZipGetRunning				@10
 		SevenZipConfigDialog			@11
 		SevenZipCheckArchive			@12

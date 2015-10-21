@@ -86,7 +86,7 @@ CAPTION "7-zip32.dll ÉoÅ[ÉWÉáÉìèÓïÒ"
 FONT 9, "ÇlÇr ÇoÉSÉVÉbÉN"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,145,25,25,14
-    LTEXT           "",IDS_VERSION,25,15,99,8
+    LTEXT           "",IDS_VERSION,25,15,120,8
     LTEXT           "Copyright (C) 2002-2014 èHìc ñ´, ésä€ çÑ",IDC_STATIC,25,35,99,8
 #ifdef _WIN64
     LTEXT           "7-zip64.dll using Igor Pavlov's 7-Zip",IDC_STATIC,25,45,
@@ -220,8 +220,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 15,08,0,2
- PRODUCTVERSION 15,08,0,2
+ FILEVERSION 15,09,0,1
+ PRODUCTVERSION 15,09,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -241,17 +241,17 @@ BEGIN
 #ifndef EXTERNAL_CODECS		// í«â¡
             VALUE "FileDescription", "7-zip64\0"
 #else				// í«â¡
-            VALUE "FileDescription", "7-zip64 using 7z.dll\0"
+            VALUE "FileDescription", "7-zip64 using 7z.dll\0"	// í«â¡
 #endif	// EXTERNAL_CODECS	// í«â¡
 #else
             VALUE "Comments", "Common Archiver Project's 7-ZIP32.DLL using Igor Pavlov's 7-Zip\0"
 #ifndef EXTERNAL_CODECS		// í«â¡
             VALUE "FileDescription", "7-zip32\0"
 #else				// í«â¡
-            VALUE "FileDescription", "7-zip32 using 7z.dll\0"
+            VALUE "FileDescription", "7-zip32 using 7z.dll\0"	// í«â¡
 #endif	// EXTERNAL_CODECS	// í«â¡
 #endif
-            VALUE "FileVersion", "15, 08, 0, 2\0"
+            VALUE "FileVersion", "15, 09, 0, 1\0"
             VALUE "InternalName", "SevenZip\0"
             VALUE "LegalCopyright", "Copyright (C) 2002-2014 by èHìc ñ´, ésä€ çÑ\0"
 #ifdef _WIN64
@@ -261,7 +261,7 @@ BEGIN
             VALUE "OriginalFilename", "7-zip32.dll\0"
             VALUE "ProductName", "7-zip32\0"
 #endif
-            VALUE "ProductVersion", "15, 08, 0, 2\0"
+            VALUE "ProductVersion", "15, 09, 0, 1\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -338,7 +338,7 @@ CAPTION "About 7-zip32.dll"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,145,25,25,14
-    LTEXT           "",IDS_VERSION,25,13,132,9
+    LTEXT           "",IDS_VERSION,25,13,153,9
     LTEXT           "Copyright (C) 2002-2014 Minoru Akita, Takeshi Ichimaru",IDC_STATIC,25,36,
                     120,8
 #ifdef _WIN64
@@ -494,8 +494,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 15,08,0,2
- PRODUCTVERSION 15,08,0,2
+ FILEVERSION 15,09,0,1
+ PRODUCTVERSION 15,09,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -515,17 +515,17 @@ BEGIN
 #ifndef EXTERNAL_CODECS		// í«â¡
             VALUE "FileDescription", "7-zip64\0"
 #else				// í«â¡
-            VALUE "FileDescription", "7-zip64 using 7z.dll\0"
+            VALUE "FileDescription", "7-zip64 using 7z.dll\0"	// í«â¡
 #endif	// EXTERNAL_CODECS	// í«â¡
 #else
             VALUE "Comments", "Common Archiver Project's 7-ZIP32.DLL using Igor Pavlov's 7-Zip\0"
 #ifndef EXTERNAL_CODECS		// í«â¡
             VALUE "FileDescription", "7-zip32\0"
 #else				// í«â¡
-            VALUE "FileDescription", "7-zip32 using 7z.dll\0"
+            VALUE "FileDescription", "7-zip32 using 7z.dll\0"	// í«â¡
 #endif	// EXTERNAL_CODECS	// í«â¡
 #endif
-            VALUE "FileVersion", "15, 08, 0, 2\0"
+            VALUE "FileVersion", "15, 09, 0, 1\0"
             VALUE "InternalName", "SevenZip\0"
             VALUE "LegalCopyright", "Copyright (C) 2002-2014 by Minoru Akita, Takeshi Ichimaru\0"
 #ifdef _WIN64
@@ -535,7 +535,7 @@ BEGIN
             VALUE "OriginalFilename", "7-zip32.dll\0"
             VALUE "ProductName", "7-zip32\0"
 #endif
-            VALUE "ProductVersion", "15, 08, 0, 2\0"
+            VALUE "ProductVersion", "15, 09, 0, 1\0"
         END
     END
     BLOCK "VarFileInfo"

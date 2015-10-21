@@ -72,7 +72,9 @@ EXPORTS
 
 		SevenZipSetPriority				@119
 
-		SevenZipGetLastError				@123
+		SevenZipSetCP					@121	; ’Ç‰Á
+		SevenZipGetCP					@122	; ’Ç‰Á
+		SevenZipGetLastError			@123
 
 		SevenZipSetDefaultPassword		@178
 		SevenZipGetDefaultPassword		@179

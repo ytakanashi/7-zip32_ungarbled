@@ -195,6 +195,7 @@ BOOL WINAPI SevenZipQueryFunctionList(const int _iFunction)
 	case ISARC_GET_CURSOR_MODE:
 	case ISARC_SET_CURSOR_MODE:
 	case ISARC_GET_RUNNING:
+	case ISARC_EXISTS_7ZDLL:	// ’Ç‰Á
 		
 	case ISARC_CHECK_ARCHIVE:
 	case ISARC_CONFIG_DIALOG:
@@ -262,6 +263,8 @@ BOOL WINAPI SevenZipQueryFunctionList(const int _iFunction)
 //	case ISARC_GET_ARC_READ_SIZE:
 //	case ISARC_GET_ARC_READ_SIZE_EX:
 	case ISARC_SET_PRIORITY:
+	case ISARC_SET_CP:	// ’Ç‰Á
+	case ISARC_GET_CP:	// ’Ç‰Á
 	case ISARC_GET_LAST_ERROR:
 	case ISARC_SET_UNICODE_MODE:
 	case ISARC_SET_DEFAULT_PASSWORD:
@@ -886,6 +889,22 @@ BOOL WINAPI SevenZipSetPriority(const int _nPriority)
 	return g_StdOut.SetLastError(g_StdOut.SetPriority(_nPriority)) == S_OK;
 }
 
+/* ’Ç‰Á‚±‚±‚©‚ç */
+BOOL WINAPI SevenZipSetCP(const UINT _uCodePage)
+{
+	if (_uCodePage > 1){
+		g_ArcCodePage = _uCodePage;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+UINT WINAPI SevenZipGetCP()
+{
+	return g_ArcCodePage;
+}
+/* ’Ç‰Á‚±‚±‚Ü‚Å */
+
 int WINAPI SevenZipGetLastError(LPDWORD _lpdwSystemError)
 {
 	return g_StdOut.GetLastError(_lpdwSystemError);
@@ -961,12 +980,6 @@ int WINAPI SevenZipPasswordDialog(HWND _hwnd, LPSTR _szBuffer, DWORD _dwSize)
 
 BOOL WINAPI SevenZipSetUnicodeMode(BOOL _bUnicode)
 {
-	/* ’Ç‰Á‚±‚±‚©‚ç */
-	if(_bUnicode > TRUE){
-		g_ArcCodePage = _bUnicode;
-		return _bUnicode;
-	}else
-	/* ’Ç‰Á‚±‚±‚Ü‚Å */
 	return g_StdOut.SetUnicodeMode(_bUnicode);
 }
 
@@ -1010,3 +1023,16 @@ BOOL WINAPI SevenZipSfxFileStoring(LPCSTR _szFileName)
 	g_StdOut.SetLastError(0);
 	return TRUE;
 }
+
+/* ’Ç‰Á‚±‚±‚©‚ç */
+#ifdef EXTERNAL_CODECS
+void FreeGlobalCodecs();
+HRESULT LoadGlobalCodecs();
+BOOL WINAPI SevenZipExists7zdll()
+{
+	BOOL bRes = LoadGlobalCodecs() == S_OK;
+	FreeGlobalCodecs();
+	return bRes;
+}
+#endif
+/* ’Ç‰Á‚±‚±‚Ü‚Å */

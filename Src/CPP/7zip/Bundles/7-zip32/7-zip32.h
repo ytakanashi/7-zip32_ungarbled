@@ -1,7 +1,7 @@
 #if !defined(SEVENZIP_H)
 #define SEVENZIP_H
 
-#define SEVENZIP32_VERSION	15080002
+#define SEVENZIP32_VERSION	15090001
 
 #ifndef FNAME_MAX32
 #define FNAME_MAX32		512
@@ -199,6 +199,8 @@ extern "C" {
 	int  WINAPI SevenZipGetArchiveType(LPCSTR _szFileName);
 	BOOL WINAPI SevenZipSetUnicodeMode(BOOL _bUnicode);
 	BOOL WINAPI SevenZipSetPriority(const int _nPriority);
+	BOOL WINAPI SevenZipSetCP(const UINT _uCodePage);	// ’Ç‰Á
+	UINT WINAPI SevenZipGetCP();						// ’Ç‰Á
 	int WINAPI SevenZipGetLastError(LPDWORD  _lpdwSystemError);
 	int WINAPI SevenZipSetDefaultPassword(HARC _harc, LPCSTR _szPassword);
 	DWORD WINAPI SevenZipGetDefaultPassword(HARC _harc, LPSTR _szPassword, DWORD _dwSize);
@@ -207,6 +209,13 @@ extern "C" {
 	/* 7-zip32.dll“ÆŽ©API */
 	BOOL WINAPI SevenZipSfxFileStoring(LPCSTR _szFileName);
 	int WINAPI SevenZipSfxConfigDialog(HWND _hwnd, LPSTR _szBuffer, DWORD _dwSize);
+
+	/* ’Ç‰Á‚±‚±‚©‚ç */
+#ifdef EXTERNAL_CODECS
+	/* 7z.dll‘Î‰ž”Å7-zip32.dll“ÆŽ©API */
+	BOOL WINAPI SevenZipExists7zdll();
+#endif
+	/* ’Ç‰Á‚±‚±‚Ü‚Å */
 
 #ifdef __cplusplus
 }
@@ -224,6 +233,7 @@ extern "C" {
 #define ISARC_GET_CURSOR_MODE				6	/* SevenZipGetCursorMode */
 #define ISARC_SET_CURSOR_MODE				7	/* SevenZipSetCursorMode */
 #define ISARC_GET_RUNNING					8	/* SevenZipGetRunning */
+#define ISARC_EXISTS_7ZDLL					9	/* SevenZipExists7zdll */	// ’Ç‰Á
 
 #define ISARC_CHECK_ARCHIVE					16	/* SevenZipCheckArchive */
 #define ISARC_CONFIG_DIALOG					17	/* SevenZipConfigDialog */
@@ -292,6 +302,8 @@ extern "C" {
 #define ISARC_GET_ARC_READ_SIZE_EX			93	/* SevenZipGetArcReadSizeEx*/
 
 #define ISARC_SET_PRIORITY					100	/* SevenZipSetPriority */
+#define ISARC_SET_CP						102	/* SevenZipSetCP */
+#define ISARC_GET_CP						103	/* SevenZipGetCP */
 #define ISARC_GET_LAST_ERROR				104	/* SevenZipGetLasrError */
 #define ISARC_SET_UNICODE_MODE				114 /* SevenZipSetUnicodeMode */
 
