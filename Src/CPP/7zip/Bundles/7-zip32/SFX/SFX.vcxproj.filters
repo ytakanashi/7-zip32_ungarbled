@@ -59,9 +59,6 @@
     <ClCompile Include="..\..\..\Archive\7z\7zExtract.cpp">
       <Filter>7z</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Archive\7z\7zFolderOutStream.cpp">
-      <Filter>7z</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Archive\7z\7zHandler.cpp">
       <Filter>7z</Filter>
     </ClCompile>
@@ -72,9 +69,6 @@
       <Filter>7z</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Archive\Common\CoderMixer2.cpp">
-      <Filter>Archive Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Archive\Common\CrossThreadProgress.cpp">
       <Filter>Archive Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Archive\Common\ItemNameUtils.cpp">
@@ -291,9 +285,6 @@
     <ClInclude Include="..\..\..\Archive\7z\7zDecode.h">
       <Filter>7z</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Archive\7z\7zFolderOutStream.h">
-      <Filter>7z</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Archive\7z\7zHandler.h">
       <Filter>7z</Filter>
     </ClInclude>
@@ -307,9 +298,6 @@
       <Filter>7z</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Archive\Common\CoderMixer2.h">
-      <Filter>Archive Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Archive\Common\CrossThreadProgress.h">
       <Filter>Archive Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Archive\Common\ItemNameUtils.h">

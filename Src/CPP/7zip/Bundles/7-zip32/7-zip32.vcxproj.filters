@@ -228,9 +228,6 @@
     <ClInclude Include="..\..\Common\CreateCoder.h">
       <Filter>7zip Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Archive\Common\CrossThreadProgress.h">
-      <Filter>7zip Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Common\CWrappers.h">
       <Filter>7zip Common</Filter>
     </ClInclude>
@@ -427,9 +424,6 @@
       <Filter>Archive\7z</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Archive\7z\7zFolderInStream.h">
-      <Filter>Archive\7z</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Archive\7z\7zFolderOutStream.h">
       <Filter>Archive\7z</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Archive\7z\7zHandler.h">
@@ -929,9 +923,6 @@
     <ClCompile Include="..\..\Common\CreateCoder.cpp">
       <Filter>7zip Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Archive\Common\CrossThreadProgress.cpp">
-      <Filter>7zip Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Common\CWrappers.cpp">
       <Filter>7zip Common</Filter>
     </ClCompile>
@@ -1134,9 +1125,6 @@
       <Filter>Archive\7z</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Archive\7z\7zFolderInStream.cpp">
-      <Filter>Archive\7z</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Archive\7z\7zFolderOutStream.cpp">
       <Filter>Archive\7z</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Archive\7z\7zHandler.cpp">
