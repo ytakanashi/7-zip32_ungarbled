@@ -2,13 +2,15 @@
 
 #include "StdAfx.h"
 
+#ifdef _WIN32
 #include "../../../Common/MyWindows.h"
+#endif
 
 #include <Psapi.h>
 
 #include "../../../../C/CpuArch.h"			// ÉpÉXïœçX
 
-#if defined( _WIN32) && defined( _7ZIP_LARGE_PAGES)
+#if defined( _7ZIP_LARGE_PAGES)
 #include "../../../../C/Alloc.h"
 #endif
 
@@ -470,7 +472,7 @@ static void PrintHexId(CStdOutStream &so, UInt64 id)
 
 int Main2(
   #ifndef _WIN32
-  int numArgs, const char *args[]
+  int numArgs, char *args[]
   #endif
 )
 {
