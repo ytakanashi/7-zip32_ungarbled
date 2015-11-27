@@ -214,7 +214,7 @@ BOOL CDialog::PathGetDlgItemPathW(int nID, UString& rString)
   /* í«â¡Ç±Ç±Ç©ÇÁ */
 		UString buffer(rString);
 		buffer.GetBuf(rString.Len() + 4);
-		MyStringCopy(const_cast<wchar_t*>(buffer.Ptr()),rString);
+		MyStringCopy(const_cast<wchar_t*>(buffer.Ptr()), rString);
   /* í«â¡Ç±Ç±Ç‹Ç≈ */
 		nRes = ::DrawTextExW(hDC, const_cast<wchar_t*>(buffer.Ptr()), buffer.Len(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);	// ïœçX
 //		rString.ReleaseBuffer();	// çÌèú
@@ -226,7 +226,7 @@ BOOL CDialog::PathGetDlgItemPathW(int nID, UString& rString)
   /* í«â¡Ç±Ç±Ç©ÇÁ */
 		AString buffer(string);
 		buffer.GetBuf(string.Len() + 4);
-		MyStringCopy(const_cast<char*>(buffer.Ptr()),string);
+		MyStringCopy(const_cast<char*>(buffer.Ptr()), string);
   /* í«â¡Ç±Ç±Ç‹Ç≈ */
 		nRes = ::DrawTextExA(hDC, const_cast<char*>(buffer.Ptr()), buffer.Len(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);	// ïœçX
 //		string.ReleaseBuffer();	// çÌèú

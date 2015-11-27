@@ -19,6 +19,8 @@
 #include "Common/UTFConvert.h"
 #include "../../UI/Common/SetProperties.h"	// ’Ç‰Á
 #include "Common/IntToString.h"				// ’Ç‰Á
+#include "../../UI/Common/PropIDUtils.h"	// ’Ç‰Á(15120002)
+
 
 static COpenArchive* pOATail;
 
@@ -575,7 +577,11 @@ int COpenArchive::FindNext(INDIVIDUALINFO *lpSubInfo)
 	arc.Archive->GetProperty(m_aItemPos, kpidAttrib, &aPropVariant);
 	m_dwAttribute = aPropVariant.ulVal;
 	arc.Archive->GetProperty(m_aItemPos, kpidMethod, &aPropVariant);
-	m_aMode = aPropVariant.vt ? aPropVariant.bstrVal : L"";
+//	m_aMode = aPropVariant.vt ? aPropVariant.bstrVal : L"";	// íœ(15120002)
+	UString s;												// ’Ç‰Á(15120002)
+	if (aPropVariant.vt != VT_EMPTY)						// ’Ç‰Á(15120002)
+		ConvertPropertyToString(s,aPropVariant,kpidMethod);	// ’Ç‰Á(15120002)
+	m_aMode = (!s.IsEmpty()) ? s.Ptr() : L"";				// ’Ç‰Á(15120002)
 	arc.Archive->GetProperty(m_aItemPos, kpidEncrypted, &aPropVariant);
 	if (aPropVariant.boolVal)
 		m_dwAttribute |= FA_ENCRYPTED;

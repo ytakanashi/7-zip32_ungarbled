@@ -1195,7 +1195,11 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
       DWORD dwCRC = (prop.vt != VT_EMPTY) ? prop.ulVal : 0;
       prop.vt = VT_EMPTY;
       RINOK(archive->GetProperty(index, kpidMethod, &prop));
-      LPCWSTR lpMethod = (prop.vt != VT_EMPTY) ? prop.bstrVal : L"";
+//    LPCWSTR lpMethod = (prop.vt != VT_EMPTY) ? prop.bstrVal : L"";	// íœ(15120002)
+      UString s;											// ’Ç‰Á(15120002)
+      if (prop.vt != VT_EMPTY)								// ’Ç‰Á(15120002)
+          ConvertPropertyToString(s,prop,kpidMethod);		// ’Ç‰Á(15120002)
+      LPCWSTR lpMethod = (!s.IsEmpty()) ? s.Ptr() : L"";	// ’Ç‰Á(15120002)
       g_StdOut.GetProgressDialog()->AddWorkFile(fs2us(processedPath), fs2us(fullProcessedPath), _fi.Attrib, _encrypted, _fi.MTime, _curSize, nCompFileSize, dwCRC, lpMethod);
     }
     /* ’Ç‰Á‚±‚±‚Ü‚Å */

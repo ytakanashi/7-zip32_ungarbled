@@ -172,7 +172,7 @@ BOOL WINAPI SevenZipCheckArchive(LPCSTR _szFileName, const int _iMode)
 
 int WINAPI SevenZipGetFileCount(LPCSTR _szArcFile)
 {
-	HARC hArc = SevenZipOpenArchive(NULL, _szArcFile, 0);
+	HARC hArc = SevenZipOpenArchive(NULL, _szArcFile, M_ERROR_MESSAGE_ON);	// ïœçX(15120002)
 	COpenArchive* pOpenArchive = COpenArchive::FindObject(hArc);
 	if (pOpenArchive == NULL)
 		return -1;
@@ -877,7 +877,7 @@ WORD WINAPI SevenZipGetSubVersion()
 int WINAPI SevenZipGetArchiveType(LPCSTR _szFileName)
 {
 	COpenArchive arc;
-	HRESULT res = arc.OpenCheck(g_StdOut.ConvertUnicodeString(_szFileName), CHECKARCHIVE_RAPID);
+	HRESULT res = arc.OpenCheck(g_StdOut.ConvertUnicodeString(_szFileName), CHECKARCHIVE_BASIC);	// ïœçX(15120002)
 	g_StdOut.SetLastError(res);
 	if (FAILED(res))
 		return -1;
