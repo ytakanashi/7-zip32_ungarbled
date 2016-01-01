@@ -3,8 +3,10 @@
 #include "StdAfx.h"
 
 #include "../../../../C/CpuArch.h"
-#include "../../../../C/7zCrc.h"	// ’Ç‰Á
+#include "../../../../C/7zCrc.h"
+
 #include "../../../Common/MyLinux.h"
+#include "../../../Common/StringConvert.h"
 
 #include "../Common/ItemNameUtils.h"
 
@@ -80,28 +82,29 @@ bool CExtraSubBlock::ExtractUnixTime(bool isCentral, unsigned index, UInt32 &res
   return false;
 }
 
-/* ’Ç‰Á‚±‚±‚©‚ç */
-bool CExtraSubBlock::ExtractInfoZipUnicodePath(AString &name, AString &res) const
+
+bool CExtraBlock::GetNtfsTime(unsigned index, FILETIME &ft) const
 {
-  res.Empty();
-
-  if (ID != NFileHeader::NExtraID::kInfoZipUnicodePath ||
-      (UInt32)Data.Size() < 5 ||
-      *(const Byte *)Data < 1 ||
-      GetUi32((const Byte *)Data + 1) != CrcCalc(name, name.Len()))
-    return false;
-
-  int size = (int)Data.Size() - sizeof(short) * 2 - sizeof(Byte);
-  if (size > 0)
+  FOR_VECTOR (i, SubBlocks)
   {
-    char *p = res.GetBuf(size + 1);
-    memcpy(p, (const Byte *)Data + sizeof(short) * 2 + sizeof(Byte), size);
-    p[size] = '\0';
-    res.ReleaseBuf_SetLen(size);
+    const CExtraSubBlock &sb = SubBlocks[i];
+    if (sb.ID == NFileHeader::NExtraID::kNTFS)
+      return sb.ExtractNtfsTime(index, ft);
   }
-  return true;
+  return false;
 }
-/* ’Ç‰Á‚±‚±‚Ü‚Å */
+
+bool CExtraBlock::GetUnixTime(bool isCentral, unsigned index, UInt32 &res) const
+{
+  FOR_VECTOR (i, SubBlocks)
+  {
+    const CExtraSubBlock &sb = SubBlocks[i];
+    if (sb.ID == NFileHeader::NExtraID::kUnixTime)
+      return sb.ExtractUnixTime(isCentral, index, res);
+  }
+  return false;
+}
+
 
 bool CLocalItem::IsDir() const
 {
@@ -112,22 +115,37 @@ bool CItem::IsDir() const
 {
   if (NItemName::HasTailSlash(Name, GetCodePage()))
     return true;
+  
+  Byte hostOS = GetHostOS();
+
+  if (Size == 0 && PackSize == 0 && !Name.IsEmpty() && Name.Back() == '\\')
+  {
+    // do we need to use CharPrevExA?
+    // .NET Framework 4.5 : System.IO.Compression::CreateFromDirectory() probably writes backslashes to headers?
+    // so we support that case
+    switch (hostOS)
+    {
+      case NHostOS::kFAT:
+      case NHostOS::kNTFS:
+      case NHostOS::kHPFS:
+      case NHostOS::kVFAT:
+        return true;
+    }
+  }
+
   if (!FromCentral)
     return false;
-  /* ’Ç‰Á‚±‚±‚©‚ç */
-  AString a=Name, t;
+  
+  /* ’Ç‰Á‚±‚±‚©‚ç(15140001) */
+  AString a;
   UString u;
-  if (CentralExtra.GetInfoZipUnicodePath(a, t))
-    GetUnicodeString(t, u, true, CP_UTF8);
-  else
-    GetUnicodeString(a, u, false, GetCodePage());
+  GetUnicodeString(u, Name, false, false, GetCodePage());
   UnicodeStringToMultiByte2(a, u, CP_OEMCP);
   if (NItemName::HasTailSlash(a, GetCodePage()))
     return true;
-  /* ’Ç‰Á‚±‚±‚Ü‚Å */
+  /* ’Ç‰Á‚±‚±‚Ü‚Å(15140001) */
   UInt16 highAttrib = (UInt16)((ExternalAttrib >> 16 ) & 0xFFFF);
 
-  Byte hostOS = GetHostOS();
   switch (hostOS)
   {
     case NHostOS::kAMIGA:
@@ -189,6 +207,103 @@ bool CItem::GetPosixAttrib(UInt32 &attrib) const
   if (IsDir())
     attrib = MY_LIN_S_IFDIR;
   return false;
+}
+
+void CItem::GetUnicodeString(UString &res, const AString &s, bool isComment, bool useSpecifiedCodePage, UINT codePage) const
+{
+  bool isUtf8 = IsUtf8();
+  bool ignore_Utf8_Errors = true;
+  
+  if (!isUtf8)
+  {
+    {
+      const unsigned id = isComment ?
+          NFileHeader::NExtraID::kIzUnicodeComment:
+          NFileHeader::NExtraID::kIzUnicodeName;
+      const CObjectVector<CExtraSubBlock> &subBlocks = GetMainExtra().SubBlocks;
+      
+      FOR_VECTOR (i, subBlocks)
+      {
+        const CExtraSubBlock &sb = subBlocks[i];
+        if (sb.ID == id)
+        {
+          AString utf;
+          if (sb.ExtractIzUnicode(CrcCalc(s, s.Len()), utf))
+            if (ConvertUTF8ToUnicode(utf, res))
+              return;
+          break;
+        }
+      }
+    }
+    
+    if (useSpecifiedCodePage)
+      isUtf8 = (codePage == CP_UTF8);
+    #ifdef _WIN32
+    else if (GetHostOS() == NFileHeader::NHostOS::kUnix)
+    {
+      /* Some ZIP archives in Unix use UTF-8 encoding without Utf8 flag in header.
+         We try to get name as UTF-8.
+         Do we need to do it in POSIX version also? */
+      isUtf8 = true;
+      ignore_Utf8_Errors = false;
+    }
+    #endif
+  }
+  
+  
+  if (isUtf8)
+    if (ConvertUTF8ToUnicode(s, res) || ignore_Utf8_Errors)
+//      return;		   íœ(15140001)
+       /* ’Ç‰Á‚±‚±‚©‚ç(15140001) */
+      {
+        if (!IsNormalizedString(NormalizationC, res, res.Len() + 1))
+        {
+          UString src(res);
+          int destLen = NormalizeString(NormalizationC, src, src.Len(), NULL, 0);
+          wchar_t *p = res.GetBuf(destLen);
+          destLen = NormalizeString(NormalizationC, src, src.Len(), p, destLen);
+          if (destLen > 0)
+          {
+            p[destLen] = 0;
+            res.ReleaseBuf_SetLen(destLen);
+            return;
+          } else res.Empty();
+        }
+      } else res.Empty();
+
+    if (useSpecifiedCodePage && res.IsEmpty())
+    {
+      Int32 codepage = codePage;
+      UINT srcLen = s.Len();
+      char* srcChar = const_cast<char*>(s.Ptr());
+      CoInitialize(NULL);
+      IMultiLanguage2* lang = NULL;
+      HRESULT hr = CoCreateInstance(CLSID_CMultiLanguage, NULL, CLSCTX_ALL, IID_IMultiLanguage2, (LPVOID*)&lang);
+
+      DWORD mode = 0;
+      UINT destLen = 0;
+      if (SUCCEEDED(hr))
+        hr = lang->ConvertStringToUnicode(&mode, codepage, srcChar, &srcLen, NULL, &destLen);
+
+      wchar_t* p;
+      if (SUCCEEDED(hr))
+      {
+        p = res.GetBuf(destLen);
+
+        hr = lang->ConvertStringToUnicode(&mode, codepage, srcChar, &srcLen, p, &destLen);
+        p[destLen] = 0;
+        res.ReleaseBuf_SetLen(destLen);
+      }
+
+      if (lang)
+        lang->Release();
+      CoUninitialize();
+      if (SUCCEEDED(hr))
+          return;
+    }else if (res.IsEmpty())
+    /* ’Ç‰Á‚±‚±‚Ü‚Å(15140001) */
+  
+  MultiByteToUnicodeString2(res, s, useSpecifiedCodePage ? codePage : GetCodePage());
 }
 
 }}
