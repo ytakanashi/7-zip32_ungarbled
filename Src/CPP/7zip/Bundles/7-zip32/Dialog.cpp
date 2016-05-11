@@ -181,7 +181,7 @@ int CDialog::GetDlgItemTextW(int nID, UString& rString)
 		{
 			++nLen;
 			::GetDlgItemTextW(m_hWnd, nID, rString.GetBuf(nLen), nLen);	// 変更
-			rString.ReleaseBuf_SetEnd(nLen);	// 変更
+			rString.ReleaseBuf_SetEnd(nLen-1);	// 変更(16000001)
 		}
 	}
 	else
@@ -192,7 +192,7 @@ int CDialog::GetDlgItemTextW(int nID, UString& rString)
 		{
 			++nLen;
 			::GetDlgItemTextA(m_hWnd, nID, string.GetBuf(nLen), nLen);	// 変更
-			string.ReleaseBuf_SetEnd(nLen);	// 変更
+			string.ReleaseBuf_SetEnd(nLen-1);	// 変更(16000001)
 		}
 		rString = GetUnicodeString(string);
 	}

@@ -162,7 +162,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
   if (!ReadDataString(fullPath, kStartID, kEndID, config))
   {
     if (!assumeYes)
-      ShowErrorMessage(L"Can't load config info");
+      ShowErrorMessageRes(IDS_CANT_LOAD_CONFIG_INFO);		// ïœçX
     return 1;
   }
 
