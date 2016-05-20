@@ -247,11 +247,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
      íœ‚±‚±‚Ü‚Å */
   CCodecs *codecs = new CCodecs;
   CMyComPtr<IUnknown> compressCodecsInfo = codecs;
-  HRESULT result = codecs->Load();
-  if (result != S_OK)
   {
-    ShowErrorMessageRes(IDS_CANT_LOAD_CODECS);			// •ÏX
-    return 1;
+    HRESULT result = codecs->Load();
+    if (result != S_OK)
+    {
+      ShowErrorMessageRes(IDS_CANT_LOAD_CODECS);			// •ÏX
+      return 1;
+    }
   }
 
 //  const FString tempDirPath = tempDir.GetPath();	// íœ

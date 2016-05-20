@@ -222,7 +222,6 @@ STDMETHODIMP CArchiveUpdateCallback::GetRawProp(UInt32 index, PROPID propID, con
           propID, data, dataSize, propType);
 
     {
-      const CUpdatePair2 &up = (*UpdatePairs)[index];
       /*
       if (!up.NewData)
         return E_FAIL;

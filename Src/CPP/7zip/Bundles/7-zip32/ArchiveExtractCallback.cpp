@@ -627,6 +627,10 @@ STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index, ISequentialOutStre
   _curSizeDefined = false;
   _index = index;
 
+  _diskFilePath.Empty();
+
+  // _fi.Clear();
+
   #ifdef SUPPORT_LINKS
   // _CopyFile_Path.Empty();
   linkPath.Empty();
@@ -721,7 +725,9 @@ STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index, ISequentialOutStre
     const void *data;
     UInt32 dataSize;
     UInt32 propType;
+    
     _arc->GetRawProps->GetRawProp(_index, kpidNtReparse, &data, &dataSize, &propType);
+    
     if (dataSize != 0)
     {
       if (propType != NPropDataType::kRaw)
@@ -1048,8 +1054,7 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
     
     if (_item.IsAltStream && _item.ParentIndex != (UInt32)(Int32)-1)
     {
-      CIndexToPathPair pair(_item.ParentIndex);
-      int renIndex = _renamedFiles.FindInSorted(pair);
+      int renIndex = _renamedFiles.FindInSorted(CIndexToPathPair(_item.ParentIndex));
       if (renIndex >= 0)
       {
         const CIndexToPathPair &pair = _renamedFiles[renIndex];
@@ -1079,7 +1084,6 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
     {
     
     // ----- Is file (not split) -----
-    if (g_StdOut.GetProgressDialog() && _curSizeDefined) g_StdOut.GetProgressDialog()->SeekNextFile(_curSize);	// í«â¡
     NFind::CFileInfo fileInfo;
     if (fileInfo.Find(fullProcessedPath))
     {
@@ -1343,7 +1347,7 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
         if (needWriteFile)
         {
           _outFileStreamSpec = new COutFileStream;
-          CMyComPtr<ISequentialOutStream> outStreamLoc(_outFileStreamSpec);
+          CMyComPtr<ISequentialOutStream> outStreamLoc2(_outFileStreamSpec);
           if (!_outFileStreamSpec->Open(fullProcessedPath, _isSplit ? OPEN_ALWAYS: CREATE_ALWAYS))
           {
             // if (::GetLastError() != ERROR_FILE_EXISTS || !isSplit)
@@ -1369,7 +1373,8 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
           {
             RINOK(_outFileStreamSpec->Seek(_position, STREAM_SEEK_SET, NULL));
           }
-          _outFileStream = outStreamLoc;
+         
+          _outFileStream = outStreamLoc2;
         }
       }
     }
@@ -1394,6 +1399,7 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
 
   #endif
 
+  
   if (outStreamLoc)
   {
     /*
@@ -1429,6 +1435,7 @@ STDMETHODIMP CArchiveExtractCallback::PrepareOperation(Int32 askExtractMode)
   #endif
   
   _extractMode = false;
+  
   switch (askExtractMode)
   {
     case NArchive::NExtract::NAskMode::kExtract:
@@ -1486,7 +1493,7 @@ STDMETHODIMP CArchiveExtractCallback::SetOperationResult(Int32 opRes)
   }
   
   #ifdef _USE_SECURITY_CODE
-  if (_ntOptions.NtSecurity.Val && _arc->GetRawProps)
+  if (!_stdOutMode && _extractMode && _ntOptions.NtSecurity.Val && _arc->GetRawProps)
   {
     const void *data;
     UInt32 dataSize;
@@ -1509,6 +1516,7 @@ STDMETHODIMP CArchiveExtractCallback::SetOperationResult(Int32 opRes)
 
   if (!_curSizeDefined)
     GetUnpackSize();
+  
   if (_curSizeDefined)
   {
     #ifdef SUPPORT_ALT_STREAMS
@@ -1528,7 +1536,7 @@ STDMETHODIMP CArchiveExtractCallback::SetOperationResult(Int32 opRes)
   else
     NumFiles++;
 
-  if (_extractMode && _fi.AttribDefined)
+  if (!_stdOutMode && _extractMode && _fi.AttribDefined)
     SetFileAttrib(_diskFilePath, _fi.Attrib);
   
 //  RINOK(_extractCallback2->SetOperationResult(opRes, BoolToInt(_encrypted)));		// çÌèú
@@ -1540,6 +1548,7 @@ STDMETHODIMP CArchiveExtractCallback::SetOperationResult(Int32 opRes)
   RINOK(res);
   /* í«â¡Ç±Ç±Ç‹Ç≈ */
   return S_OK;
+  
   COM_TRY_END
 }
 
