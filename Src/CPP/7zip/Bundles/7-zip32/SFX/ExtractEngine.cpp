@@ -55,7 +55,6 @@ struct CThreadExtracting
     Result = ArchiveLink.Open2(options, ExtractCallbackSpec);
     if (Result != S_OK)
     {
-      if (Result != S_OK)
       ErrorMessage = NWindows::MyLoadString(IDS_CANT_OPNE_ARCHIVE);	// ïœçX
       return;
     }

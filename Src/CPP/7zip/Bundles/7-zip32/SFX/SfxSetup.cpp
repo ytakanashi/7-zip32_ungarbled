@@ -23,6 +23,8 @@
 
 #include "../../SFXSetup/ExtractEngine.h"		// パス変更
 
+#include "../../../../../C/DllSecur.h"			// パス変更
+
 #include "resource.h"
 
 #include "ExtractDialog.h"				// 追加
@@ -137,6 +139,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
   g_hInstance = (HINSTANCE)hInstance;
 
   NT_CHECK
+
+  #ifdef _WIN32
+  LoadSecurityDlls();
+  #endif
 
   // InitCommonControls();
 
