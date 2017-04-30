@@ -278,7 +278,7 @@ UString CStdOutStream::ConvertUnicodeString(LPCSTR lpString)
 {
 	UString strUnicode;
 	if (m_bUnicode)
-		::ConvertUTF8ToUnicode(lpString, strUnicode);
+		::ConvertUTF8ToUnicode(AString(lpString), strUnicode);// ïœçX(17000001)
 	else
 		strUnicode = ::GetUnicodeString(lpString);
 	return strUnicode;

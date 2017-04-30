@@ -36,7 +36,7 @@ using namespace NDir;
 
 HINSTANCE g_hInstance;
 
-static CFSTR kTempDirPrefix = FTEXT("7zSDJC");		// 変更
+static CFSTR const kTempDirPrefix = FTEXT("7zSDJC");		// 変更
 
 #define _SHELL_EXECUTE
 
@@ -172,7 +172,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     return 1;
   }
 
-  UString dirPrefix = L"." WSTRING_PATH_SEPARATOR;
+  UString dirPrefix ("." STRING_PATH_SEPARATOR);
   UString appLaunched;
   bool showProgress = true;
   UString friendlyName;		// 追加
@@ -187,15 +187,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
         ShowErrorMessageRes(IDS_CONFIG_FAILED);		// 変更
       return 1;
     }
-    friendlyName = GetTextConfigValue(pairs, L"Title");			// 変更
-    installPrompt = GetTextConfigValue(pairs, L"BeginPrompt");	// 変更
-    isInstaller = GetTextConfigValue(pairs, L"IsInstaller").IsEqualTo_NoCase(L"yes");	// 追加
+    friendlyName = GetTextConfigValue(pairs, "Title");			// 変更
+    installPrompt = GetTextConfigValue(pairs, "BeginPrompt");	// 変更
+    isInstaller = GetTextConfigValue(pairs, "IsInstaller").IsEqualTo_NoCase(L"yes");	// 追加
     if (isInstaller)	// 追加
     {					// 追加
-    UString progress = GetTextConfigValue(pairs, L"Progress");
+    UString progress = GetTextConfigValue(pairs, "Progress");
     if (progress.IsEqualTo_Ascii_NoCase("no"))
       showProgress = false;
-    int index = FindTextConfigItem(pairs, L"Directory");
+    int index = FindTextConfigItem(pairs, "Directory");
     if (index >= 0)
       dirPrefix = pairs[index].String;
     if (!installPrompt.IsEmpty() && !assumeYes)
@@ -204,11 +204,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
           MB_ICONQUESTION) != IDYES)
         return 0;
     }
-    appLaunched = GetTextConfigValue(pairs, L"RunProgram");
+    appLaunched = GetTextConfigValue(pairs, "RunProgram");
     
     #ifdef _SHELL_EXECUTE
-    executeFile = GetTextConfigValue(pairs, L"ExecuteFile");
-    executeParameters = GetTextConfigValue(pairs, L"ExecuteParameters");
+    executeFile = GetTextConfigValue(pairs, "ExecuteFile");
+    executeParameters = GetTextConfigValue(pairs, "ExecuteParameters");
     #endif
 	}	// 追加
   }
@@ -302,7 +302,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
 #ifdef _SHELL_EXECUTE
   if (!executeFile.IsEmpty())
   {
-    CSysString filePath = GetSystemString(executeFile);
+    CSysString filePath (GetSystemString(executeFile));
     SHELLEXECUTEINFO execInfo;
     execInfo.cbSize = sizeof(execInfo);
     execInfo.fMask = SEE_MASK_NOCLOSEPROCESS
@@ -320,7 +320,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
       executeParameters += switches;
     }
 
-    CSysString parametersSys = GetSystemString(executeParameters);
+    CSysString parametersSys (GetSystemString(executeParameters));
     if (parametersSys.IsEmpty())
       execInfo.lpParameters = NULL;
     else
@@ -379,7 +379,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     
     PROCESS_INFORMATION processInformation;
     
-    CSysString appLaunchedSys = GetSystemString(dirPrefix + appLaunched);
+    CSysString appLaunchedSys (GetSystemString(dirPrefix + appLaunched));
     
     BOOL createResult = CreateProcess(NULL, (LPTSTR)(LPCTSTR)appLaunchedSys,
       NULL, NULL, FALSE, 0, NULL, NULL /*tempDir.GetPath() */,
