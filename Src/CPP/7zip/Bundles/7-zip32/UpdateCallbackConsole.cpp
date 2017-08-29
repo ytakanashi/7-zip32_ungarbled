@@ -25,15 +25,15 @@ static NSynchronization::CCriticalSection g_CriticalSection;
 #define MT_LOCK
 #endif
 
-static const wchar_t *kEmptyFileAlias = L"[Content]";
+static const wchar_t * const kEmptyFileAlias = L"[Content]";
 
-static const char *kOpenArchiveMessage = "Open archive: ";
-static const char *kCreatingArchiveMessage = "Creating archive: ";
-static const char *kUpdatingArchiveMessage = "Updating archive: ";
-static const char *kScanningMessage = "Scanning the drive:";
+static const char * const kOpenArchiveMessage = "Open archive: ";
+static const char * const kCreatingArchiveMessage = "Creating archive: ";
+static const char * const kUpdatingArchiveMessage = "Updating archive: ";
+static const char * const kScanningMessage = "Scanning the drive:";
 
-static const char *kError = "ERROR: ";
-static const char *kWarning = "WARNING: ";
+static const char * const kError = "ERROR: ";
+static const char * const kWarning = "WARNING: ";
 
 static HRESULT CheckBreak2()
 {
@@ -247,6 +247,7 @@ static void PrintPropPair(AString &s, const char *name, UInt64 val)
 
 void PrintSize_bytes_Smart(AString &s, UInt64 val);
 void Print_DirItemsStat(AString &s, const CDirItemsStat &st);
+void Print_DirItemsStat2(AString &s, const CDirItemsStat2 &st);
 
 HRESULT CUpdateCallbackConsole::FinishScanning(const CDirItemsStat &st)
 {
@@ -267,7 +268,7 @@ HRESULT CUpdateCallbackConsole::FinishScanning(const CDirItemsStat &st)
   return S_OK;
 }
 
-static const char *k_StdOut_ArcName = "StdOut";
+static const char * const k_StdOut_ArcName = "StdOut";
 
 HRESULT CUpdateCallbackConsole::StartOpenArchive(const wchar_t *name)
 {
@@ -336,7 +337,7 @@ HRESULT CUpdateCallbackConsole::WriteSfx(const wchar_t *name, UInt64 size)
   {
     *_so << "Write SFX: ";
     *_so << name;
-    AString s = " : ";
+    AString s (" : ");
     PrintSize_bytes_Smart(s, size);
     *_so << s << endl;
   }
@@ -422,14 +423,31 @@ HRESULT CUpdateCallbackConsole::Finalize()
 }
 */
 
-HRESULT CUpdateCallbackConsole::SetNumItems(UInt64 numItems)
+
+void static PrintToDoStat(CStdOutStream *_so, const CDirItemsStat2 &stat, const char *name)
+{
+  AString s;
+  Print_DirItemsStat2(s, stat);
+  *_so << name << ": " << s << endl;
+}
+
+HRESULT CUpdateCallbackConsole::SetNumItems(const CArcToDoStat &stat)
 {
   if (_so)
   {
     ClosePercents_for_so();
-    AString s;
-    PrintPropPair(s, "Items to compress", numItems);
-    *_so << s << endl << endl;
+    if (!stat.DeleteData.IsEmpty())
+    {
+      *_so << endl;
+      PrintToDoStat(_so, stat.DeleteData, "Delete data from archive");
+    }
+    if (!stat.OldData.IsEmpty())
+      PrintToDoStat(_so, stat.OldData, "Keep old data in archive");
+    // if (!stat.NewData.IsEmpty())
+    {
+      PrintToDoStat(_so, stat.NewData, "Add new data to archive");
+    }
+    *_so << endl;
   }
   return S_OK;
 }

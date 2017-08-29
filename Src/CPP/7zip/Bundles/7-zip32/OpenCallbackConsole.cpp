@@ -34,15 +34,21 @@ HRESULT COpenCallbackConsole::Open_SetTotal(const UInt64 *files, const UInt64 *b
 
     if (bytes)
     {
-      _totalBytesDefined = true;
-      // _totalBytes = *bytes;
+      // _totalBytesDefined = true;
  /* íœ‚±‚±‚©‚ç
+      _totalBytes = *bytes;
       if (!files)
         _percent.Total = *bytes;
  íœ‚±‚±‚Ü‚Å */
     }
     else
-      _totalBytesDefined = false;
+    {
+      // _totalBytesDefined = false;
+ /* íœ‚±‚±‚©‚ç
+      if (!files)
+        _percent.Total = _totalBytes;
+ íœ‚±‚±‚Ü‚Å */
+    }
   }
 
   return CheckBreak2();

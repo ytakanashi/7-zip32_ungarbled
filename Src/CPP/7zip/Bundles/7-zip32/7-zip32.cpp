@@ -167,7 +167,9 @@ BOOL WINAPI SevenZipConfigDialog(const HWND _hwnd, LPSTR _szOptionBuffer, const 
 BOOL WINAPI SevenZipCheckArchive(LPCSTR _szFileName, const int _iMode)
 {
 	COpenArchive arc;
-	return (g_StdOut.SetLastError(arc.OpenCheck(g_StdOut.ConvertUnicodeString(_szFileName), _iMode)) == S_OK);
+	HRESULT result = g_StdOut.SetLastError(arc.OpenCheck(g_StdOut.ConvertUnicodeString(_szFileName), _iMode));
+	return result == S_OK || (_iMode == CHECKARCHIVE_RAPID && result == ERROR_PASSWORD_FILE);
+
 }
 
 int WINAPI SevenZipGetFileCount(LPCSTR _szArcFile)

@@ -277,6 +277,7 @@
     <ClCompile Include="..\..\..\..\Windows\Shell.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\C\DllSecur.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -463,6 +464,7 @@
     <ClInclude Include="..\..\..\..\Windows\ErrorMsg.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\C\DllSecur.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="setup.ico" />

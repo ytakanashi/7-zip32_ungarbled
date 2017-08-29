@@ -18,9 +18,9 @@ protected:
   CStdOutStream *_se;
 
   bool _totalFilesDefined;
-  bool _totalBytesDefined;
+  // bool _totalBytesDefined;
   // UInt64 _totalFiles;
-  // UInt64 _totalBytes;
+  UInt64 _totalBytes;
 
 //  bool NeedPercents() const { return _percent._so != NULL; }	// çÌèú
   bool NeedPercents() const { return false; }	// í«â¡
@@ -40,7 +40,8 @@ public:
 
   COpenCallbackConsole():
       _totalFilesDefined(false),
-      _totalBytesDefined(false),
+      // _totalBytesDefined(false),
+      _totalBytes(0),
       MultiArcMode(false)
       
       #ifndef _NO_CRYPTO

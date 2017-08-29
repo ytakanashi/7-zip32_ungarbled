@@ -580,7 +580,7 @@ int COpenArchive::FindNext(INDIVIDUALINFO *lpSubInfo)
 //	m_aMode = aPropVariant.vt ? aPropVariant.bstrVal : L"";	// íœ(15120002)
 	UString s;												// ’Ç‰Á(15120002)
 	if (aPropVariant.vt != VT_EMPTY)						// ’Ç‰Á(15120002)
-		ConvertPropertyToString(s,aPropVariant,kpidMethod);	// ’Ç‰Á(15120002)
+		ConvertPropertyToString2(s,aPropVariant,kpidMethod);	// ’Ç‰Á(15120002)
 	m_aMode = (!s.IsEmpty()) ? s.Ptr() : L"";				// ’Ç‰Á(15120002)
 	arc.Archive->GetProperty(m_aItemPos, kpidEncrypted, &aPropVariant);
 	if (aPropVariant.boolVal)
