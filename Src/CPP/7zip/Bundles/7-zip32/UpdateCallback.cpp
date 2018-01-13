@@ -56,6 +56,7 @@ CArchiveUpdateCallback::CArchiveUpdateCallback():
     Comment(NULL),
     
     ShareForWrite(false),
+    StopAfterOpenError(false),
     StdInMode(false),
     
     KeepOriginalItemNames(false),
@@ -348,7 +349,8 @@ STDMETHODIMP CArchiveUpdateCallback::GetProperty(UInt32 index, PROPID propID, PR
         // if (di.IsDir())
         {
           CReparseAttr attr;
-          if (attr.Parse(di.ReparseData, di.ReparseData.Size()))
+          DWORD errorCode = 0;
+          if (attr.Parse(di.ReparseData, di.ReparseData.Size(), errorCode))
           {
             UString simpleName = attr.GetPath();
             if (attr.IsRelative())
@@ -521,7 +523,12 @@ STDMETHODIMP CArchiveUpdateCallback::GetStream2(UInt32 index, ISequentialInStrea
     #endif
     if (!inStreamSpec->OpenShared(path, ShareForWrite))
     {
-      return Callback->OpenFileError(path, ::GetLastError());
+      DWORD error = ::GetLastError();
+      HRESULT hres = Callback->OpenFileError(path, error);
+      if (StopAfterOpenError)
+        if (hres == S_OK || hres == S_FALSE)
+          return HRESULT_FROM_WIN32(error);
+      return hres;
     }
 
     if (StoreHardLinks)
