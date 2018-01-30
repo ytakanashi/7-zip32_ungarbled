@@ -17,6 +17,11 @@
 namespace NArchive {
 namespace NZip {
 
+/*
+extern const char *k_SpecName_NTFS_STREAM;
+extern const char *k_SpecName_MAC_RESOURCE_FORK;
+*/
+
 struct CVersion
 {
   Byte Version;
@@ -236,6 +241,7 @@ public:
   bool IsAesEncrypted() const { return IsEncrypted() && (IsStrongEncrypted() || Method == NFileHeader::NCompressionMethod::kWzAES); }
   bool IsLzmaEOS() const { return (Flags & NFileHeader::NFlags::kLzmaEOS) != 0; }
   bool HasDescriptor() const { return (Flags & NFileHeader::NFlags::kDescriptorUsedMask) != 0; }
+  // bool IsAltStream() const { return (Flags & NFileHeader::NFlags::kAltStream) != 0; }
 
   unsigned GetDeflateLevel() const { return (Flags >> 1) & 3; }
   
@@ -267,6 +273,7 @@ public:
   void ClearFlags() { Flags = 0; }
   void SetEncrypted(bool encrypted) { SetFlag(NFileHeader::NFlags::kEncrypted, encrypted); }
   void SetUtf8(bool isUtf8) { SetFlag(NFileHeader::NFlags::kUtf8, isUtf8); }
+  // void SetFlag_AltStream(bool isAltStream) { SetFlag(NFileHeader::NFlags::kAltStream, isAltStream); }
   void SetDescriptorMode(bool useDescriptor) { SetFlag(NFileHeader::NFlags::kDescriptorUsedMask, useDescriptor); }
 
   UINT GetCodePage() const { return CP_OEMCP; }
