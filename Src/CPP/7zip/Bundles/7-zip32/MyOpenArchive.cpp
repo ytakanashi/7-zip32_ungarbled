@@ -326,6 +326,8 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 			m_nArchiveType = ARCHIVETYPE_GPT;
 		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"HFS"))
 			m_nArchiveType = ARCHIVETYPE_HFS;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"IHex"))
+			m_nArchiveType = ARCHIVETYPE_IHEX;
 		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Lzh"))
 			m_nArchiveType = ARCHIVETYPE_LZH;
 		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"lzma"))
@@ -344,6 +346,8 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 			m_nArchiveType = ARCHIVETYPE_NTFS;
 		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"PE"))
 			m_nArchiveType = ARCHIVETYPE_PE;
+		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"COFF"))
+			m_nArchiveType = ARCHIVETYPE_COFF;
 		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"TE"))
 			m_nArchiveType = ARCHIVETYPE_TE;
 		else if (g_CodecsObj->Formats[arc.FormatIndex].Name.IsEqualTo_NoCase(L"Ppmd"))
