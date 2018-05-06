@@ -97,7 +97,7 @@ int SendCommand7zip()	// ’Ç‰Á
     PrintError(kUserBreakMessage);
     return (NExitCode::kUserBreak);
   }
-  catch(const CArcCmdLineException &e)
+  catch(const CMessagePathException &e)
   {
     PrintError(kException_CmdLine_Error_Message);
     if (g_ErrStream)

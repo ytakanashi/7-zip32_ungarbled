@@ -19,6 +19,7 @@ class CStdOutStream
 	bool _streamIsOpen;
 	FILE *_stream;
 public:
+	bool IsTerminalMode;
 
 	CStdOutStream ();
 	CStdOutStream (FILE *stream): _streamIsOpen(false), _stream(stream) {};
@@ -36,6 +37,13 @@ public:
 	CStdOutStream & operator<<(UInt64 number) throw();
 
 	void PrintUString(const UString &s, AString &temp);
+
+	void Normalize_UString__LF_Allowed(UString &s);
+	void Normalize_UString(UString &s);
+
+	void NormalizePrint_UString(const UString &s, UString &tempU, AString &tempA);
+	void NormalizePrint_UString(const UString &s);
+	void NormalizePrint_wstr(const wchar_t *s);
 
 	static void GetCompactMethod(LPCWSTR lpMethod, int nArchiveType, LPSTR lpCompactMethod);
 	static void GetAttributesString(DWORD dwAttributes, bool bEncrypt, LPSTR lpAttributes);

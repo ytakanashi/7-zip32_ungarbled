@@ -67,8 +67,9 @@ HRESULT CExtractScanConsole::ScanError(const FString &path, DWORD systemError)
   
   if (_se)
   {
-    *_se << endl << kError << NError::MyFormatMessage(systemError) << endl <<
-        fs2us(path) << endl << endl;
+    *_se << endl << kError << NError::MyFormatMessage(systemError) << endl;
+    _se->NormalizePrint_UString(fs2us(path));
+    *_se << endl << endl;
     _se->Flush();
   }
   return HRESULT_FROM_WIN32(systemError);
@@ -265,7 +266,9 @@ static const char * const kTab = "  ";
 
 static void PrintFileInfo(CStdOutStream *_so, const wchar_t *path, const FILETIME *ft, const UInt64 *size)
 {
-  *_so << kTab << "Path:     " << path << endl;
+  *_so << kTab << "Path:     ";
+  _so->NormalizePrint_wstr(path);
+  *_so << endl;
   if (size && *size != (UInt64)(Int64)-1)
   {
     AString s;
@@ -380,8 +383,12 @@ STDMETHODIMP CExtractCallbackConsole::PrepareOperation(const wchar_t *name, Int3
 
     _tempU.Empty();
     if (name)
+    {
       _tempU = name;
-      *_so << name;	// ïœçX
+      _so->Normalize_UString(_tempU);
+    }
+//    _so->PrintUString(_tempU, _tempA); // çÌèú
+    *_so << name; // í«â¡
     if (position)
       *_so << " <" << *position << ">";
     *_so << endl;
@@ -513,7 +520,10 @@ STDMETHODIMP CExtractCallbackConsole::SetOperationResult(Int32 opRes, Int32 encr
       
       *_se << s;
       if (!_currentName.IsEmpty())
-        *_se << " : " << _currentName;
+      {
+        *_se << " : ";
+        _se->NormalizePrint_UString(_currentName);
+      }
       *_se << endl;
       _se->Flush();
     }
@@ -565,7 +575,12 @@ HRESULT CExtractCallbackConsole::BeforeOpen(const wchar_t *name, bool testMode)
   
   ClosePercents_for_so();
   if (_so)
-    *_so << endl << (testMode ? kTesting : kExtracting) << name << endl;
+  {
+    *_so << endl << (testMode ? kTesting : kExtracting);
+//    _so->NormalizePrint_wstr(name);	// çÌèú
+    *_so << endl << name;				// í«â¡
+    *_so << endl;
+  }
 
  /* çÌèúÇ±Ç±Ç©ÇÁ
   if (NeedPercents())
@@ -628,8 +643,9 @@ void Print_ErrorFormatIndex_Warning(CStdOutStream *_so, const CCodecs *codecs, c
 {
   const CArcErrorInfo &er = arc.ErrorInfo;
   
-  UString s ("WARNING:\n");
-  s += arc.Path;
+  *_so << "WARNING:\n";
+  _so->NormalizePrint_UString(arc.Path);
+  UString s;
   if (arc.FormatIndex == er.ErrorFormatIndex)
   {
     s.Add_LF();
@@ -676,7 +692,10 @@ HRESULT CExtractCallbackConsole::OpenResult(
       {
         *_se << endl;
         if (level != 0)
-          *_se << arc.Path << endl;
+        {
+          _se->NormalizePrint_UString(arc.Path);
+          *_se << endl;
+        }
       }
       
       if (errorFlags != 0)
@@ -710,7 +729,10 @@ HRESULT CExtractCallbackConsole::OpenResult(
       {
         *_so << endl;
         if (level != 0)
-          *_so << arc.Path << endl;
+        {
+          _so->NormalizePrint_UString(arc.Path);
+          *_so << endl;
+        }
       }
       
       if (warningFlags != 0)
@@ -765,7 +787,9 @@ HRESULT CExtractCallbackConsole::OpenResult(
       _so->Flush();
     if (_se)
     {
-      *_se << kError << name << endl;
+      *_se << kError;
+      _se->NormalizePrint_wstr(name);
+      *_se << endl;
       HRESULT res = Print_OpenArchive_Error(*_se, codecs, arcLink);
       RINOK(res);
       if (result == S_FALSE)
