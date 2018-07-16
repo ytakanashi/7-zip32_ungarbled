@@ -338,7 +338,7 @@ STDMETHODIMP CExtractCallbackConsole::AskOverwrite(
   if (g_StdOut.GetProgressDialog() == NULL)
     return S_OK;
   CConfirmationDialog dlg;
-  dlg.SetFileInfo(newName, *newSize, *newTime, existName, *existSize, *existTime);
+  dlg.SetFileInfo(newName, newSize, newTime, existName, existSize, existTime);	// ïœçX(18050002)
   switch(dlg.DoModal())
   {
     case IDCANCEL:        return E_ABORT;

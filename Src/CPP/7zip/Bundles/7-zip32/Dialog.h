@@ -132,17 +132,44 @@ protected:
 
 class CConfirmationDialog : public CDialog
 {
+	/* í«â¡(18050002)Ç±Ç±Ç©ÇÁ */
+	typedef struct FILEINFO
+	{
+		bool bSizeIsDefined;
+		bool bTimeIsDefined;
+		UINT64 nSize;
+		FILETIME ftWrite;
+		UString strName;
+
+		void SetTime(const FILETIME *ft)
+		{
+			if(ft == NULL)
+				bTimeIsDefined = false;
+			else
+			{
+				bTimeIsDefined = true;
+				ftWrite = *ft;
+			}
+		}
+		void SetSize(const UINT64 *n)
+		{
+			if(n == NULL)
+				bSizeIsDefined = false;
+			else
+			{
+				bSizeIsDefined = true;
+				nSize = *n;
+			}
+		}
+	} FILEINFO, *LPFILEINFO;
+	/* í«â¡(18050002)Ç±Ç±Ç‹Ç≈ */
 public:
-	void SetFileInfo(LPCWSTR lpNewName, UINT64 nNewSize, const FILETIME &ftNewWrite, LPCWSTR lpOldName, UINT64 nOldSize, const FILETIME &ftOldWrite);
+	void SetFileInfo(LPCWSTR lpNewName, const UINT64* nNewSize, const FILETIME *ftNewWrite, LPCWSTR lpOldName, const UINT64* nOldSize, const FILETIME *ftOldWrite);	// ïœçX(18050002)
 	CConfirmationDialog();
 
 protected:
-	UString m_strNewName;
-	UString m_strOldName;
-	UINT64 m_nNewSize;
-	UINT64 m_nOldSize;
-	FILETIME m_ftNewWrite;
-	FILETIME m_ftOldWrite;
+	FILEINFO m_NewFileInfo;	// ïœçX(18050002)
+	FILEINFO m_OldFileInfo;	// ïœçX(18050002)
 	virtual BOOL DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 

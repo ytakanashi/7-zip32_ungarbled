@@ -211,11 +211,11 @@ BOOL CDialog::PathGetDlgItemPathW(int nID, UString& rString)
 	::GetClientRect(hItemWnd, &rc);
 	if (g_IsNT)
 	{
-  /* 追加ここから */
+	/* 追加ここから */
 		UString buffer(rString);
 		buffer.GetBuf(rString.Len() + 4);
 		MyStringCopy(const_cast<wchar_t*>(buffer.Ptr()), rString);
-  /* 追加ここまで */
+	/* 追加ここまで */
 		nRes = ::DrawTextExW(hDC, const_cast<wchar_t*>(buffer.Ptr()), buffer.Len(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);	// 変更
 //		rString.ReleaseBuffer();	// 削除
 		rString=buffer;	// 追加
@@ -223,11 +223,11 @@ BOOL CDialog::PathGetDlgItemPathW(int nID, UString& rString)
 	else
 	{
 		AString string = GetOemString(rString);
-  /* 追加ここから */
+	/* 追加ここから */
 		AString buffer(string);
 		buffer.GetBuf(string.Len() + 4);
 		MyStringCopy(const_cast<char*>(buffer.Ptr()), string);
-  /* 追加ここまで */
+	/* 追加ここまで */
 		nRes = ::DrawTextExA(hDC, const_cast<char*>(buffer.Ptr()), buffer.Len(), &rc, DT_PATH_ELLIPSIS | DT_MODIFYSTRING | DT_CALCRECT, NULL);	// 変更
 //		string.ReleaseBuffer();	// 削除
 		rString = GetUnicodeString(buffer);
@@ -914,30 +914,119 @@ BOOL CConfirmationDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			
 			FILETIME ftLocal;
 			SYSTEMTIME stWrite;
-			TCHAR lpFormat[128];
+			WCHAR lpFormat[128];	//変更(18050002)
 			UString strFileInfo;
 			SHFILEINFOW shFileInfoW;
-			unsigned len;	// 追加
-			
-			::FileTimeToLocalFileTime(&m_ftNewWrite, &ftLocal);
-			::FileTimeToSystemTime(&ftLocal, &stWrite);
-			::GetDlgItemText(m_hWnd, IDS_NEW_FILE_INFO, lpFormat, 128);
-			UString strPath = m_strNewName;
+			unsigned uLen=0;	// 追加
+
+			/* 変更(18050002)ここから */
+			if (m_NewFileInfo.bTimeIsDefined)
+			{
+				::FileTimeToLocalFileTime(&m_NewFileInfo.ftWrite, &ftLocal);
+				::FileTimeToSystemTime(&ftLocal, &stWrite);
+			}
+			::GetDlgItemTextW(m_hWnd, IDS_NEW_FILE_INFO, lpFormat, 128);
+			UString strPath = m_NewFileInfo.strName;
 			PathGetDlgItemPathW(IDS_NEW_FILE_INFO, strPath);
-			len = swprintf(strFileInfo.GetBuf(m_strNewName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_nNewSize);	// 変更
-			strFileInfo.ReleaseBuf_SetEnd(len);	// 変更
-			MySHGetFileInfo(m_strNewName, FILE_ATTRIBUTE_NORMAL, &shFileInfoW, SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
+
+			for(int i = 0, nCount = 0; lpFormat[i] != '\0'; ++i)
+			{
+				if (lpFormat[i] == '\n')
+				{
+					if (nCount == 0 && !m_NewFileInfo.bTimeIsDefined)
+					{
+						if (!m_NewFileInfo.bSizeIsDefined)
+						{
+							lpFormat[i] = '\0';
+							uLen = swprintf(strFileInfo.GetBuf(m_NewFileInfo.strName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath);
+							break;
+						}
+						else
+						{
+							for (int j = i+1; lpFormat[j] != '\0'; ++j)
+							{
+								if (lpFormat[j] == '\n')
+								{
+									wcscpy(lpFormat+i, lpFormat+j);
+									uLen = swprintf(strFileInfo.GetBuf(m_NewFileInfo.strName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, m_NewFileInfo.nSize);
+									break;
+
+								}
+							}
+						}
+					}
+					if (nCount == 1 && m_NewFileInfo.bTimeIsDefined && !m_NewFileInfo.bSizeIsDefined)
+					{
+						lpFormat[i] = '\0';
+						uLen = swprintf(strFileInfo.GetBuf(m_NewFileInfo.strName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond);
+						break;
+					}
+					nCount++;
+				}
+				if (uLen != 0)
+					break;
+			}
+
+			if (uLen == 0)
+				uLen = swprintf(strFileInfo.GetBuf(m_NewFileInfo.strName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_NewFileInfo.nSize);	// 変更
+			strFileInfo.ReleaseBuf_SetEnd(uLen);	// 変更
+			MySHGetFileInfo(m_NewFileInfo.strName, FILE_ATTRIBUTE_NORMAL, &shFileInfoW, SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
 			::SendMessage(::GetDlgItem(m_hWnd, IDS_NEW_ICON), STM_SETICON, (WPARAM)shFileInfoW.hIcon, 0);
 			SetDlgItemTextW(IDS_NEW_FILE_INFO, strFileInfo);
-			
-			::FileTimeToLocalFileTime(&m_ftOldWrite, &ftLocal);
-			::FileTimeToSystemTime(&ftLocal, &stWrite);
-			::GetDlgItemText(m_hWnd, IDS_OLD_FILE_INFO, lpFormat, 128);
-			strPath = m_strOldName;
+			uLen = 0;
+
+			if (m_OldFileInfo.bTimeIsDefined)
+			{
+				::FileTimeToLocalFileTime(&m_OldFileInfo.ftWrite,&ftLocal);
+				::FileTimeToSystemTime(&ftLocal,&stWrite);
+			}
+			::GetDlgItemTextW(m_hWnd, IDS_OLD_FILE_INFO, lpFormat, 128);
+			strPath = m_OldFileInfo.strName;
 			PathGetDlgItemPathW(IDS_OLD_FILE_INFO, strPath);
-			len = swprintf(strFileInfo.GetBuf(m_strOldName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_nOldSize);	// 変更
-			strFileInfo.ReleaseBuf_SetEnd(len);	// 変更
-			MySHGetFileInfo(m_strOldName, FILE_ATTRIBUTE_NORMAL, &shFileInfoW, SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
+
+			for (int i = 0, nCount = 0; lpFormat[i] != '\0'; ++i)
+			{
+				if (lpFormat[i] == '\n')
+				{
+					if (nCount == 0 && !m_OldFileInfo.bTimeIsDefined)
+					{
+						if (!m_OldFileInfo.bSizeIsDefined)
+						{
+							lpFormat[i] = '\0';
+							uLen = swprintf(strFileInfo.GetBuf(m_OldFileInfo.strName.Len() + 128),(LPCWSTR)GetUnicodeString(lpFormat),(LPCWSTR)strPath);	// 変更
+							break;
+						}
+						else
+						{
+							for (int j = i+1; lpFormat[j] != '\0'; ++j)
+							{
+								if (lpFormat[j] == '\n')
+								{
+									wcscpy(lpFormat+i,lpFormat+j);
+									uLen = swprintf(strFileInfo.GetBuf(m_OldFileInfo.strName.Len() + 128),(LPCWSTR)GetUnicodeString(lpFormat),(LPCWSTR)strPath,m_OldFileInfo.nSize);	// 変更
+									break;
+
+								}
+							}
+						}
+					}
+					if (nCount == 1 && m_OldFileInfo.bTimeIsDefined && !m_OldFileInfo.bSizeIsDefined)
+					{
+						lpFormat[i] = '\0';
+						uLen = swprintf(strFileInfo.GetBuf(m_OldFileInfo.strName.Len() + 128),(LPCWSTR)GetUnicodeString(lpFormat),(LPCWSTR)strPath,stWrite.wYear,stWrite.wMonth,stWrite.wDay,stWrite.wHour,stWrite.wMinute,stWrite.wSecond);	// 変更
+						break;
+					}
+					nCount++;
+				}
+				if (uLen != 0)
+					break;
+			}
+
+			if(uLen == 0)
+				uLen = swprintf(strFileInfo.GetBuf(m_OldFileInfo.strName.Len() + 128), (LPCWSTR)GetUnicodeString(lpFormat), (LPCWSTR)strPath, stWrite.wYear, stWrite.wMonth, stWrite.wDay, stWrite.wHour, stWrite.wMinute, stWrite.wSecond, m_OldFileInfo.nSize);	// 変更
+			/* 追加(18050002)ここまで */
+			strFileInfo.ReleaseBuf_SetEnd(uLen);	// 変更
+			MySHGetFileInfo(m_OldFileInfo.strName, FILE_ATTRIBUTE_NORMAL, &shFileInfoW, SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_LARGEICON);
 			::SendMessage(::GetDlgItem(m_hWnd, IDS_OLD_ICON), STM_SETICON, (WPARAM)shFileInfoW.hIcon, 0);
 			SetDlgItemTextW(IDS_OLD_FILE_INFO, strFileInfo);
 
@@ -966,14 +1055,14 @@ BOOL CConfirmationDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 // ファイル情報の設定
-void CConfirmationDialog::SetFileInfo(LPCWSTR lpNewName, UINT64 nNewSize, const FILETIME &ftNewWrite, LPCWSTR lpOldName, UINT64 nOldSize, const FILETIME &ftOldWrite)
+void CConfirmationDialog::SetFileInfo(LPCWSTR lpNewName, const UINT64* nNewSize, const FILETIME *ftNewWrite, LPCWSTR lpOldName, const UINT64* nOldSize, const FILETIME *ftOldWrite)	// 変更(18050002)
 {
-	::NWindows::NFile::NDir::MyGetFullPathName(lpOldName, m_strOldName);
-	m_strNewName = lpNewName;
-	m_nNewSize = nNewSize;
-	m_nOldSize = nOldSize;
-	m_ftNewWrite = ftNewWrite;
-	m_ftOldWrite = ftOldWrite;
+	::NWindows::NFile::NDir::MyGetFullPathName(lpOldName, m_OldFileInfo.strName);	// 変更(18050002)
+	m_NewFileInfo.strName = lpNewName;	// 変更(18050002)
+	m_NewFileInfo.SetSize(nNewSize);	// 変更(18050002)
+	m_OldFileInfo.SetSize(nOldSize);	// 変更(18050002)
+	m_NewFileInfo.SetTime(ftNewWrite);	// 変更(18050002)
+	m_OldFileInfo.SetTime(ftOldWrite);	// 変更(18050002)
 }
 
 //////////////////////////////////////////////////////////////////////
