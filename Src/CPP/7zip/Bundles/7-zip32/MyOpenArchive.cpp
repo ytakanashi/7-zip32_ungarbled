@@ -242,7 +242,7 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 				{
 					hashCalc = &hb;
 					RINOK(hb.SetMethods(EXTERNAL_CODECS_VARS_G options.HashMethods));
-					hb.Init();
+					// hb.Init(); 	// ’Ç‰Á(18060001)
 				}
 
 				UStringVector ArchivePathsSorted;

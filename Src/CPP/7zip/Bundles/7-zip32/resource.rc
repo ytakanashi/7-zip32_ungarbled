@@ -220,8 +220,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 18,05,0,2
- PRODUCTVERSION 18,05,0,2
+ FILEVERSION 18,06,0,1
+ PRODUCTVERSION 18,06,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -251,7 +251,7 @@ BEGIN
             VALUE "FileDescription", "7-zip32 using 7z.dll\0"	// ’Ç‰Á
 #endif	// EXTERNAL_CODECS	// ’Ç‰Á
 #endif
-            VALUE "FileVersion", "18, 05, 0, 2\0"
+            VALUE "FileVersion", "18, 06, 0, 1\0"
             VALUE "InternalName", "SevenZip\0"
             VALUE "LegalCopyright", "Copyright (C) 2002-2017 by H“c –«, ŽsŠÛ „\0"
 #ifdef _WIN64
@@ -261,7 +261,7 @@ BEGIN
             VALUE "OriginalFilename", "7-zip32.dll\0"
             VALUE "ProductName", "7-zip32\0"
 #endif
-            VALUE "ProductVersion", "18, 05, 0, 2\0"
+            VALUE "ProductVersion", "18, 06, 0, 1\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -494,8 +494,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 18,05,0,2
- PRODUCTVERSION 18,05,0,2
+ FILEVERSION 18,06,0,1
+ PRODUCTVERSION 18,06,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -525,7 +525,7 @@ BEGIN
             VALUE "FileDescription", "7-zip32 using 7z.dll\0"	// ’Ç‰Á
 #endif	// EXTERNAL_CODECS	// ’Ç‰Á
 #endif
-            VALUE "FileVersion", "18, 05, 0, 2\0"
+            VALUE "FileVersion", "18, 06, 0, 1\0"
             VALUE "InternalName", "SevenZip\0"
             VALUE "LegalCopyright", "Copyright (C) 2002-2017 by Minoru Akita, Takeshi Ichimaru\0"
 #ifdef _WIN64
@@ -535,7 +535,7 @@ BEGIN
             VALUE "OriginalFilename", "7-zip32.dll\0"
             VALUE "ProductName", "7-zip32\0"
 #endif
-            VALUE "ProductVersion", "18, 05, 0, 2\0"
+            VALUE "ProductVersion", "18, 06, 0, 1\0"
         END
     END
     BLOCK "VarFileInfo"

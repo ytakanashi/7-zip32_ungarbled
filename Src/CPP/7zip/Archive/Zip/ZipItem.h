@@ -217,6 +217,12 @@ class CLocalItem
 public:
   UInt16 Flags;
   UInt16 Method;
+  
+  /*
+    Zip specification doesn't mention that ExtractVersion field uses HostOS subfield.
+    18.06: 7-Zip now doesn't use ExtractVersion::HostOS to detect codePage
+  */
+
   CVersion ExtractVersion;
 
   UInt64 Size;
