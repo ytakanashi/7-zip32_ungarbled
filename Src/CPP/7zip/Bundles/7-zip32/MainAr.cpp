@@ -3,6 +3,10 @@
 #include "StdAfx.h"
 #include "MainAr.h"									// í«â¡
 
+#ifdef _WIN32
+#include "../../../../C/DllSecur.h"
+#endif
+
 #include "../../../Common/MyException.h"
 #include "Common/StdOutStream.h"					// ÉpÉXïœçX
 
@@ -81,6 +85,10 @@ int SendCommand7zip()	// í«â¡
   
   try
   {
+    #ifdef _WIN32
+    My_SetDefaultDllDirectories();
+    #endif
+
     res = Main2(
     #ifndef _WIN32
     numArgs, args
