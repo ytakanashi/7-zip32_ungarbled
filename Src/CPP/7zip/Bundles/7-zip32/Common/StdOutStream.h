@@ -58,10 +58,17 @@ public:
 	int SetPriority(const int nPriority);
 	int GetLastError(LPDWORD lpdwSystemError);
 	int SetLastError(int nErrorCode);
-	void SetStdOutMode(BOOL bStdOut){ m_bStdOut = bStdOut; }	// ’Ç‰Á
+	void SetStdOutMode(BOOL bStdOut){ m_bStdOut = bStdOut; }	// ’Ç‰Á(19000002)
 
 	CProgressDialog* GetProgressDialog() { return m_pDlgProgress; }
-	void CloseProgressDialog() { ::PostMessage(m_pDlgProgress->m_hWnd, WM_CLOSE, 0, 1); }
+//	void CloseProgressDialog() { ::PostMessage(m_pDlgProgress->m_hWnd, WM_CLOSE, 0, 1); }	// íœ(19000002)
+	/* ’Ç‰Á(19000002)‚±‚±‚©‚ç */
+	void CloseProgressDialog() {
+		if (m_bStdOut)
+			::FlushFileBuffers(GetStdHandle(STD_OUTPUT_HANDLE));
+		::PostMessage(m_pDlgProgress->m_hWnd, WM_CLOSE, 0, 1);
+	}
+	/* ’Ç‰Á(19000002)‚±‚±‚Ü‚Å */
 	void SetProgressDialog(CProgressDialog* pDlg) { m_pDlgProgress = pDlg; }
 	BOOL GetUnicodeMode() { return m_bUnicode; }
 	LPCWSTR GetCommandLineW() { return m_lpCommandLine; }
@@ -70,7 +77,7 @@ public:
 	void CreateMainThread() { UINT thrdaddr; m_hThread = (HANDLE)_beginthreadex(NULL, 0, Main, NULL, CREATE_SUSPENDED, &thrdaddr); }
 	int GetPriority() { return m_nPriority; }
 	void SetSfxPath(FString strSfxPath) { m_strSfxPath = strSfxPath; }
-	BOOL GetStdOutMode(BOOL* bStdOut){ return m_bStdOut; }	// ’Ç‰Á
+	BOOL GetStdOutMode(){ return m_bStdOut; }	// ’Ç‰Á(19000002)
 
 protected:
 	LPWSTR m_lpCommandLine;
@@ -83,9 +90,9 @@ protected:
 	HANDLE m_hThread;
 	DWORD m_dwSystemError;
 	int m_nLastError;
-	/* ’Ç‰Á‚±‚±‚©‚ç */
+	/* ’Ç‰Á(19000002)‚±‚±‚©‚ç */
 	BOOL m_bStdOut;
-	/* ’Ç‰Á‚±‚±‚Ü‚Å */
+	/* ’Ç‰Á(19000002)‚±‚±‚Ü‚Å */
 };
 
 CStdOutStream & endl(CStdOutStream & anOut);

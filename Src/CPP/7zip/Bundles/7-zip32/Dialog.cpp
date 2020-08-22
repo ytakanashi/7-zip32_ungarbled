@@ -498,6 +498,8 @@ BOOL CProgressDialog::OnInitDialog()
 		::EnableWindow(m_hWndParent, FALSE);
 
 		m_dwStartTime = ::GetTickCount();
+
+		::LoadString(g_hInstance, IDS_MODE_SKIP, m_lpSkipText, 64);	// 追加(19000002)
 	}
 	::SetThreadPriority(g_StdOut.GetThread(), g_StdOut.GetPriority());
 	::ResumeThread(g_StdOut.GetThread());
@@ -514,7 +516,7 @@ void CProgressDialog::SetArchiveFile(LPCWSTR lpFileName)
 		SetDlgItemTextW(IDS_ARCHIVE_FILE, strPath);
 	}
 	else if (s_dwStructSize)
-	{	
+	{
 		// ARCEXTRACT_OPEN 送信
 		ZeroMemory(&s_eis, s_dwStructSize);
 		switch (s_dwStructSize)
@@ -556,12 +558,14 @@ void CProgressDialog::SetTotal(UINT64 nSize)
 void CProgressDialog::SetWorkFile(LPWORKFILEINFO lpWfi)
 {
 	m_nNextItemPos += lpWfi->nSrcFileSize;
+	m_bSkip = lpWfi->bSkip;	// 追加(19000002)
 	if (m_bShow)
 	{
 		UString strPath = lpWfi->lpSrcFileName;
 		PathGetDlgItemPathW(IDS_WORK_FILE, strPath);
 		SetDlgItemTextW(IDS_WORK_FILE, strPath);
 		SetDetail(lpWfi);
+		::SetDlgItemText(m_hWnd, IDS_MODE, m_bSkip ? m_lpSkipText : "");	// 追加(19000002)
 	}
 	else if (s_dwStructSize)
 	{
@@ -621,7 +625,7 @@ void CProgressDialog::SetWorkFile(LPWORKFILEINFO lpWfi)
 			CStdOutStream::GetCompactMethod(lpWfi->lpMethod, m_nArchiveType, s_eis.eix64.szMode);
 			break;
 		}
-		SendExtractingInfo(ARCEXTRACT_BEGIN);
+		SendExtractingInfo(!m_bSkip ? ARCEXTRACT_BEGIN : ARCEXTRACT_SKIP);	// 変更(19000002)
 	}
 }
 
@@ -685,7 +689,7 @@ void CProgressDialog::SetCompleted(UINT64 nSize)
 			s_eis.eix64.llWriteSize = nSize;
 			break;
 		}
-		SendExtractingInfo(ARCEXTRACT_INPROCESS);
+		SendExtractingInfo(!m_bSkip ? ARCEXTRACT_INPROCESS : ARCEXTRACT_SKIP);	// 追加(19000002)
 	}
 }
 
@@ -746,10 +750,32 @@ void CProgressDialog::AddWorkFile(LPCWSTR lpSrcFileName, LPCWSTR lpDestFilePath,
 	wfi.dwCRC = dwCRC;
 	wfi.lpMethod = _wcsdup(lpMethod);
 	wfi.wRatio = nSrcFileSize ? (WORD)(nCompFileSize * 1000 / nSrcFileSize) : 0;
+	wfi.bSkip = FALSE;	// 追加(19000002)
 	m_wfis.Add(wfi);
 	if (m_wfis.Size() == 1)
 		SetWorkFile(&wfi);
 }
+
+/* 追加(19000002)ここから*/
+// ファイル情報保存(スキップ)
+void CProgressDialog::AddSkipFile(LPCWSTR lpSrcFileName, LPCWSTR lpDestFilePath, DWORD dwAttributes, bool bEncrypted, FILETIME ftLastWriteTime, UINT64 nSrcFileSize, UINT64 nCompFileSize, DWORD dwCRC, LPCWSTR lpMethod)
+{
+	WORKFILEINFO wfi;
+	wfi.lpSrcFileName = _wcsdup(lpSrcFileName);
+	wfi.lpDestFilePath = _wcsdup(L"");
+	wfi.dwAttributes = dwAttributes & (FILE_ATTRIBUTE_ARCHIVE | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_READONLY) | (bEncrypted ? FA_ENCRYPTED : 0);
+	wfi.ftLastWriteTime = ftLastWriteTime;
+	wfi.nSrcFileSize = nSrcFileSize;
+	wfi.nCompFileSize = m_bSolid ? nCompFileSize : 0;
+	wfi.dwCRC = dwCRC;
+	wfi.lpMethod = _wcsdup(lpMethod);
+	wfi.wRatio = nSrcFileSize ? (WORD)(nCompFileSize * 1000 / nSrcFileSize) : 0;
+	wfi.bSkip = TRUE;
+	m_wfis.Add(wfi);
+	if (m_wfis.Size() == 1)
+		SetWorkFile(&wfi);
+}
+/* 追加(19000002)ここまで */
 
 // 詳細表示切り替え
 void CProgressDialog::ShowDetail(BOOL bShow)
@@ -796,6 +822,7 @@ void CProgressDialog::SendExtractingInfo(int nMode)
 	if (bRes)
 		HandlerRoutine();
 }
+
 
 void CProgressDialog::SetProgressTime()
 {

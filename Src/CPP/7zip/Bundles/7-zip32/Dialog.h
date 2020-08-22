@@ -53,6 +53,7 @@ class CProgressDialog : public CDialog
 		DWORD dwCRC;
 		LPCWSTR lpMethod;
 		WORD wRatio;
+		BOOL bSkip;		// ’Ç‰Á(19000002)
 	} WORKFILEINFO, *LPWORKFILEINFO;
 
 public:
@@ -73,6 +74,7 @@ public:
 	void SetWorkFile(LPWORKFILEINFO lpWfi);
 	void SetCompleted(UINT64 nSize);
 	void AddWorkFile(LPCWSTR lpSrcFileName, LPCWSTR lpDestFilePath, DWORD dwAttributes, bool bEncrypted, FILETIME ftLastWriteTime, UINT64 nSrcFileSize, UINT64 nCompFileSize, DWORD dwCRC, LPCWSTR lpMethod);
+	void AddSkipFile(LPCWSTR lpSrcFileName, LPCWSTR lpDestFilePath, DWORD dwAttributes, bool bEncrypted, FILETIME ftLastWriteTime, UINT64 nSrcFileSize, UINT64 nCompFileSize, DWORD dwCRC, LPCWSTR lpMethod);	// ’Ç‰Á(19000002)
 	void SendExtractingInfo(int nMode);
 
 	void SetProgressMode(wchar_t cMode) { m_cMode = cMode; }
@@ -97,6 +99,8 @@ protected:
 	int m_nWndHigh[2];
 	int m_nArchiveType;
 	bool m_bSolid;
+	BOOL m_bSkip;			// ’Ç‰Á(19000002)
+	char m_lpSkipText[64];	// ’Ç‰Á(19000002)
 	CUIntVector m_detailItem;
 	CObjectVector<WORKFILEINFO> m_wfis;
 	BOOL OnInitDialog();

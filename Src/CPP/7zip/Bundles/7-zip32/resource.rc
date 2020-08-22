@@ -71,9 +71,10 @@ BEGIN
                     SS_NOPREFIX | WS_GROUP,52,30,156,8
     CONTROL         "Progress1",IDP_PROGRESS,"msctls_progress32",PBS_SMOOTH | 
                     WS_BORDER,9,45,190,14
-    RTEXT           "",IDS_PROCESS_SIZE,9,60,190,8
+    RTEXT           "",IDS_PROCESS_SIZE,60,60,140,8	// 変更(19000002)
     CONTROL         "バックグラウンド(&B)",IDC_BACK_GROUND,"Button",
                     BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,85,80,61,14
+    LTEXT           "", IDS_MODE, 10, 60, 50, 8	// 追加(19000002)
 END
 
 IDD_CONFIG DIALOG DISCARDABLE  0, 0, 187, 65
@@ -220,8 +221,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 19,00,0,1
- PRODUCTVERSION 19,00,0,1
+ FILEVERSION 19,00,0,2
+ PRODUCTVERSION 19,00,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -251,7 +252,7 @@ BEGIN
             VALUE "FileDescription", "7-zip32 using 7z.dll\0"	// 追加
 #endif	// EXTERNAL_CODECS	// 追加
 #endif
-            VALUE "FileVersion", "19, 00, 0, 1\0"
+            VALUE "FileVersion", "19, 00, 0, 2\0"
             VALUE "InternalName", "SevenZip\0"
             VALUE "LegalCopyright", "Copyright (C) 2002-2017 by 秋田 稔, 市丸 剛\0"
 #ifdef _WIN64
@@ -261,7 +262,7 @@ BEGIN
             VALUE "OriginalFilename", "7-zip32.dll\0"
             VALUE "ProductName", "7-zip32\0"
 #endif
-            VALUE "ProductVersion", "19, 00, 0, 1\0"
+            VALUE "ProductVersion", "19, 00, 0, 2\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -304,6 +305,7 @@ BEGIN
     IDS_ATTRIBUTE           "ファイル属性"
     IDS_RATIO               "圧縮率"
     IDS_METHOD              "圧縮方式"
+    IDS_MODE_SKIP           "スキップ"
 END
 
 STRINGTABLE DISCARDABLE 
@@ -405,9 +407,10 @@ BEGIN
                     SS_NOPREFIX | WS_GROUP,50,30,161,8
     CONTROL         "Progress1",IDP_PROGRESS,"msctls_progress32",PBS_SMOOTH | 
                     WS_BORDER,10,45,190,14
-    RTEXT           "",IDS_PROCESS_SIZE,10,60,190,8
+    RTEXT           "",IDS_PROCESS_SIZE,60,60,140,8	// 変更(19000002)
     CONTROL         "&BackGround",IDC_BACK_GROUND,"Button",BS_AUTOCHECKBOX | 
                     BS_PUSHLIKE | WS_TABSTOP,95,80,49,14
+    LTEXT           "", IDS_MODE, 10, 60, 50, 8	// 追加(19000002)
 END
 
 IDD_SFX DIALOG DISCARDABLE  0, 0, 131, 253
@@ -494,8 +497,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 19,00,0,1
- PRODUCTVERSION 19,00,0,1
+ FILEVERSION 19,00,0,2
+ PRODUCTVERSION 19,00,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -525,7 +528,7 @@ BEGIN
             VALUE "FileDescription", "7-zip32 using 7z.dll\0"	// 追加
 #endif	// EXTERNAL_CODECS	// 追加
 #endif
-            VALUE "FileVersion", "19, 00, 0, 1\0"
+            VALUE "FileVersion", "19, 00, 0, 2\0"
             VALUE "InternalName", "SevenZip\0"
             VALUE "LegalCopyright", "Copyright (C) 2002-2017 by Minoru Akita, Takeshi Ichimaru\0"
 #ifdef _WIN64
@@ -535,7 +538,7 @@ BEGIN
             VALUE "OriginalFilename", "7-zip32.dll\0"
             VALUE "ProductName", "7-zip32\0"
 #endif
-            VALUE "ProductVersion", "19, 00, 0, 1\0"
+            VALUE "ProductVersion", "19, 00, 0, 2\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -569,6 +572,7 @@ BEGIN
     IDS_ATTRIBUTE           "Attributes"
     IDS_RATIO               "Compress raito"
     IDS_METHOD              "Method"
+    IDS_MODE_SKIP           "Skip"
 END
 
 STRINGTABLE DISCARDABLE 

@@ -11,8 +11,6 @@
 #include "Common/UTFConvert.h"
 #include "Windows/FileDir.h"
 
-#include <io.h>			// ’Ç‰Á
-
 extern int g_CodePage;
 UINT32 g_ArcCodePage;	// ’Ç‰Á
 
@@ -127,30 +125,282 @@ BOOL WINAPI SevenZipGetRunning()
 }
 
 /* ’Ç‰Á‚±‚±‚©‚ç */
+static UInt32 kChunkSizeMax = (1 << 22);
+
+typedef struct{
+	HANDLE hReadPipe;
+	LPBYTE* pszBuffer;
+	LONGLONG llSize;
+	HANDLE hInitEvent;
+}ReadPipeParam, *lpReadPipeParam;
+
+unsigned __stdcall ReadPipe(LPVOID lvParam){
+	lpReadPipeParam lpParam = (lpReadPipeParam)lvParam;
+
+	HANDLE hReadPipe = lpParam->hReadPipe;
+	LPBYTE _szBuffer = *(lpParam->pszBuffer);
+	ULHA_INT64 size = lpParam->llSize;
+	HANDLE hInitEvent = lpParam->hInitEvent;
+
+	DWORD availBytes = 0;
+	ULHA_INT64 processedSize = 0;
+	MSG msg;
+
+	::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE);
+	::SetEvent(hInitEvent);
+
+	do {
+		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			if (msg.message == ERROR_USER_CANCEL)
+				g_StdOut.SetLastError(ERROR_USER_CANCEL);
+			break;
+		}
+
+		DWORD processedLoc = 0;
+		DWORD sizeToRead = (size > UINT_MAX) ? UINT_MAX : DWORD(size);
+
+		if (sizeToRead > kChunkSizeMax)
+			sizeToRead = kChunkSizeMax;
+
+		if (!::PeekNamedPipe(hReadPipe, NULL, 0, NULL, &availBytes, NULL))
+		{
+			g_StdOut.SetLastError(ERROR_FATAL);
+			break;
+		}
+
+		if (!availBytes)
+			continue;
+
+		if (!::ReadFile(hReadPipe, _szBuffer, sizeToRead, &processedLoc, NULL))
+		{
+			g_StdOut.SetLastError(ERROR_CANNOT_READ);
+			break;
+		}
+		processedSize += processedLoc;
+		_szBuffer += processedLoc;
+		size -= processedLoc;
+	} while(size > 0);
+
+	_endthreadex(0);
+	return 0;
+}
+
 int WINAPI SevenZipExtractMem(HWND _hwnd, LPCSTR _szCmdLine, LPBYTE _szBuffer, const DWORD _dwSize, time_t * _lpTime, LPWORD _lpwAttr, LPDWORD _lpdwWriteSize){
-	HANDLE readPipe = NULL, writePipe=NULL, readTemp=NULL;
-	HANDLE savedStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	HANDLE hReadPipe = NULL, hWritePipe = NULL;
+	HANDLE hSaveStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	::CreatePipe(&readTemp, &writePipe, NULL, INFINITE);
-	::DuplicateHandle(::GetCurrentProcess(), readTemp, ::GetCurrentProcess(), &readPipe, 0, FALSE, DUPLICATE_SAME_ACCESS);
-	::CloseHandle(readTemp);
-	::SetStdHandle(STD_OUTPUT_HANDLE, writePipe);
+	HCRYPTPROV hProv;
+	DWORD dwUniqueId;
 
-	int saved_stdout = dup(1);
-	int fd = ::_open_osfhandle((intptr_t)::GetStdHandle(STD_OUTPUT_HANDLE), 0);
-	::dup2(fd, 1);
+	::CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
+	::CryptGenRandom(hProv, sizeof(dwUniqueId), (BYTE*)&dwUniqueId);
+	::CryptReleaseContext(hProv, NULL);
+
+	char szDesktopName[32];
+
+	wsprintf(szDesktopName, "desktop_%d", dwUniqueId);
+
+	::CreatePipe(&hReadPipe, &hWritePipe, NULL, INFINITE);
+	::DuplicateHandle(::GetCurrentProcess(), hReadPipe, ::GetCurrentProcess(), &hReadPipe, 0, FALSE, DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS);
+
+#if 1
+	::CreatePipe(&hReadPipe, &hWritePipe, NULL, INFINITE);
+	::DuplicateHandle(::GetCurrentProcess(), hReadPipe, ::GetCurrentProcess(), &hReadPipe, 0, FALSE, DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS);
+#else
+	char szPipeName[32];
+
+	wsprintf(szPipeName, "\\\\.\\pipe\\out_%d", dwUniqueId);
+
+	SECURITY_ATTRIBUTES sa;
+
+	sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+	sa.lpSecurityDescriptor = NULL;
+	sa.bInheritHandle = TRUE;
+	hReadPipe = CreateNamedPipe(szPipeName, PIPE_ACCESS_DUPLEX,PIPE_WAIT | PIPE_READMODE_BYTE | PIPE_TYPE_BYTE, PIPE_UNLIMITED_INSTANCES, 0, 0, 1000, &sa);
+	hWritePipe = CreateFile(szPipeName, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_FLAG_NO_BUFFERING, 0);
+#endif
+
+	::SetStdHandle(STD_OUTPUT_HANDLE,hWritePipe);
+
+	bool bNoStdOutput = false;
+	STARTUPINFO StartupInfo;
+	PROCESS_INFORMATION ProcessInfo;
+	HDESK hDesk;
+
+	if (!::GetStdHandle(STD_OUTPUT_HANDLE))
+	{
+		bNoStdOutput = true;
+		hDesk = ::CreateDesktop(szDesktopName, NULL, NULL, 0, DESKTOP_SWITCHDESKTOP | DESKTOP_WRITEOBJECTS | DESKTOP_CREATEWINDOW, NULL);
+		if (hDesk == NULL)
+		{
+			::CloseHandle(hReadPipe);
+			::CloseHandle(hWritePipe);
+			return g_StdOut.SetLastError(ERROR_FATAL);
+		}
+
+		SECURITY_ATTRIBUTES SecurityAttributes;
+		SecurityAttributes.nLength = sizeof(SECURITY_ATTRIBUTES);
+		SecurityAttributes.bInheritHandle = TRUE;
+		SecurityAttributes.lpSecurityDescriptor = NULL;
+
+		::ZeroMemory(&StartupInfo, sizeof(STARTUPINFO));
+		StartupInfo.cb = sizeof(StartupInfo);
+		StartupInfo.dwFlags = STARTF_USESHOWWINDOW;
+		StartupInfo.wShowWindow = SW_SHOW;
+		StartupInfo.lpDesktop = szDesktopName;
+		::CreateProcess(NULL, "cmd.exe", NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &StartupInfo, &ProcessInfo);
+
+		for (int i=0; i<100; i++)
+		{
+			if (::AttachConsole(ProcessInfo.dwProcessId))
+				break;
+			::Sleep(100);
+		}
+
+		::SetStdHandle(STD_OUTPUT_HANDLE, hWritePipe);
+	}
 
 	g_StdOut.SetStdOutMode(TRUE);
-	SevenZip(_hwnd, _szCmdLine, NULL, 0);
 
-	DWORD availBytes = 0, readBytes = 0;
-	if (! (::PeekNamedPipe(readPipe, NULL, 0, NULL, &availBytes, NULL) && availBytes && ::ReadFile(readPipe, _szBuffer, _dwSize, &readBytes, NULL)))
-		return ERROR_CANNOT_READ;
+	ReadPipeParam param;
+	HANDLE hInitEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	UINT uiReadPipeThreadId = 0;
 
-	::dup2(saved_stdout, 1);
-	::_close(fd);
-	::SetStdHandle(STD_OUTPUT_HANDLE, savedStdOut);
-	return 0;
+	param.hReadPipe = hReadPipe;
+	param.pszBuffer = &_szBuffer;
+	param.llSize = _dwSize;
+	param.hInitEvent = hInitEvent;
+	HANDLE hReadPipeThread = (HANDLE)_beginthreadex(NULL, 0, ReadPipe, &param, 0, &uiReadPipeThreadId);
+
+	::WaitForSingleObject(hInitEvent, INFINITE);
+	::CloseHandle(hInitEvent);
+
+	::PostThreadMessage(uiReadPipeThreadId, SevenZip(_hwnd, _szCmdLine, NULL, 0), 0, 0);
+
+	::WaitForSingleObject(hReadPipeThread, INFINITE);
+	::CloseHandle(hReadPipeThread);
+	::SetStdHandle(STD_OUTPUT_HANDLE, hSaveStdOut);
+	if (bNoStdOutput)
+	{
+		::FreeConsole();
+		::TerminateProcess(ProcessInfo.hProcess,0);
+		::WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+		::CloseHandle(ProcessInfo.hThread);
+		::CloseHandle(ProcessInfo.hProcess);
+		::CloseDesktop(hDesk);
+	}
+	::CloseHandle(hReadPipe);
+	::CloseHandle(hWritePipe);
+
+	return g_StdOut.GetLastError(NULL);
+}
+
+int WINAPI SevenZipExtractMemEx(HWND _hwnd, LPCSTR _szCmdLine, LPBYTE _szBuffer, const ULHA_INT64 _llSize, time_t * _lpTime, LPWORD _lpwAttr, LPDWORD _lpdwWriteSize){
+	HANDLE hReadPipe = NULL, hWritePipe = NULL;
+	HANDLE hSaveStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	HCRYPTPROV hProv;
+	DWORD dwUniqueId;
+
+	::CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
+	::CryptGenRandom(hProv, sizeof(dwUniqueId), (BYTE*)&dwUniqueId);
+	::CryptReleaseContext(hProv, NULL);
+
+	char szDesktopName[32];
+
+	wsprintf(szDesktopName, "desktop_%d", dwUniqueId);
+
+#if 1
+	::CreatePipe(&hReadPipe, &hWritePipe, NULL, INFINITE);
+	::DuplicateHandle(::GetCurrentProcess(), hReadPipe, ::GetCurrentProcess(), &hReadPipe, 0, FALSE, DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS);
+#else
+	char szPipeName[32];
+
+	wsprintf(szPipeName, "\\\\.\\pipe\\out_%d", dwUniqueId);
+
+	SECURITY_ATTRIBUTES sa;
+
+	sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+	sa.lpSecurityDescriptor = NULL;
+	sa.bInheritHandle = TRUE;
+	hReadPipe = CreateNamedPipe(szPipeName, PIPE_ACCESS_DUPLEX,PIPE_WAIT | PIPE_READMODE_BYTE | PIPE_TYPE_BYTE, PIPE_UNLIMITED_INSTANCES, 0, 0, 1000, &sa);
+	hWritePipe = CreateFile(szPipeName, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_FLAG_NO_BUFFERING, 0);
+#endif
+
+	::SetStdHandle(STD_OUTPUT_HANDLE, hWritePipe);
+
+	bool bNoStdOutput = false;
+	STARTUPINFO StartupInfo;
+	PROCESS_INFORMATION ProcessInfo;
+	HDESK hDesk;
+
+	if (!::GetStdHandle(STD_OUTPUT_HANDLE))
+	{
+		bNoStdOutput = true;
+		hDesk = ::CreateDesktop(szDesktopName, NULL, NULL, 0, DESKTOP_SWITCHDESKTOP | DESKTOP_WRITEOBJECTS | DESKTOP_CREATEWINDOW, NULL);
+		if (hDesk == NULL)
+		{
+			::CloseHandle(hReadPipe);
+			::CloseHandle(hWritePipe);
+			return g_StdOut.SetLastError(ERROR_FATAL);
+		}
+
+		SECURITY_ATTRIBUTES SecurityAttributes;
+		SecurityAttributes.nLength = sizeof(SECURITY_ATTRIBUTES);
+		SecurityAttributes.bInheritHandle = TRUE;
+		SecurityAttributes.lpSecurityDescriptor = NULL;
+
+		::ZeroMemory(&StartupInfo, sizeof(STARTUPINFO));
+		StartupInfo.cb = sizeof(StartupInfo);
+		StartupInfo.dwFlags = STARTF_USESHOWWINDOW;
+		StartupInfo.wShowWindow = SW_SHOW;
+		StartupInfo.lpDesktop = szDesktopName;
+		::CreateProcess(NULL, "cmd.exe", NULL, NULL, FALSE, CREATE_NEW_CONSOLE, NULL, NULL, &StartupInfo, &ProcessInfo);
+
+		for (int i=0; i<100; i++)
+		{
+			if (::AttachConsole(ProcessInfo.dwProcessId))
+				break;
+			::Sleep(100);
+		}
+
+		::SetStdHandle(STD_OUTPUT_HANDLE, hWritePipe);
+	}
+
+	g_StdOut.SetStdOutMode(TRUE);
+
+	ReadPipeParam param;
+	HANDLE hInitEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	UINT uiReadPipeThreadId = 0;
+
+	param.hReadPipe = hReadPipe;
+	param.pszBuffer = &_szBuffer;
+	param.llSize = _llSize;
+	param.hInitEvent = hInitEvent;
+	HANDLE hReadPipeThread = (HANDLE)_beginthreadex(NULL, 0, ReadPipe, &param, 0, &uiReadPipeThreadId);
+
+	::WaitForSingleObject(hInitEvent, INFINITE);
+	::CloseHandle(hInitEvent);
+
+	::PostThreadMessage(uiReadPipeThreadId, SevenZip(_hwnd, _szCmdLine, NULL, 0), 0, 0);
+
+	::WaitForSingleObject(hReadPipeThread, INFINITE);
+	::CloseHandle(hReadPipeThread);
+	::SetStdHandle(STD_OUTPUT_HANDLE, hSaveStdOut);
+	if (bNoStdOutput)
+	{
+		::FreeConsole();
+		::TerminateProcess(ProcessInfo.hProcess,0);
+		::WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+		::CloseHandle(ProcessInfo.hThread);
+		::CloseHandle(ProcessInfo.hProcess);
+		::CloseDesktop(hDesk);
+	}
+	::CloseHandle(hReadPipe);
+	::CloseHandle(hWritePipe);
+
+	return g_StdOut.GetLastError(NULL);
 }
 /* ’Ç‰Á‚±‚±‚Ü‚Å */
 
@@ -894,7 +1144,8 @@ BOOL WINAPI SevenZipSetPriority(const int _nPriority)
 /* ’Ç‰Á‚±‚±‚©‚ç */
 BOOL WINAPI SevenZipSetCP(const UINT _uCodePage)
 {
-	if (_uCodePage > 1){
+	if (_uCodePage > 1)
+	{
 		g_ArcCodePage = _uCodePage;
 		return TRUE;
 	}

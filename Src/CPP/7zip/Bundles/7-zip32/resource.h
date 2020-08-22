@@ -46,6 +46,8 @@
 #define IDS_WORK_FILE                   1029
 #define IDS_PROCESS_SIZE                1030
 #define IDS_ARCHIVE_FILE                1031
+#define IDS_MODE                        1032 // ’Ç‰ÁForMem
+#define IDS_MODE_SKIP                   1033 // ’Ç‰ÁForMem
 #define IDE_TITLE                       1035
 #define IDE_BEGIN_PROMPT                1036
 #define IDE_RUN_PROGRAM                 1037

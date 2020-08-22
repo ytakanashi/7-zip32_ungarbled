@@ -3,7 +3,6 @@
 #include "StdAfx.h"
 
 #include "ConsoleClose.h"
-
 #if !defined(UNDER_CE) && defined(_WIN32)
 #include "../../../Common/MyWindows.h"
 #endif
@@ -24,11 +23,10 @@ BOOL HandlerRoutine()									// í«â¡
     return TRUE;
   }
      çÌèúÇ±Ç±Ç‹Ç≈ */
-
-  g_BreakCounter++;
-  if (g_BreakCounter < kBreakAbortThreshold)
-    return TRUE;
-  return FALSE;
+	g_BreakCounter++;
+	if(g_BreakCounter < kBreakAbortThreshold)
+		return TRUE;
+	return FALSE;
   /*
   switch (ctrlType)
   {

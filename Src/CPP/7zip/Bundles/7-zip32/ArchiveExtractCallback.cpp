@@ -815,7 +815,6 @@ STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index, ISequentialOutStre
 
   #endif
 
-
   UStringVector &pathParts = _item.PathParts;
 
   if (_wildcardCensor)
@@ -971,8 +970,8 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
   {
     outStreamLoc = new CStdOutFileStream;
   }
-  else
-  {
+//  else	// íœ(19000002)
+//  {		// íœ(19000002)
     {
       NCOM::CPropVariant prop;
       RINOK(archive->GetProperty(index, kpidAttrib, &prop));
@@ -1028,8 +1027,8 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
     #endif
 
     UString processedPath (MakePathFromParts(pathParts));
-    
-    if (!isAnti)
+ //   if (!isAnti)				// íœ(19000002)
+	if(!_stdOutMode && !isAnti)	// ’Ç‰Á(19000002)
     {
       if (!_item.IsDir)
       {
@@ -1077,6 +1076,8 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
 
 
     FString fullProcessedPath (us2fs(processedPath));
+    if (!_stdOutMode)	// ’Ç‰Á(19000002)
+    {					// ’Ç‰Á(19000002)
     if (_pathMode != NExtract::NPathMode::kAbsPaths
         || !NName::IsAbsolutePath(processedPath))
     {
@@ -1452,7 +1453,64 @@ if (askExtractMode == NArchive::NExtract::NAskMode::kExtract && !_testMode)
     
     outStreamLoc = _outFileStream;
   }
+	else{	// ’Ç‰Á(19000002)
+    if (g_StdOut.GetProgressDialog())
+    {
+      NCOM::CPropVariant prop;
+      RINOK(archive->GetProperty(index, kpidPackSize, &prop));
+      UInt64 nCompFileSize = 0;
+      if (prop.vt != VT_EMPTY)									// •ÏX
+          ConvertPropVariantToUInt64(prop, nCompFileSize);		// •ÏX
+      prop.vt = VT_EMPTY;
+      RINOK(archive->GetProperty(index, kpidCRC, &prop));
+      DWORD dwCRC = (prop.vt != VT_EMPTY) ? prop.ulVal : 0;
+      prop.vt = VT_EMPTY;
+      RINOK(archive->GetProperty(index, kpidMethod, &prop));
+//    LPCWSTR lpMethod = (prop.vt != VT_EMPTY) ? prop.bstrVal : L"";	// íœ(15120002)
+      UString s;											// ’Ç‰Á(15120002)
+      if (prop.vt != VT_EMPTY)								// ’Ç‰Á(15120002)
+          ConvertPropertyToString2(s,prop,kpidMethod);		// ’Ç‰Á(15120002)
+      LPCWSTR lpMethod = (!s.IsEmpty()) ? s.Ptr() : L"";	// ’Ç‰Á(15120002)
+      g_StdOut.GetProgressDialog()->AddWorkFile(fs2us(processedPath), fs2us(fullProcessedPath), _fi.Attrib, _encrypted, _fi.MTime, _curSize, nCompFileSize, dwCRC, lpMethod);
+    }
+	}	// ’Ç‰Á(19000002)
 }
+/* ’Ç‰Á(19000002)‚±‚±‚©‚ç */
+else if(askExtractMode == NArchive::NExtract::NAskMode::kSkip && !_testMode){
+    UString processedPath (MakePathFromParts(pathParts));
+
+    if (g_StdOut.GetProgressDialog())
+    {
+
+      NCOM::CPropVariant prop;
+      RINOK(archive->GetProperty(index, kpidAttrib, &prop));
+      if (prop.vt == VT_UI4)
+      {
+        _fi.Attrib = prop.ulVal;
+        _fi.AttribDefined = true;
+      }
+      else if (prop.vt == VT_EMPTY)
+        _fi.AttribDefined = false;
+      else
+        return E_FAIL;
+      RINOK(GetTime(index, kpidMTime, _fi.MTime, _fi.MTimeDefined));
+      RINOK(archive->GetProperty(index, kpidPackSize, &prop));
+      UInt64 nCompFileSize = 0;
+      if (prop.vt != VT_EMPTY)
+          ConvertPropVariantToUInt64(prop, nCompFileSize);
+      prop.vt = VT_EMPTY;
+      RINOK(archive->GetProperty(index, kpidCRC, &prop));
+      DWORD dwCRC = (prop.vt != VT_EMPTY) ? prop.ulVal : 0;
+      prop.vt = VT_EMPTY;
+      RINOK(archive->GetProperty(index, kpidMethod, &prop));
+      UString s;
+      if (prop.vt != VT_EMPTY)
+          ConvertPropertyToString2(s,prop,kpidMethod);
+      LPCWSTR lpMethod = (!s.IsEmpty()) ? s.Ptr() : L"";
+      g_StdOut.GetProgressDialog()->AddSkipFile(fs2us(processedPath), L"", _fi.Attrib, _encrypted, _fi.MTime, _curSize, nCompFileSize, dwCRC, lpMethod);
+    }
+}
+/* ’Ç‰Á(19000002)‚±‚±‚Ü‚Å*/
 
   #ifndef _SFX
 
@@ -1580,7 +1638,7 @@ STDMETHODIMP CArchiveExtractCallback::SetOperationResult(Int32 opRes)
   #endif
 
   RINOK(CloseFile());
-  
+
   #ifdef _USE_SECURITY_CODE
   if (!_stdOutMode && _extractMode && _ntOptions.NtSecurity.Val && _arc->GetRawProps)
   {

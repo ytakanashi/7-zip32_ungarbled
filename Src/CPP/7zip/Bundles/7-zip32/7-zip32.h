@@ -1,7 +1,7 @@
 #if !defined(SEVENZIP_H)
 #define SEVENZIP_H
 
-#define SEVENZIP32_VERSION	19000001
+#define SEVENZIP32_VERSION	19000002
 
 #ifndef FNAME_MAX32
 #define FNAME_MAX32		512
@@ -120,6 +120,7 @@ typedef struct {
 #define	ARCEXTRACT_END			2
 #define ARCEXTRACT_OPEN			3
 #define ARCEXTRACT_COPY			4
+#define ARCEXTRACT_SKIP			5	// 追加(19000002)
 typedef BOOL CALLBACK ARCHIVERPROC(HWND _hwnd, UINT _uMsg, UINT _nState, LPVOID _lpEis);
 typedef ARCHIVERPROC *LPARCHIVERPROC;
 #endif
@@ -140,6 +141,7 @@ extern "C" {
 	BOOL  WINAPI SevenZipSetCursorInterval(const WORD _Interval);
 	BOOL  WINAPI SevenZipGetRunning();
 	int   WINAPI SevenZipExtractMem(HWND _hwnd, LPCSTR _szCmdLine, LPBYTE _szBuffer, const DWORD _dwSize, time_t * _lpTime, LPWORD _lpwAttr, LPDWORD _lpdwWriteSize);	// 追加
+	int   WINAPI SevenZipExtractMemEx(HWND _hwnd, LPCSTR _szCmdLine, LPBYTE _szBuffer, const ULHA_INT64 _llSize, time_t * _lpTime, LPWORD _lpwAttr, LPDWORD _lpdwWriteSize);	// 追加
 
 	/* 統合アーカイバ共通API */
 	BOOL  WINAPI SevenZipConfigDialog(const HWND _hwnd, LPSTR _szOptionBuffer, const int _iMode);
