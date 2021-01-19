@@ -547,6 +547,7 @@ int COpenArchive::FindNext(INDIVIDUALINFO *lpSubInfo)
 			}
 			/* í«â¡Ç±Ç±Ç‹Ç≈ */
 //			if (Censor_CheckPath(*m_pWildcardCensor, item))	// ïœçX,çÌèú
+			if (pathOk)
 			{
 				if (isFolder)
 				{
