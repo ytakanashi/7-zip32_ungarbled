@@ -152,7 +152,7 @@ _/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 ●開発履歴
  ○Ver.19.00.00.03 - 2021/01/19
- ・SevenZipFindFirst()で設定したワールドカードがSevenZipFindNext()で反映されない不具合を修正。(Special Thanks!:HotKeyIt様)
+ ・SevenZipFindFirst()で設定したワイルドカードがSevenZipFindNext()で反映されない不具合を修正。(Special Thanks!:HotKeyIt様)
 
  ○Ver.19.00.00.02 - 2020/08/22
  ・4,294,967,295バイトを超える出力に対応したSevenZipExtractMemEx()を追加。(Special Thanks!:tenteko様)
