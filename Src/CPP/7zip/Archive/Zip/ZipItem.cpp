@@ -33,9 +33,12 @@ static const CUInt32PCharPair g_ExtraTypes[] =
   { NExtraID::kStrongEncrypt, "StrongCrypto" },
   { NExtraID::kUnixTime, "UT" },
   { NExtraID::kUnixExtra, "UX" },
+  { NExtraID::kUnix2Extra, "Ux" },
+  { NExtraID::kUnix3Extra, "ux" },
   { NExtraID::kIzUnicodeComment, "uc" },
   { NExtraID::kIzUnicodeName, "up" },
-  { NExtraID::kWzAES, "WzAES" }
+  { NExtraID::kWzAES, "WzAES" },
+  { NExtraID::kApkAlign, "ApkAlign" }
 };
 
 void CExtraSubBlock::PrintInfo(AString &s) const
@@ -46,6 +49,22 @@ void CExtraSubBlock::PrintInfo(AString &s) const
     if (pair.Value == ID)
     {
       s += pair.Name;
+      /*
+      if (ID == NExtraID::kApkAlign && Data.Size() >= 2)
+      {
+        char sz[32];
+        sz[0] = ':';
+        ConvertUInt32ToHex(GetUi16(Data), sz + 1);
+        s += sz;
+        for (unsigned j = 2; j < Data.Size(); j++)
+        {
+          char sz[32];
+          sz[0] = '-';
+          ConvertUInt32ToHex(Data[j], sz + 1);
+          s += sz;
+        }
+      }
+      */
       return;
     }
   }
@@ -209,6 +228,7 @@ bool CLocalItem::IsDir() const
 
 bool CItem::IsDir() const
 {
+  // FIXME: we can check InfoZip UTF-8 name at first.
   if (NItemName::HasTailSlash(Name, GetCodePage()))
     return true;
   
@@ -323,10 +343,30 @@ bool CItem::GetPosixAttrib(UInt32 &attrib) const
   return false;
 }
 
+
+bool CExtraSubBlock::CheckIzUnicode(const AString &s) const
+{
+  size_t size = Data.Size();
+  if (size < 1 + 4)
+    return false;
+  const Byte *p = (const Byte *)Data;
+  if (p[0] > 1)
+    return false;
+  if (CrcCalc(s, s.Len()) != GetUi32(p + 1))
+    return false;
+  size -= 5;
+  p += 5;
+  for (size_t i = 0; i < size; i++)
+    if (p[i] == 0)
+      return false;
+  return Check_UTF8_Buf((const char *)(const void *)p, size, false);
+}
+  
+
 void CItem::GetUnicodeString(UString &res, const AString &s, bool isComment, bool useSpecifiedCodePage, UINT codePage) const
 {
   bool isUtf8 = IsUtf8();
-  bool ignore_Utf8_Errors = true;
+  // bool ignore_Utf8_Errors = true;
   
   if (!isUtf8)
   {
@@ -341,10 +381,14 @@ void CItem::GetUnicodeString(UString &res, const AString &s, bool isComment, boo
         const CExtraSubBlock &sb = subBlocks[i];
         if (sb.ID == id)
         {
-          AString utf;
-          if (sb.ExtractIzUnicode(CrcCalc(s, s.Len()), utf))
-            if (ConvertUTF8ToUnicode(utf, res))
+          if (sb.CheckIzUnicode(s))
+          {
+            // const unsigned kIzUnicodeHeaderSize = 5;
+            if (Convert_UTF8_Buf_To_Unicode(
+                (const char *)(const void *)(const Byte *)sb.Data + 5,
+                sb.Data.Size() - 5, res))
               return;
+          }
           break;
         }
       }
@@ -359,63 +403,70 @@ void CItem::GetUnicodeString(UString &res, const AString &s, bool isComment, boo
          We try to get name as UTF-8.
          Do we need to do it in POSIX version also? */
       isUtf8 = true;
-      ignore_Utf8_Errors = false;
+
+      /* 21.02: we want to ignore UTF-8 errors to support file paths that are mixed
+          of UTF-8 and non-UTF-8 characters. */
+      // ignore_Utf8_Errors = false;
+      // ignore_Utf8_Errors = true;
     }
     #endif
   }
   
   
   if (isUtf8)
-    if (ConvertUTF8ToUnicode(s, res) || ignore_Utf8_Errors)
-//      return;		   íœ(15140001)
-       /* ’Ç‰Á‚±‚±‚©‚ç(15140001) */
+  {
+    ConvertUTF8ToUnicode(s, res);
+//    return;                           íœ(21020001)
+//  } // íœ(21020001)
+       /* ’Ç‰Á‚±‚±‚©‚ç(21020001) */
+      if (!IsNormalizedString(NormalizationC, res, res.Len() + 1))
       {
-        if (!IsNormalizedString(NormalizationC, res, res.Len() + 1))
+        UString src(res);
+        int destLen = NormalizeString(NormalizationC, src, src.Len(), NULL, 0);
+        wchar_t *p = res.GetBuf(destLen);
+        destLen = NormalizeString(NormalizationC, src, src.Len(), p, destLen);
+        if (destLen > 0)
         {
-          UString src(res);
-          int destLen = NormalizeString(NormalizationC, src, src.Len(), NULL, 0);
-          wchar_t *p = res.GetBuf(destLen);
-          destLen = NormalizeString(NormalizationC, src, src.Len(), p, destLen);
-          if (destLen > 0)
-          {
-            p[destLen] = 0;
-            res.ReleaseBuf_SetLen(destLen);
-            return;
-          } else res.Empty();
-        }
-      } else res.Empty();
-
-    if (useSpecifiedCodePage && res.IsEmpty())
-    {
-      Int32 codepage = codePage;
-      UINT srcLen = s.Len();
-      char* srcChar = const_cast<char*>(s.Ptr());
-      CoInitialize(NULL);
-      IMultiLanguage2* lang = NULL;
-      HRESULT hr = CoCreateInstance(CLSID_CMultiLanguage, NULL, CLSCTX_ALL, IID_IMultiLanguage2, (LPVOID*)&lang);
-
-      DWORD mode = 0;
-      UINT destLen = 0;
-      if (SUCCEEDED(hr))
-        hr = lang->ConvertStringToUnicode(&mode, codepage, srcChar, &srcLen, NULL, &destLen);
-
-      wchar_t* p;
-      if (SUCCEEDED(hr))
-      {
-        p = res.GetBuf(destLen);
-
-        hr = lang->ConvertStringToUnicode(&mode, codepage, srcChar, &srcLen, p, &destLen);
-        p[destLen] = 0;
-        res.ReleaseBuf_SetLen(destLen);
-      }
-
-      if (lang)
-        lang->Release();
-      CoUninitialize();
-      if (SUCCEEDED(hr))
+          p[destLen] = 0;
+          res.ReleaseBuf_SetLen(destLen);
           return;
-    }else if (res.IsEmpty())
-    /* ’Ç‰Á‚±‚±‚Ü‚Å(15140001) */
+        } else res.Empty();
+      }
+    } else res.Empty();
+    /* ’Ç‰Á‚±‚±‚Ü‚Å(21020001) */
+
+  /* ’Ç‰Á‚±‚±‚©‚ç(21020001) */
+  if (useSpecifiedCodePage && res.IsEmpty())
+  {
+    Int32 codepage = codePage;
+    UINT srcLen = s.Len();
+    char* srcChar = const_cast<char*>(s.Ptr());
+    CoInitialize(NULL);
+    IMultiLanguage2* lang = NULL;
+    HRESULT hr = CoCreateInstance(CLSID_CMultiLanguage, NULL, CLSCTX_ALL, IID_IMultiLanguage2, (LPVOID*)&lang);
+
+    DWORD mode = 0;
+    UINT destLen = 0;
+    if (SUCCEEDED(hr))
+      hr = lang->ConvertStringToUnicode(&mode, codepage, srcChar, &srcLen, NULL, &destLen);
+
+    wchar_t* p;
+    if (SUCCEEDED(hr))
+    {
+      p = res.GetBuf(destLen);
+
+      hr = lang->ConvertStringToUnicode(&mode, codepage, srcChar, &srcLen, p, &destLen);
+      p[destLen] = 0;
+      res.ReleaseBuf_SetLen(destLen);
+    }
+
+    if (lang)
+      lang->Release();
+    CoUninitialize();
+    if (SUCCEEDED(hr))
+        return;
+  }else if (res.IsEmpty())
+  /* ’Ç‰Á‚±‚±‚Ü‚Å(21020001) */
   
   MultiByteToUnicodeString2(res, s, useSpecifiedCodePage ? codePage : GetCodePage());
 }

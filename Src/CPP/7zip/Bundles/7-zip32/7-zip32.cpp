@@ -11,7 +11,7 @@
 #include "Common/UTFConvert.h"
 #include "Windows/FileDir.h"
 
-extern int g_CodePage;
+//extern int g_CodePage;	// çÌèú
 UINT32 g_ArcCodePage;	// í«â¡
 
 BOOL APIENTRY DllMain( HANDLE hModule, 
@@ -95,7 +95,8 @@ int WINAPI SevenZip(const HWND _hwnd, LPCSTR _szCmdLine, LPSTR _szOutput, const 
 	::CloseHandle(g_StdOut.GetThread());
 	g_StdOut.CopyBuf(_szOutput, _dwSize);
 	g_StdOut.ReSet();
-	g_CodePage = -1;
+	//g_CodePage = -1;	// çÌèú
+	g_StdOut.CodePage = -1;	// í«â¡
 	if (scl.m_lpBaseDirectory)
 		::NWindows::NFile::NDir::SetCurrentDir(strCurrentDirectory);
     return dwThreadId;

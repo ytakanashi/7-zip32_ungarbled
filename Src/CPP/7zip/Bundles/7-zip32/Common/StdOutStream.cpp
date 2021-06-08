@@ -10,8 +10,6 @@
 
 static const char kNewLineChar =  '\n';
 
-extern int g_CodePage;
-
 CStdOutStream  g_StdOut;
 CStdOutStream  g_StdErr;	// 変更
 
@@ -19,6 +17,7 @@ CStdOutStream ::CStdOutStream ()
 {
 	_streamIsOpen = false;
 	IsTerminalMode = false;
+	CodePage = -1;	// 追加
 	_stream = stdout;
 	m_strLog = L"";
 	m_lpCommandLine = NULL;
@@ -70,9 +69,10 @@ CStdOutStream & CStdOutStream::operator<<(char c)
 	return *this;
 }
 
-void StdOut_Convert_UString_to_AString(const UString &s, AString &temp)
+//void StdOut_Convert_UString_to_AString(const UString &s, AString &temp)	// 削除
+void CStdOutStream::Convert_UString_to_AString(const UString &s, AString &temp)	// 追加
 {
-  int codePage = g_CodePage;
+  int codePage = CodePage;
   if (codePage == -1)
     codePage = CP_OEMCP;
   if (codePage == CP_UTF8)
@@ -83,7 +83,8 @@ void StdOut_Convert_UString_to_AString(const UString &s, AString &temp)
 
 void CStdOutStream::PrintUString(const UString &s, AString &temp)
 {
-  StdOut_Convert_UString_to_AString(s, temp);
+//  StdOut_Convert_UString_to_AString(s, temp);	// 削除
+  Convert_UString_to_AString(s, temp);	// 追加
   *this << (const char *)temp;
 }
 
@@ -319,7 +320,7 @@ void CStdOutStream::SetCommandLine(const CSplitCmdLine& scl)
 // 成功時は0、バッファ不足の場合は必要なサイズを返す
 int CStdOutStream::WideCharToMultiByte(const UString &strWideChar, LPSTR lpMultiByteStr, int cchMultiByte)
 {
-	int codePage = g_CodePage;
+	int codePage = CodePage;	// 変更
 	if (codePage == -1)
 		codePage = m_bUnicode ? CP_UTF8 : CP_OEMCP;
 	AString dest;

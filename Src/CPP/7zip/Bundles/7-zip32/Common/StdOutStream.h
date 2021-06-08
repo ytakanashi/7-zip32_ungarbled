@@ -19,10 +19,11 @@ class CStdOutStream
 	bool _streamIsOpen;
 	FILE *_stream;
 public:
-	bool IsTerminalMode;
+  bool IsTerminalMode;
+  int CodePage;
 
 	CStdOutStream ();
-	CStdOutStream (FILE *stream): _streamIsOpen(false), _stream(stream) {};
+	CStdOutStream (FILE *stream): _streamIsOpen(false), _stream(stream), IsTerminalMode(false), CodePage(-1){};	// ïœçX
 	~CStdOutStream ();
 	operator FILE *() { return _stream; }
 	bool Flush() { return true; }
@@ -35,6 +36,8 @@ public:
 	CStdOutStream & operator<<(Int64 number) throw();
 	CStdOutStream & operator<<(UInt32 number) throw();
 	CStdOutStream & operator<<(UInt64 number) throw();
+
+	void CStdOutStream::Convert_UString_to_AString(const UString &s, AString &temp);		// í«â¡
 
 	void PrintUString(const UString &s, AString &temp);
 
@@ -100,7 +103,7 @@ CStdOutStream & endl(CStdOutStream & anOut);
 extern CStdOutStream g_StdOut;
 extern CStdOutStream g_StdErr;	// ïœçX
 
-void StdOut_Convert_UString_to_AString(const UString &s, AString &temp);
+//void StdOut_Convert_UString_to_AString(const UString &s, AString &temp);	// çÌèú
 
 HRESULT GetPassword(UString &password, UINT title);
 

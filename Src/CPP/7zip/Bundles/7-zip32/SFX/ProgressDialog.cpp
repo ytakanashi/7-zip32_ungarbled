@@ -122,7 +122,7 @@ bool CProgressDialog::OnTimer(WPARAM /* timerID */, LPARAM /* callback */)
     wchar_t s[64];
     ConvertUInt64ToString(percentValue, s);
     UString title = s;
-    title += L"% ";
+    title += "% ";
     SetText(title + _title);
     #ifndef _SFX
     AddToTitle(title + MainAddTitle);
@@ -134,7 +134,7 @@ bool CProgressDialog::OnTimer(WPARAM /* timerID */, LPARAM /* callback */)
 
 bool CProgressDialog::OnMessage(UINT message, WPARAM wParam, LPARAM lParam)
 {
-  switch(message)
+  switch (message)
   {
     case kCloseMessage:
     {
@@ -160,7 +160,7 @@ bool CProgressDialog::OnMessage(UINT message, WPARAM wParam, LPARAM lParam)
 
 bool CProgressDialog::OnButtonClicked(int buttonID, HWND buttonHWND)
 {
-  switch(buttonID)
+  switch (buttonID)
   {
     case IDCANCEL:
     {

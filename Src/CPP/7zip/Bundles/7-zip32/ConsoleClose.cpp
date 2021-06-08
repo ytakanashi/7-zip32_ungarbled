@@ -3,16 +3,23 @@
 #include "StdAfx.h"
 
 #include "ConsoleClose.h"
-#if !defined(UNDER_CE) && defined(_WIN32)
+
+#ifndef UNDER_CE
+
+#ifdef _WIN32
 #include "../../../Common/MyWindows.h"
+#else
+#include <stdlib.h>
+#include <signal.h>
 #endif
 
-//namespace NConsoleClose {							// íœ
+// namespace NConsoleClose {							// íœ
 
 unsigned g_BreakCounter = 0;
 static const unsigned kBreakAbortThreshold = 2;
 
-#if !defined(UNDER_CE) && defined(_WIN32)
+#ifdef _WIN32
+
 //static BOOL WINAPI HandlerRoutine(DWORD ctrlType)		// íœ
 BOOL HandlerRoutine()									// ’Ç‰Á
 {
@@ -22,11 +29,12 @@ BOOL HandlerRoutine()									// ’Ç‰Á
     // printf("\nCTRL_LOGOFF_EVENT\n");
     return TRUE;
   }
-     íœ‚±‚±‚Ü‚Å */
-	g_BreakCounter++;
-	if(g_BreakCounter < kBreakAbortThreshold)
-		return TRUE;
-	return FALSE;
+     íœ‚±‚±‚Ü‚Å */ 
+
+  g_BreakCounter++;
+  if (g_BreakCounter < kBreakAbortThreshold)
+    return TRUE;
+  return FALSE;
   /*
   switch (ctrlType)
   {
@@ -38,9 +46,52 @@ BOOL HandlerRoutine()									// ’Ç‰Á
   return FALSE;
   */
 }
-#endif
-
 namespace NConsoleClose {			// ’Ç‰Á
+
+CCtrlHandlerSetter::CCtrlHandlerSetter()
+{
+//  if (!SetConsoleCtrlHandler(HandlerRoutine, TRUE))	// íœ
+//    throw "SetConsoleCtrlHandler fails";				// íœ
+}
+
+CCtrlHandlerSetter::~CCtrlHandlerSetter()
+{
+//  if (!SetConsoleCtrlHandler(HandlerRoutine, FALSE))	// íœ
+  {
+    // warning for throw in destructor.
+    // throw "SetConsoleCtrlHandler fails";
+  }
+  g_BreakCounter = 0;									// ’Ç‰Á
+}
+
+#else // _WIN32
+
+static void HandlerRoutine(int)
+{
+  g_BreakCounter++;
+  if (g_BreakCounter < kBreakAbortThreshold)
+    return;
+  exit(EXIT_FAILURE);
+}
+
+CCtrlHandlerSetter::CCtrlHandlerSetter()
+{
+  memo_sig_int = signal(SIGINT, HandlerRoutine); // CTRL-C
+  if (memo_sig_int == SIG_ERR)
+    throw "SetConsoleCtrlHandler fails (SIGINT)";
+  memo_sig_term = signal(SIGTERM, HandlerRoutine); // for kill -15 (before "kill -9")
+  if (memo_sig_term == SIG_ERR)
+    throw "SetConsoleCtrlHandler fails (SIGTERM)";
+}
+
+CCtrlHandlerSetter::~CCtrlHandlerSetter()
+{
+  signal(SIGINT, memo_sig_int); // CTRL-C
+  signal(SIGTERM, memo_sig_term); // kill {pid}
+}
+
+#endif // _WIN32
+
 /*
 void CheckCtrlBreak()
 {
@@ -49,24 +100,6 @@ void CheckCtrlBreak()
 }
 */
 
-CCtrlHandlerSetter::CCtrlHandlerSetter()
-{
-  #if !defined(UNDER_CE) && defined(_WIN32)
-//  if (!SetConsoleCtrlHandler(HandlerRoutine, TRUE))	// íœ
-//    throw "SetConsoleCtrlHandler fails";				// íœ
-  #endif
 }
 
-CCtrlHandlerSetter::~CCtrlHandlerSetter()
-{
-  #if !defined(UNDER_CE) && defined(_WIN32)
-//  if (!SetConsoleCtrlHandler(HandlerRoutine, FALSE))	// íœ
-  {
-    // warning for throw in destructor.
-    // throw "SetConsoleCtrlHandler fails";
-	g_BreakCounter = 0;									// ’Ç‰Á
-  }
-  #endif
-}
-
-}
+#endif

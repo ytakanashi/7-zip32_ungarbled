@@ -278,6 +278,10 @@
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\C\DllSecur.c" />
+    <ClCompile Include="..\..\..\..\Windows\System.cpp" />
+    <ClCompile Include="..\..\..\Common\CWrappers.cpp" />
+    <ClCompile Include="..\..\..\..\..\C\Lzma2DecMt.c" />
+    <ClCompile Include="..\..\..\..\..\C\MtDec.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -465,6 +469,10 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\C\DllSecur.h" />
+    <ClInclude Include="..\..\..\..\Windows\System.h" />
+    <ClInclude Include="..\..\..\Common\Cwrappers.h" />
+    <ClInclude Include="..\..\..\..\..\C\Lzma2DecMt.h" />
+    <ClInclude Include="..\..\..\..\..\C\MtDec.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="setup.ico" />

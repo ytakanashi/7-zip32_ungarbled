@@ -72,11 +72,7 @@ public:
   {
     ProgressDialog.Create(title, thread, 0);
     {
-      #ifdef LANG
-      ProgressDialog.SetText(LangLoadString(IDS_PROGRESS_EXTRACTING, 0x02000890));	// ïœçX
-      #else
-      ProgressDialog.SetText(NWindows::MyLoadString(IDS_PROGRESS_EXTRACTING));		// ïœçX
-      #endif
+      ProgressDialog.SetText(LangString(IDS_PROGRESS_EXTRACTING));
     }
 
     ProgressDialog.Show(SW_SHOWNORMAL);

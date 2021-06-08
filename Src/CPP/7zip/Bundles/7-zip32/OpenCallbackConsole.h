@@ -50,6 +50,8 @@ public:
       #endif
       
       {}
+
+  virtual ~COpenCallbackConsole() {}
   
   void Init(CStdOutStream *outStream, CStdOutStream *errorStream, CStdOutStream *percentStream)
   {

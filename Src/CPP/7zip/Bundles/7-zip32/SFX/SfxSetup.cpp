@@ -47,32 +47,32 @@ static bool ReadDataString(CFSTR fileName, LPCSTR startID,
   NIO::CInFile inFile;
   if (!inFile.Open(fileName))
     return false;
-  const int kBufferSize = (1 << 12);
+  const size_t kBufferSize = (1 << 12);
 
   Byte buffer[kBufferSize];
-  int signatureStartSize = MyStringLen(startID);
-  int signatureEndSize = MyStringLen(endID);
+  const unsigned signatureStartSize = MyStringLen(startID);
+  const unsigned signatureEndSize = MyStringLen(endID);
   
-  UInt32 numBytesPrev = 0;
+  size_t numBytesPrev = 0;
   bool writeMode = false;
   UInt64 posTotal = 0;
   for (;;)
   {
     if (posTotal > (1 << 20))
       return (stringResult.IsEmpty());
-    UInt32 numReadBytes = kBufferSize - numBytesPrev;
-    UInt32 processedSize;
-    if (!inFile.Read(buffer + numBytesPrev, numReadBytes, processedSize))
+    const size_t numReadBytes = kBufferSize - numBytesPrev;
+    size_t processedSize;
+    if (!inFile.ReadFull(buffer + numBytesPrev, numReadBytes, processedSize))
       return false;
     if (processedSize == 0)
       return true;
-    UInt32 numBytesInBuffer = numBytesPrev + processedSize;
+    const size_t numBytesInBuffer = numBytesPrev + processedSize;
     UInt32 pos = 0;
     for (;;)
     {
       if (writeMode)
       {
-        if (pos > numBytesInBuffer - signatureEndSize)
+        if (pos + signatureEndSize > numBytesInBuffer)
           break;
         if (memcmp(buffer + pos, endID, signatureEndSize) == 0)
           return true;
@@ -84,7 +84,7 @@ static bool ReadDataString(CFSTR fileName, LPCSTR startID,
       }
       else
       {
-        if (pos > numBytesInBuffer - signatureStartSize)
+        if (pos + signatureStartSize > numBytesInBuffer)
           break;
         if (memcmp(buffer + pos, startID, signatureStartSize) == 0)
         {
@@ -114,7 +114,9 @@ struct CInstallIDInit
 } g_CInstallIDInit;
 
 
+#if defined(_WIN32) && defined(_UNICODE) && !defined(_WIN64) && !defined(UNDER_CE)
 #define NT_CHECK_FAIL_ACTION ShowErrorMessage(L"Unsupported Windows version"); return 1;
+#endif
 
 static void ShowErrorMessageSpec(const UString &name)
 {
@@ -345,7 +347,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     if (appLaunched.IsEmpty())
     {
       appLaunched = L"setup.exe";
-      if (!NFind::DoesFileExist(us2fs(appLaunched)))
+      if (!NFind::DoesFileExist_FollowLink(us2fs(appLaunched)))
       {
         if (!assumeYes)
           ShowErrorMessageRes(IDS_CANT_FIND_SETUP);			// ïœçX

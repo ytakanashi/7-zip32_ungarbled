@@ -342,9 +342,6 @@
     <ClInclude Include="..\..\Compress\ImplodeDecoder.h">
       <Filter>Compress\Implode</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Compress\ImplodeHuffmanDecoder.h">
-      <Filter>Compress\Implode</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Compress\Lzma2Decoder.h">
       <Filter>Compress\LZMA</Filter>
     </ClInclude>
@@ -395,9 +392,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Compress\ShrinkDecoder.h">
       <Filter>Compress\Shrink</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Compress\ZDecoder.h">
-      <Filter>Compress\Z</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Compress\Mtf8.h">
       <Filter>Compress\BWT</Filter>
@@ -819,6 +813,23 @@
     <ClInclude Include="..\..\..\..\C\7zTypes.h">
       <Filter>C</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Windows\PropVariantUtils.h" />
+    <ClInclude Include="..\..\UI\Common\Bench.h" />
+    <ClInclude Include="..\..\..\..\C\DllSecur.h" />
+    <ClInclude Include="..\..\..\..\C\Lzma2DecMt.h" />
+    <ClInclude Include="..\..\..\..\C\MtDec.h" />
+    <ClInclude Include="..\..\..\Windows\SystemInfo.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\C\Precomp.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Compress\XzDecoder.h">
+      <Filter>Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Compress\XzEncoder.h">
+      <Filter>Archive</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="7-zip32.cpp">
@@ -1046,9 +1057,6 @@
     <ClCompile Include="..\..\Compress\ImplodeDecoder.cpp">
       <Filter>Compress\Implode</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Compress\ImplodeHuffmanDecoder.cpp">
-      <Filter>Compress\Implode</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Compress\Lzma2Decoder.cpp">
       <Filter>Compress\LZMA</Filter>
     </ClCompile>
@@ -1082,9 +1090,6 @@
     <ClCompile Include="..\..\Compress\ShrinkDecoder.cpp">
       <Filter>Compress\Shrink</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Compress\ZDecoder.cpp">
-      <Filter>Compress\Z</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Compress\LzxDecoder.cpp">
       <Filter>Compress\LZX</Filter>
     </ClCompile>
@@ -1107,9 +1112,6 @@
       <Filter>Archive</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Archive\XzHandler.cpp">
-      <Filter>Archive</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Archive\ZHandler.cpp">
       <Filter>Archive</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Archive\7z\7zCompressionMode.cpp">
@@ -1477,6 +1479,35 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Windows\Registry.cpp">
       <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Windows\PropVariantUtils.cpp" />
+    <ClCompile Include="..\..\UI\Common\Bench.cpp" />
+    <ClCompile Include="..\..\..\..\C\DllSecur.c" />
+    <ClCompile Include="..\..\..\..\C\Lzma2DecMt.c" />
+    <ClCompile Include="..\..\..\..\C\MtDec.c" />
+    <ClCompile Include="..\..\..\Common\Sha1Prepare.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\Sha256Prepare.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Archive\Base64Handler.cpp">
+      <Filter>Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Windows\SystemInfo.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\C\Sha1Opt.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\C\Sha256Opt.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Compress\XzDecoder.cpp">
+      <Filter>Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Compress\XzEncoder.cpp">
+      <Filter>Archive</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -215,6 +215,7 @@ HRESULT CCallbackConsoleBase::OpenFileError_Base(const FString &path, DWORD syst
 {
   MT_LOCK
   FailedFiles.AddError(path, systemError);
+  NumNonOpenFiles++;
   /*
   if (systemError == ERROR_SHARING_VIOLATION)
   {
@@ -290,6 +291,14 @@ HRESULT CUpdateCallbackConsole::StartOpenArchive(const wchar_t *name)
 
 HRESULT CUpdateCallbackConsole::StartArchive(const wchar_t *name, bool updating)
 {
+ /* çÌèúÇ±Ç±Ç©ÇÁ
+  if (NeedPercents())
+    _percent.ClosePrint(true);
+  
+  _percent.ClearCurState();
+  NumNonOpenFiles = 0;
+ çÌèúÇ±Ç±Ç‹Ç≈ */
+
   if (_so)
   {
     *_so << (updating ? kUpdatingArchiveMessage : kCreatingArchiveMessage);
@@ -315,7 +324,7 @@ HRESULT CUpdateCallbackConsole::FinishArchive(const CFinishArchiveStat &st)
     AString s;
     // Print_UInt64_and_String(s, _percent.Files == 1 ? "file" : "files", _percent.Files);
  /* çÌèúÇ±Ç±Ç©ÇÁ
-    PrintPropPair(s, "Files read from disk", _percent.Files);
+    PrintPropPair(s, "Files read from disk", _percent.Files - NumNonOpenFiles);
     s.Add_LF();
  çÌèúÇ±Ç±Ç‹Ç≈ */
     s += "Archive size: ";

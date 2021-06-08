@@ -287,9 +287,6 @@
     <ClCompile Include="..\..\Compress\ImplodeDecoder.cpp">
       <Filter>Compress\Zip Compress</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Compress\ImplodeHuffmanDecoder.cpp">
-      <Filter>Compress\Zip Compress</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Compress\PpmdZip.cpp">
       <Filter>Compress\Zip Compress</Filter>
     </ClCompile>
@@ -923,6 +920,21 @@
     <ClCompile Include="..\..\Compress\XpressDecoder.cpp">
       <Filter>Compress</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Common\XzCrc64Init.cpp" />
+    <ClCompile Include="..\..\Compress\LzfseDecoder.cpp" />
+    <ClCompile Include="..\..\Compress\XzDecoder.cpp" />
+    <ClCompile Include="..\..\Compress\XzEncoder.cpp" />
+    <ClCompile Include="..\..\..\..\C\Lzma2DecMt.c" />
+    <ClCompile Include="..\..\..\..\C\MtDec.c" />
+    <ClCompile Include="..\..\..\Common\Sha1Prepare.cpp" />
+    <ClCompile Include="..\..\..\Common\Sha256Prepare.cpp" />
+    <ClCompile Include="..\..\..\..\C\Ppmd7aDec.c" />
+    <ClCompile Include="..\..\..\..\C\Sha1Opt.c" />
+    <ClCompile Include="..\..\..\..\C\Sha256Opt.c" />
+    <ClCompile Include="..\..\Archive\Base64Handler.cpp" />
+    <ClCompile Include="..\..\..\Windows\Registry.cpp" />
+    <ClCompile Include="..\..\..\Windows\SystemInfo.cpp" />
+    <ClCompile Include="..\..\UI\Common\Bench.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
@@ -1054,9 +1066,6 @@
       <Filter>Compress\Zip Compress</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Compress\ImplodeDecoder.h">
-      <Filter>Compress\Zip Compress</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Compress\ImplodeHuffmanDecoder.h">
       <Filter>Compress\Zip Compress</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Compress\PpmdZip.h">
@@ -1569,6 +1578,13 @@
     <ClInclude Include="..\..\Compress\XpressDecoder.h">
       <Filter>Compress</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Common\MyBuffer2.h" />
+    <ClInclude Include="..\..\Compress\LzfseDecoder.h" />
+    <ClInclude Include="..\..\Compress\XzDecoder.h" />
+    <ClInclude Include="..\..\Compress\XzEncoder.h" />
+    <ClInclude Include="..\..\..\..\C\7zBuf.h" />
+    <ClInclude Include="..\..\..\Windows\Registry.h" />
+    <ClInclude Include="..\..\UI\Common\Bench.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\..\Asm\x86\7zCrcOpt.asm">

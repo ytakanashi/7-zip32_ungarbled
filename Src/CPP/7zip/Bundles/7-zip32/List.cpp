@@ -352,7 +352,7 @@ struct CListStat2
     AltStreams.Update(st.AltStreams);
     NumDirs += st.NumDirs;
   }
-  const UInt64 GetNumStreams() const { return MainFiles.NumFiles + AltStreams.NumFiles; }
+  UInt64 GetNumStreams() const { return MainFiles.NumFiles + AltStreams.NumFiles; }
   CListStat &GetStat(bool altStreamsMode) { return altStreamsMode ? AltStreams : MainFiles; }
 };
 
@@ -756,7 +756,7 @@ void CFieldPrinter::PrintSum(const CListStat2 &stat2)
   PrintSum(stat2.MainFiles, stat2.NumDirs, kString_Files);
   if (stat2.AltStreams.NumFiles != 0)
   {
-    PrintSum(stat2.AltStreams, 0, kString_AltStreams);;
+    PrintSum(stat2.AltStreams, 0, kString_AltStreams);
     CListStat st = stat2.MainFiles;
     st.Update(stat2.AltStreams);
     PrintSum(st, 0, kString_Streams);
@@ -910,7 +910,7 @@ static HRESULT PrintArcProp(CStdOutStream &so, IInArchive *archive, PROPID propI
 static void PrintArcTypeError(CStdOutStream &so, const UString &type, bool isWarning)
 {
   so << "Open " << (isWarning ? "WARNING" : "ERROR")
-    << ": Can not open the file as ["
+    << ": Cannot open the file as ["
     << type
     << "] archive"
     << endl;
@@ -931,6 +931,7 @@ static void ErrorInfo_Print(CStdOutStream &so, const CArcErrorInfo &er)
     PrintPropPair(so, "WARNING", er.WarningMessage, true);
 }
 
+HRESULT Print_OpenArchive_Props(CStdOutStream &so, const CCodecs *codecs, const CArchiveLink &arcLink);
 HRESULT Print_OpenArchive_Props(CStdOutStream &so, const CCodecs *codecs, const CArchiveLink &arcLink)
 {
   FOR_VECTOR (r, arcLink.Arcs)
@@ -995,11 +996,12 @@ HRESULT Print_OpenArchive_Props(CStdOutStream &so, const CCodecs *codecs, const 
   return S_OK;
 }
 
+HRESULT Print_OpenArchive_Error(CStdOutStream &so, const CCodecs *codecs, const CArchiveLink &arcLink);
 HRESULT Print_OpenArchive_Error(CStdOutStream &so, const CCodecs *codecs, const CArchiveLink &arcLink)
 {
   #ifndef _NO_CRYPTO
   if (arcLink.PasswordWasAsked)
-    so << "Can not open encrypted archive. Wrong password?";
+    so << "Cannot open encrypted archive. Wrong password?";
   else
   #endif
   {
@@ -1007,10 +1009,10 @@ HRESULT Print_OpenArchive_Error(CStdOutStream &so, const CCodecs *codecs, const 
     {
       so.NormalizePrint_UString(arcLink.NonOpen_ArcPath);
       so << endl;
-      PrintArcTypeError(so, codecs->Formats[arcLink.NonOpen_ErrorInfo.ErrorFormatIndex].Name, false);
+      PrintArcTypeError(so, codecs->Formats[(unsigned)arcLink.NonOpen_ErrorInfo.ErrorFormatIndex].Name, false);
     }
     else
-      so << "Can not open the file as archive";
+      so << "Cannot open the file as archive";
   }
 
   so << endl;
@@ -1070,12 +1072,12 @@ HRESULT ListArchives(CCodecs *codecs,
     if (!stdInMode)
     {
       NFile::NFind::CFileInfo fi;
-      if (!fi.Find(us2fs(arcPath)))
+      if (!fi.Find_FollowLink(us2fs(arcPath)))
       {
         DWORD errorCode = GetLastError();
         if (errorCode == 0)
           errorCode = ERROR_FILE_NOT_FOUND;
-        lastError = HRESULT_FROM_WIN32(lastError);;
+        lastError = HRESULT_FROM_WIN32(errorCode);
         g_StdOut.Flush();
         if (g_ErrStream)
         {
@@ -1172,9 +1174,6 @@ HRESULT ListArchives(CCodecs *codecs,
     }
     
     {
-      if (arcLink.NonOpen_ErrorInfo.ErrorFormatIndex >= 0)
-        numErrors++;
-      
       FOR_VECTOR (r, arcLink.Arcs)
       {
         const CArcErrorInfo &arc = arcLink.Arcs[r].ErrorInfo;
@@ -1288,7 +1287,7 @@ HRESULT ListArchives(CCodecs *codecs,
         }
         else
         {
-          SplitPathToParts(fp.FilePath, pathParts);;
+          SplitPathToParts(fp.FilePath, pathParts);
           bool include;
           if (!wildcardCensor.CheckPathVect(pathParts, !fp.IsDir, include))
             continue;
@@ -1340,7 +1339,7 @@ HRESULT ListArchives(CCodecs *codecs,
       {
         g_StdOut << "----------\n";
         PrintPropPair(g_StdOut, "Path", arcLink.NonOpen_ArcPath, false);
-        PrintArcTypeError(g_StdOut, codecs->Formats[arcLink.NonOpen_ErrorInfo.ErrorFormatIndex].Name, false);
+        PrintArcTypeError(g_StdOut, codecs->Formats[(unsigned)arcLink.NonOpen_ErrorInfo.ErrorFormatIndex].Name, false);
       }
     }
     
