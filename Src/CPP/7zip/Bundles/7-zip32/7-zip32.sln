@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual C++ Express 2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7-zip32", "7-zip32.vcxproj", "{1A9DBBE1-D4FA-4C5C-B60F-96B4067C500A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EC842CBF-4217-49C4-8788-10D5EE07993D} = {EC842CBF-4217-49C4-8788-10D5EE07993D}
@@ -59,5 +61,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3D8848B2-B93E-4D09-A22E-50DDC2F02A3D}
 	EndGlobalSection
 EndGlobal

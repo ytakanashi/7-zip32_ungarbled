@@ -1509,6 +1509,8 @@
     <ClCompile Include="..\..\Compress\XzEncoder.cpp">
       <Filter>Archive</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Common\LzFindPrepare.cpp" />
+    <ClCompile Include="..\..\..\..\C\LzFindOpt.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="7-zip32.def">
