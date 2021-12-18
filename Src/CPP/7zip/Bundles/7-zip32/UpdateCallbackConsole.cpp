@@ -5,6 +5,7 @@
 #include "../../../Common/IntToString.h"
 
 #include "../../../Windows/ErrorMsg.h"
+#include "../../../Windows/FileName.h"
 
 #ifndef _7ZIP_ST
 #include "../../../Windows/Synchronization.h"
@@ -504,7 +505,7 @@ HRESULT CUpdateCallbackConsole::SetRatioInfo(const UInt64 * /* inSize */, const 
   return CheckBreak2();
 }
 
-HRESULT CCallbackConsoleBase::PrintProgress(const wchar_t *name, const char *command, bool showInLog)
+HRESULT CCallbackConsoleBase::PrintProgress(const wchar_t *name, bool isDir, const char *command, bool showInLog)
 {
   MT_LOCK
   
@@ -523,6 +524,8 @@ HRESULT CCallbackConsoleBase::PrintProgress(const wchar_t *name, const char *com
     if (name)
     {
       _tempU = name;
+      if (isDir)
+        NWindows::NFile::NName::NormalizeDirPathPrefix(_tempU);
       _so->Normalize_UString(_tempU);
     }
     _so->PrintUString(_tempU, _tempA);
@@ -552,7 +555,7 @@ HRESULT CCallbackConsoleBase::PrintProgress(const wchar_t *name, const char *com
   return CheckBreak2();
 }
 
-HRESULT CUpdateCallbackConsole::GetStream(const wchar_t *name, bool /* isDir */, bool isAnti, UInt32 mode)
+HRESULT CUpdateCallbackConsole::GetStream(const wchar_t *name, bool isDir, bool isAnti, UInt32 mode)
 {
   if (StdOutMode)
     return S_OK;
@@ -582,7 +585,7 @@ HRESULT CUpdateCallbackConsole::GetStream(const wchar_t *name, bool /* isDir */,
       s = "Reading";
   }
   
-  return PrintProgress(name, s, LogLevel >= requiredLevel);
+  return PrintProgress(name, isDir, s, LogLevel >= requiredLevel);
 }
 
 HRESULT CUpdateCallbackConsole::OpenFileError(const FString &path, DWORD systemError)
@@ -632,7 +635,7 @@ HRESULT CUpdateCallbackConsole::ReportExtractResult(Int32 opRes, Int32 isEncrypt
 }
 
 
-HRESULT CUpdateCallbackConsole::ReportUpdateOpeartion(UInt32 op, const wchar_t *name, bool /* isDir */)
+HRESULT CUpdateCallbackConsole::ReportUpdateOperation(UInt32 op, const wchar_t *name, bool isDir)
 {
   // if (StdOutMode) return S_OK;
 
@@ -660,7 +663,7 @@ HRESULT CUpdateCallbackConsole::ReportUpdateOpeartion(UInt32 op, const wchar_t *
     }
   }
 
-  return PrintProgress(name, s, LogLevel >= requiredLevel);
+  return PrintProgress(name, isDir, s, LogLevel >= requiredLevel);
 }
 
 /*
@@ -732,7 +735,7 @@ HRESULT CUpdateCallbackConsole::CryptoGetTextPassword(BSTR *password)
   COM_TRY_END
 }
 
-HRESULT CUpdateCallbackConsole::ShowDeleteFile(const wchar_t *name, bool /* isDir */)
+HRESULT CUpdateCallbackConsole::ShowDeleteFile(const wchar_t *name, bool isDir)
 {
   if (StdOutMode)
     return S_OK;
@@ -741,7 +744,7 @@ HRESULT CUpdateCallbackConsole::ShowDeleteFile(const wchar_t *name, bool /* isDi
   {
     if (!name || name[0] == 0)
       name = kEmptyFileAlias;
-    return PrintProgress(name, "D", true);
+    return PrintProgress(name, isDir, "D", true);
   }
   return S_OK;
 }

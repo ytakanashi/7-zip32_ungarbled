@@ -933,8 +933,7 @@
     <ClCompile Include="..\..\..\..\C\Sha256Opt.c" />
     <ClCompile Include="..\..\Archive\Base64Handler.cpp" />
     <ClCompile Include="..\..\..\Windows\Registry.cpp" />
-    <ClCompile Include="..\..\..\Windows\SystemInfo.cpp" />
-    <ClCompile Include="..\..\UI\Common\Bench.cpp" />
+    <ClCompile Include="..\..\..\..\C\LzFindOpt.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
@@ -1584,7 +1583,6 @@
     <ClInclude Include="..\..\Compress\XzEncoder.h" />
     <ClInclude Include="..\..\..\..\C\7zBuf.h" />
     <ClInclude Include="..\..\..\Windows\Registry.h" />
-    <ClInclude Include="..\..\UI\Common\Bench.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\..\Asm\x86\7zCrcOpt.asm">

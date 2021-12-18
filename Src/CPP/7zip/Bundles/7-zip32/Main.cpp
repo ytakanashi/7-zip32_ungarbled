@@ -71,6 +71,9 @@ extern const CCodecInfo *g_Codecs[];
 extern unsigned g_NumHashers;
 extern const CHasherInfo *g_Hashers[];
 
+#ifdef EXTERNAL_CODECS
+const CExternalCodecs *g_ExternalCodecs_Ptr;
+#endif
 
 #if defined(PROG_VARIANT_Z)
   #define PROG_POSTFIX      "z"
@@ -861,9 +864,11 @@ int Main2(
   codecs->CaseSensitiveChange = options.CaseSensitiveChange;
   codecs->CaseSensitive = options.CaseSensitive;
   ThrowException_if_Error(codecs->Load());
+  Codecs_AddHashArcHandler(codecs);
 
   #ifdef EXTERNAL_CODECS
   {
+    g_ExternalCodecs_Ptr = &__externalCodecs;
     UString s;
     codecs->GetCodecsErrorMessage(s);
     if (!s.IsEmpty())
@@ -874,8 +879,7 @@ int Main2(
   }
   #endif
 
-
-  bool isExtractGroupCommand = options.Command.IsFromExtractGroup();
+  const bool isExtractGroupCommand = options.Command.IsFromExtractGroup();
 
   if (codecs->Formats.Size() == 0 &&
         (isExtractGroupCommand
@@ -896,7 +900,10 @@ int Main2(
 
   CObjectVector<COpenType> types;
   if (!ParseOpenTypes(*codecs, options.ArcType, types))
+  {
     throw kUnsupportedArcTypeMessage;
+  }
+
 
   CIntVector excludedFormats;
   FOR_VECTOR (k, options.ExcludedArcTypes)
@@ -905,13 +912,16 @@ int Main2(
     if (!codecs->FindFormatForArchiveType(options.ExcludedArcTypes[k], tempIndices)
         || tempIndices.Size() != 1)
       throw kUnsupportedArcTypeMessage;
+    
+    
+    
     excludedFormats.AddToUniqueSorted(tempIndices[0]);
     // excludedFormats.Sort();
   }
-
   
   #ifdef EXTERNAL_CODECS
   if (isExtractGroupCommand
+      || options.Command.IsFromUpdateGroup()
       || options.Command.CommandType == NCommandType::kHash
       || options.Command.CommandType == NCommandType::kBenchmark)
     ThrowException_if_Error(__externalCodecs.Load());
@@ -945,7 +955,7 @@ int Main2(
 
     so << endl << "Formats:" << endl;
     
-    const char * const kArcFlags = "KSNFMGOPBELHX";
+    const char * const kArcFlags = "KSNFMGOPBELHXC";
     const unsigned kNumArcFlags = (unsigned)strlen(kArcFlags);
     
     for (i = 0; i < codecs->Formats.Size(); i++)
@@ -955,7 +965,7 @@ int Main2(
       #ifdef EXTERNAL_CODECS
       PrintLibIndex(so, arc.LibIndex);
       #else
-      so << "  ";
+      so << "   ";
       #endif
 
       so << (char)(arc.UpdateEnabled ? 'C' : ' ');
@@ -990,6 +1000,8 @@ int Main2(
       
       if (arc.SignatureOffset != 0)
         so << "offset=" << arc.SignatureOffset << ' ';
+
+      // so << "numSignatures = " << arc.Signatures.Size() << " ";
 
       FOR_VECTOR(si, arc.Signatures)
       {
@@ -1032,6 +1044,7 @@ int Main2(
       
       so << (char)(cod.CreateEncoder ? 'E' : ' ');
       so << (char)(cod.CreateDecoder ? 'D' : ' ');
+      so << (char)(cod.IsFilter      ? 'F' : ' ');
 
       so << ' ';
       PrintHexId(so, cod.Id);
@@ -1055,6 +1068,12 @@ int Main2(
       
       so << (char)(codecs->GetCodec_EncoderIsAssigned(j) ? 'E' : ' ');
       so << (char)(codecs->GetCodec_DecoderIsAssigned(j) ? 'D' : ' ');
+      {
+        bool isFilter_Assigned;
+        const bool isFilter = codecs->GetCodec_IsFilter(j, isFilter_Assigned);
+        so << (char)(isFilter ? 'F' : isFilter_Assigned ? ' ' : '*');
+      }
+
 
       so << ' ';
       UInt64 id;
@@ -1223,6 +1242,7 @@ int Main2(
       }
       
       hresultMain = Extract(
+          // EXTERNAL_CODECS_VARS_L
           codecs,
           types,
           excludedFormats,
@@ -1337,7 +1357,12 @@ int Main2(
       
       // options.ExtractNtOptions.StoreAltStreams = true, if -sns[-] is not definmed
 
+      CListOptions lo;
+      lo.ExcludeDirItems = options.Censor.ExcludeDirItems;
+      lo.ExcludeFileItems = options.Censor.ExcludeFileItems;
+
       hresultMain = ListArchives(
+          lo,
           codecs,
           types,
           excludedFormats,
@@ -1437,6 +1462,7 @@ int Main2(
   
     callback.Init(g_StdStream, g_ErrStream, percentsStream);
     callback.PrintHeaders = options.EnableHeaders;
+    callback.PrintFields = options.ListFields;
 
     AString errorInfoString;
     hresultMain = HashCalc(EXTERNAL_CODECS_VARS_L

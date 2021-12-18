@@ -830,6 +830,7 @@
     <ClInclude Include="..\..\Compress\XzEncoder.h">
       <Filter>Archive</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Common\DynLimBuf.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="7-zip32.cpp">
@@ -1511,6 +1512,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Common\LzFindPrepare.cpp" />
     <ClCompile Include="..\..\..\..\C\LzFindOpt.c" />
+    <ClCompile Include="..\..\..\Common\DynLimBuf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="7-zip32.def">
