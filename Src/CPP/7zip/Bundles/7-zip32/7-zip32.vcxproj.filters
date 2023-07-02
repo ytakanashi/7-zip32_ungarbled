@@ -831,6 +831,10 @@
       <Filter>Archive</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Common\DynLimBuf.h" />
+    <ClInclude Include="..\..\Common\MultiOutStream.h" />
+    <ClInclude Include="..\..\..\..\C\7zVersion.h" />
+    <ClInclude Include="..\..\..\..\C\7zWindows.h" />
+    <ClInclude Include="..\..\..\..\C\SwapBytes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="7-zip32.cpp">
@@ -1513,6 +1517,8 @@
     <ClCompile Include="..\..\..\Common\LzFindPrepare.cpp" />
     <ClCompile Include="..\..\..\..\C\LzFindOpt.c" />
     <ClCompile Include="..\..\..\Common\DynLimBuf.cpp" />
+    <ClCompile Include="..\..\Common\MultiOutStream.cpp" />
+    <ClCompile Include="..\..\..\..\C\SwapBytes.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="7-zip32.def">

@@ -1110,17 +1110,17 @@ BOOL CConfigDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			TCHAR lpVersion[64];
 #ifdef _WIN64
-#ifndef EXTERNAL_CODECS		// ’Ç‰Á
+#ifndef Z7_EXTERNAL_CODECS		// ’Ç‰Á
 			::wsprintf(lpVersion, "7-zip64.dll version %d.%.2d.%.2d.%.2d", ::SevenZipGetVersion() / 100, ::SevenZipGetVersion() % 100, ::SevenZipGetSubVersion() / 100, ::SevenZipGetSubVersion() % 100);
 #else						// ’Ç‰Á
 			::wsprintf(lpVersion, "7-zip64.dll version %d.%.2d.%.2d.%.2d + 7z.dll", ::SevenZipGetVersion() / 100, ::SevenZipGetVersion() % 100, ::SevenZipGetSubVersion() / 100, ::SevenZipGetSubVersion() % 100);	// ’Ç‰Á
-#endif	// EXTERNAL_CODECS	// ’Ç‰Á
+#endif	// Z7_EXTERNAL_CODECS	// ’Ç‰Á
 #else
-#ifndef EXTERNAL_CODECS		// ’Ç‰Á
+#ifndef Z7_EXTERNAL_CODECS		// ’Ç‰Á
 			::wsprintf(lpVersion, "7-zip32.dll version %d.%.2d.%.2d.%.2d", ::SevenZipGetVersion() / 100, ::SevenZipGetVersion() % 100, ::SevenZipGetSubVersion() / 100, ::SevenZipGetSubVersion() % 100);
 #else
 			::wsprintf(lpVersion, "7-zip32.dll version %d.%.2d.%.2d.%.2d + 7z.dll", ::SevenZipGetVersion() / 100, ::SevenZipGetVersion() % 100, ::SevenZipGetSubVersion() / 100, ::SevenZipGetSubVersion() % 100);	// ’Ç‰Á
-#endif	// EXTERNAL_CODECS	// ’Ç‰Á
+#endif	// Z7_EXTERNAL_CODECS	// ’Ç‰Á
 #endif
 			::SetDlgItemText(m_hWnd, IDS_VERSION, lpVersion);
 			MoveCenter();

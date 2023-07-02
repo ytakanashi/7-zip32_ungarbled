@@ -242,11 +242,6 @@
     <ClCompile Include="..\..\..\..\..\C\Threads.c">
       <Filter>C</Filter>
     </ClCompile>
-    <ClCompile Include="ExtractDialog.cpp" />
-    <ClCompile Include="ExtractEngine.cpp" />
-    <ClCompile Include="ProgressDialog.cpp" />
-    <ClCompile Include="ExtractCallbackSfx.cpp" />
-    <ClCompile Include="SfxSetup.cpp" />
     <ClCompile Include="..\..\..\..\..\C\Bcj2.c">
       <Filter>C</Filter>
     </ClCompile>
@@ -277,11 +272,39 @@
     <ClCompile Include="..\..\..\..\Windows\Shell.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\C\DllSecur.c" />
-    <ClCompile Include="..\..\..\..\Windows\System.cpp" />
-    <ClCompile Include="..\..\..\Common\CWrappers.cpp" />
-    <ClCompile Include="..\..\..\..\..\C\Lzma2DecMt.c" />
-    <ClCompile Include="..\..\..\..\..\C\MtDec.c" />
+    <ClCompile Include="..\..\..\..\..\C\Lzma2DecMt.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\C\MtDec.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\CWrappers.cpp">
+      <Filter>7z Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\C\DllSecur.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Windows\System.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtractCallbackSfx.cpp">
+      <Filter>Spec</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtractDialog.cpp">
+      <Filter>Spec</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtractEngine.cpp">
+      <Filter>Spec</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressDialog.cpp">
+      <Filter>Spec</Filter>
+    </ClCompile>
+    <ClCompile Include="SfxSetup.cpp">
+      <Filter>Spec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\C\7zStream.c">
+      <Filter>C</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -449,10 +472,6 @@
     <ClInclude Include="..\..\..\..\..\C\Threads.h">
       <Filter>C</Filter>
     </ClInclude>
-    <ClInclude Include="ExtractDialog.h" />
-    <ClInclude Include="ProgressDialog.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="ExtractCallbackSfx.h" />
     <ClInclude Include="..\..\..\..\..\C\Bcj2.h">
       <Filter>C</Filter>
     </ClInclude>
@@ -468,13 +487,37 @@
     <ClInclude Include="..\..\..\..\Windows\ErrorMsg.h">
       <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\C\DllSecur.h" />
-    <ClInclude Include="..\..\..\..\Windows\System.h" />
-    <ClInclude Include="..\..\..\Common\Cwrappers.h" />
-    <ClInclude Include="..\..\..\..\..\C\Lzma2DecMt.h" />
-    <ClInclude Include="..\..\..\..\..\C\MtDec.h" />
+    <ClInclude Include="..\..\..\..\..\C\Lzma2DecMt.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\C\MtDec.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Cwrappers.h">
+      <Filter>7z Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\C\DllSecur.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Windows\System.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtractCallbackSfx.h">
+      <Filter>Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtractDialog.h">
+      <Filter>Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressDialog.h">
+      <Filter>Spec</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Spec</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="setup.ico" />
+    <None Include="setup.ico">
+      <Filter>Spec</Filter>
+    </None>
   </ItemGroup>
 </Project>

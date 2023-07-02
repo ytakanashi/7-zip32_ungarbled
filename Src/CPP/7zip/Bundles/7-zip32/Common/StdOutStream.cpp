@@ -91,7 +91,7 @@ void CStdOutStream::PrintUString(const UString &s, AString &temp)
 
 static const wchar_t kReplaceChar = '_';
 
-void CStdOutStream::Normalize_UString__LF_Allowed(UString &s)
+void CStdOutStream::Normalize_UString_LF_Allowed(UString &s)
 {
   unsigned len = s.Len();
   wchar_t *d = s.GetBuf();

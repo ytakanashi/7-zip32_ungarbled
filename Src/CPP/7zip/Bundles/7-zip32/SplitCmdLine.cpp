@@ -90,7 +90,7 @@ BOOL CSplitCmdLine::Split(const char* lpCmdLine)
 			--m_argc;
 			--i;
 		}
-#ifndef EXTERNAL_CODECS	// í«â¡
+#ifndef Z7_EXTERNAL_CODECS	// í«â¡
 		else if ((!_stricmp(p, "-sfx")) && !bSkip)
 		{
 			// SFXçÏê¨

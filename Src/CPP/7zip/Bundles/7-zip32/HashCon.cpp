@@ -108,7 +108,7 @@ HRESULT CHashCallbackConsole::SetCompleted(const UInt64 *completeValue)
 static void AddMinuses(AString &s, unsigned num)
 {
   for (unsigned i = 0; i < num; i++)
-    s += '-';
+    s.Add_Minus();
 }
 
 static void AddSpaces_if_Positive(AString &s, int num)
@@ -147,7 +147,7 @@ static unsigned GetColumnWidth(unsigned digestSize)
 
 AString CHashCallbackConsole::GetFields() const
 {
-  AString s = PrintFields;
+  AString s (PrintFields);
   if (s.IsEmpty())
     s = "hsn";
   s.MakeLower_Ascii();
@@ -324,7 +324,7 @@ HRESULT CHashCallbackConsole::SetOperationResult(UInt64 fileSize, const CHashBun
       s = kEmptyFileAlias;
     else
     {
-      UString temp = _fileName;
+      UString temp (_fileName);
       _so->Normalize_UString(temp);
       _so->Convert_UString_to_AString(temp, s);
     }

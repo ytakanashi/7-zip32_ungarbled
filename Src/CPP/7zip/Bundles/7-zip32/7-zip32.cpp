@@ -1279,7 +1279,7 @@ BOOL WINAPI SevenZipSfxFileStoring(LPCSTR _szFileName)
 }
 
 /* ’Ç‰Á‚±‚±‚©‚ç */
-#ifdef EXTERNAL_CODECS
+#ifdef Z7_EXTERNAL_CODECS
 void FreeGlobalCodecs();
 HRESULT LoadGlobalCodecs();
 BOOL WINAPI SevenZipExists7zdll()

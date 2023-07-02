@@ -1,7 +1,7 @@
 #if !defined(SEVENZIP_H)
 #define SEVENZIP_H
 
-#define SEVENZIP32_VERSION	21060001
+#define SEVENZIP32_VERSION	23010001
 
 #ifndef FNAME_MAX32
 #define FNAME_MAX32		512
@@ -213,7 +213,7 @@ extern "C" {
 	int WINAPI SevenZipSfxConfigDialog(HWND _hwnd, LPSTR _szBuffer, DWORD _dwSize);
 
 	/* ’Ç‰Á‚±‚±‚©‚ç */
-#ifdef EXTERNAL_CODECS
+#ifdef Z7_EXTERNAL_CODECS
 	/* 7z.dll‘Î‰ž”Å7-zip32.dll“ÆŽ©API */
 	BOOL WINAPI SevenZipExists7zdll();
 #endif

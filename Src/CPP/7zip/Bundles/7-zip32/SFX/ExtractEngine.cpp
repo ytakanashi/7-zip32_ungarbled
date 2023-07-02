@@ -64,18 +64,14 @@ struct CThreadExtracting
     
     if (!CreateComplexDir(dirPath))
     {
-      ErrorMessage = MyFormatNew(IDS_CANNOT_CREATE_FOLDER,
-        #ifdef LANG
-        0x02000603,
-        #endif
-        fs2us(dirPath));
+      ErrorMessage = MyFormatNew(IDS_CANNOT_CREATE_FOLDER, fs2us(dirPath));
       Result = E_FAIL;
       return;
     }
 
     ExtractCallbackSpec->Init(ArchiveLink.GetArchive(), dirPath, (UString)"Default", fi.MTime, 0);
 
-    Result = ArchiveLink.GetArchive()->Extract(0, (UInt32)(Int32)-1 , BoolToInt(false), ExtractCallback);
+    Result = ArchiveLink.GetArchive()->Extract(NULL, (UInt32)(Int32)-1 , BoolToInt(false), ExtractCallback);
   }
 
   void Process()

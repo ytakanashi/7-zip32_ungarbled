@@ -19,11 +19,16 @@ class CStdOutStream
 	bool _streamIsOpen;
 	FILE *_stream;
 public:
-  bool IsTerminalMode;
-  int CodePage;
+	bool IsTerminalMode;
+	int CodePage;
 
 	CStdOutStream ();
-	CStdOutStream (FILE *stream): _streamIsOpen(false), _stream(stream), IsTerminalMode(false), CodePage(-1){};	// ïœçX
+	CStdOutStream(FILE *stream):// ïœçX
+		_stream(stream),
+		// _streamIsOpen(false),
+		IsTerminalMode(false),
+		CodePage(-1)
+		{}
 	~CStdOutStream ();
 	operator FILE *() { return _stream; }
 	bool Flush() { return true; }
@@ -41,7 +46,7 @@ public:
 
 	void PrintUString(const UString &s, AString &temp);
 
-	void Normalize_UString__LF_Allowed(UString &s);
+	void Normalize_UString_LF_Allowed(UString &s);
 	void Normalize_UString(UString &s);
 
 	void NormalizePrint_UString(const UString &s, UString &tempU, AString &tempA);

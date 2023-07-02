@@ -6,6 +6,7 @@
 #ifdef _WIN32
 #include "../../../../C/DllSecur.h"
 #endif
+#include "../../../../C/CpuArch.h"
 
 #include "../../../Common/MyException.h"
 #include "Common/StdOutStream.h"					// ÉpÉXïœçX
@@ -71,18 +72,63 @@ UINT _stdcall Main(LPVOID lpParameter)
 }
 /* í«â¡Ç±Ç±Ç‹Ç≈ */
 
+static inline bool CheckIsa()
+{
+  // __try
+  {
+    #if defined(__AVX2__)
+      if (!CPU_IsSupported_AVX2())
+        return false;
+    #elif defined(__AVX__)
+      if (!CPU_IsSupported_AVX())
+        return false;
+    #elif defined(__SSE2__) && !defined(MY_CPU_AMD64) || defined(_M_IX86_FP) && (_M_IX86_FP >= 2)
+      if (!CPU_IsSupported_SSE2())
+        return false;
+    #elif defined(__SSE__) && !defined(MY_CPU_AMD64) || defined(_M_IX86_FP) && (_M_IX86_FP >= 1)
+      if (!CPU_IsSupported_SSE() ||
+          !CPU_IsSupported_CMOV())
+        return false;
+    #endif
+    /*
+    __asm
+    {
+      _emit 0fH
+      _emit 038H
+      _emit 0cbH
+      _emit (0c0H + 0 * 8 + 0)
+    }
+    */
+    return true;
+  }
+  /*
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {
+    return false;
+  }
+  */
+}
 /* çÌèúÇ±Ç±Ç©ÇÁ
-int MY_CDECL main
+int Z7_CDECL main
 (
   #ifndef _WIN32
   int numArgs, char *args[]
   #endif
 )
    çÌèúÇ±Ç±Ç‹Ç≈ */
+
 int SendCommand7zip()	// í«â¡
 {
   g_ErrStream = &g_StdErr;
   g_StdStream = &g_StdOut;
+
+  // #if (defined(_MSC_VER) && defined(_M_IX86))
+  if (!CheckIsa())
+  {
+    PrintError("ERROR: processor doesn't support required ISA extension");
+    return NExitCode::kFatalError;
+  }
+  // #endif
 
   NT_CHECK
 
@@ -145,7 +191,7 @@ int SendCommand7zip()	// í«â¡
     }
     return (NExitCode::kFatalError);
   }
-  catch(NExitCode::EEnum &exitCode)
+  catch(NExitCode::EEnum exitCode)
   {
     FlushStreams();
     if (g_ErrStream)

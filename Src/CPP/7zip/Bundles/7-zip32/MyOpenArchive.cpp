@@ -38,7 +38,7 @@ using namespace NWindows;
 
 CCodecs *g_CodecsObj;
 
-#ifdef EXTERNAL_CODECS
+#ifdef Z7_EXTERNAL_CODECS
   CExternalCodecs g_ExternalCodecs;
   CCodecs::CReleaser g_CodecsReleaser;
 #else
@@ -56,7 +56,7 @@ void FreeGlobalCodecs()
 {
   MT_LOCK
 
-  #ifdef EXTERNAL_CODECS
+  #ifdef Z7_EXTERNAL_CODECS
   if (g_CodecsObj)
   {
     g_CodecsObj->CloseLibs();
@@ -78,7 +78,7 @@ HRESULT LoadGlobalCodecs()
 
   g_CodecsObj = new CCodecs;
 
-  #ifdef EXTERNAL_CODECS
+  #ifdef Z7_EXTERNAL_CODECS
   g_ExternalCodecs.GetCodecs = g_CodecsObj;
   g_ExternalCodecs.GetHashers = g_CodecsObj;
   g_CodecsReleaser.Set(g_CodecsObj);
@@ -94,7 +94,7 @@ HRESULT LoadGlobalCodecs()
     return E_NOTIMPL;
   }
 
-  #ifdef EXTERNAL_CODECS
+  #ifdef Z7_EXTERNAL_CODECS
   RINOK(g_ExternalCodecs.Load());
   #endif
 
@@ -162,7 +162,7 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 		/* 削除ここから
 		CCodecs *codecs = new CCodecs;
 		CMyComPtr<
-			#ifdef EXTERNAL_CODECS
+			#ifdef Z7_EXTERNAL_CODECS
 			ICompressCodecsInfo
 			#else
 			IUnknown
@@ -255,7 +255,7 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 					ArchivePathsSorted, // 変更
 					ArchivePathsFullSorted,	// 変更
 					options.Censor.Pairs.Front().Head,			// 変更
-					eo, &openCallback, ecs, hashCalc, errorMessage, stat);	// 変更
+					eo, &openCallback, ecs, ecs, hashCalc, errorMessage, stat);	// 変更
 				if ((ecs->NumArcsWithError != 0 || ecs->NumFileErrors != 0) && result == S_OK)	// 変更
 					result = ERROR_WARNING;
 				return result;
@@ -495,7 +495,10 @@ int COpenArchive::FindFirst(LPCWSTR lpszWildName, INDIVIDUALINFO *lpSubInfo)
 			else
 				recursed = true;
 		}
-		m_pWildcardCensor->AddItem(NWildcard::k_RelatPath, true, s[i], recursed, true);	// 変更
+		NWildcard::CCensorPathProps props;// 追加
+		props.Recursive = recursed;// 追加
+		props.WildcardMatching = true;// 追加
+		m_pWildcardCensor->AddItem(NWildcard::k_RelatPath, true, s[i], props);// 変更
 	}
 
 	m_aItemPos = 0;
@@ -522,7 +525,7 @@ int COpenArchive::FindNext(INDIVIDUALINFO *lpSubInfo)
 			m_bSearchMode = false;
 			return -1;
 		}
-		if (arc.GetItemPath(m_aItemPos, m_aFileName) == S_OK)
+		if (arc.GetItem_Path(m_aItemPos, m_aFileName) == S_OK)
 		{
 			bool isFolder = false;
 			Archive_IsItem_Dir(arc.Archive, m_aItemPos, isFolder);	// 変更
