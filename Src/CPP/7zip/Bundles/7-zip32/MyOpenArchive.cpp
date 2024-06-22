@@ -177,7 +177,7 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 		CStdOutStream stdOut;
 		COpenCallbackConsole openCallback;
 //		openCallback.OutStream = &stdOut;	// íœ
-		openCallback.Init(g_StdStream, g_ErrStream, NULL);		// ’Ç‰Á
+		openCallback.Init(g_StdStream, g_ErrStream, NULL, true);		// ’Ç‰Á
 		if (m_lpPassword || g_StdOut.GetDefaultPassword())
 		{
 			openCallback.PasswordIsDefined = true;
@@ -193,7 +193,7 @@ HRESULT COpenArchive::OpenCheck(LPCWSTR lpFileName, DWORD dwMode)
 //				ecs->OutStream = &stdOut;	// íœ
 				ecs->PasswordIsDefined = openCallback.PasswordIsDefined;
 				ecs->Password = openCallback.Password;
-				ecs->Init(g_StdStream, g_ErrStream, NULL);	// •ÏX
+				ecs->Init(g_StdStream, g_ErrStream, NULL, true);	// •ÏX
 				
 				CArcCmdLineOptions options;
 				CArcCmdLineParser parser;			// •ÏX

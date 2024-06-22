@@ -240,11 +240,13 @@ static void PrintUString(EAdjustment adj, unsigned width, const UString &s, AStr
   {
     numSpaces = width - s.Len();
     unsigned numLeftSpaces = 0;
-    switch (adj)
+    switch ((int)adj)
     {
-      case kLeft:   numLeftSpaces = 0; break;
+      // case kLeft:   numLeftSpaces = 0; break;
       case kCenter: numLeftSpaces = numSpaces / 2; break;
       case kRight:  numLeftSpaces = numSpaces; break;
+      // case kLeft:
+      default: break;
     }
     PrintSpaces(numLeftSpaces);
     numSpaces -= numLeftSpaces;
@@ -264,11 +266,13 @@ static void PrintString(EAdjustment adj, unsigned width, const char *s)
   {
     numSpaces = width - len;
     unsigned numLeftSpaces = 0;
-    switch (adj)
+    switch ((int)adj)
     {
-      case kLeft:   numLeftSpaces = 0; break;
+      // case kLeft:   numLeftSpaces = 0; break;
       case kCenter: numLeftSpaces = numSpaces / 2; break;
       case kRight:  numLeftSpaces = numSpaces; break;
+      // case kLeft:
+      default: break;
     }
     PrintSpaces(numLeftSpaces);
     numSpaces -= numLeftSpaces;
@@ -287,11 +291,13 @@ static void PrintStringToString(char *dest, EAdjustment adj, unsigned width, con
   {
     numSpaces = width - len;
     unsigned numLeftSpaces = 0;
-    switch (adj)
+    switch ((int)adj)
     {
-      case kLeft:   numLeftSpaces = 0; break;
+      // case kLeft:   numLeftSpaces = 0; break;
       case kCenter: numLeftSpaces = numSpaces / 2; break;
       case kRight:  numLeftSpaces = numSpaces; break;
+      // case kLeft:
+      default: break;
     }
     PrintSpacesToString(dest, numLeftSpaces);
     dest += numLeftSpaces;
@@ -444,10 +450,10 @@ void CFieldPrinter::AddProp(const wchar_t *name, PROPID propID, bool isRawProp)
     unsigned i;
     for (i = 0; i < s.Len(); i++)
     {
-      wchar_t c = s[i];
+      const wchar_t c = s[i];
       if (c >= 0x80)
         break;
-      sA += (char)c;
+      sA.Add_Char((char)c);
     }
     if (i == s.Len())
       f.NameA = sA;
@@ -505,7 +511,8 @@ static void PrintTime(char *dest, const CListFileTimeDef &t, bool showNS)
   if (t.IsZero())
     return;
   int prec = kTimestampPrintLevel_SEC;
-  if (showNS)
+  unsigned flags = 0;
+  if (showNS) // techmode
   {
     prec = kTimestampPrintLevel_NTFS;
     if (t.Prec != 0)
@@ -515,32 +522,29 @@ static void PrintTime(char *dest, const CListFileTimeDef &t, bool showNS)
         prec = kTimestampPrintLevel_NTFS;
     }
   }
+  else
+  {
+    // we want same default number of characters, so we disable 'Z' marker:
+    flags = kTimestampPrintFlags_DisableZ;
+  }
 
-  ConvertUtcFileTimeToString2(t.FT, t.Ns100, dest, prec);
+  ConvertUtcFileTimeToString2(t.FT, t.Ns100, dest, prec, flags);
 }
 
 #ifndef Z7_SFX
 
-static inline char GetHex(Byte value)
-{
-  return (char)((value < 10) ? ('0' + value) : ('a' + (value - 10)));
-}
-
-static void HexToString(char *dest, const Byte *data, UInt32 size)
-{
-  for (UInt32 i = 0; i < size; i++)
-  {
-    Byte b = data[i];
-    dest[0] = GetHex((Byte)((b >> 4) & 0xF));
-    dest[1] = GetHex((Byte)(b & 0xF));
-    dest += 2;
-  }
-  *dest = 0;
-}
-
 #endif
 
 #define MY_ENDL endl
+
+inline bool IsPropId_for_PathString(UInt32 propId)
+{
+  return (propId == kpidPath
+    // || propId == kpidName
+    || propId == kpidSymLink
+    || propId == kpidHardLink
+    || propId == kpidCopyLink);
+}
 
 HRESULT CFieldPrinter::PrintItemInfo(UInt32 index, const CListStat &st)
 {
@@ -578,8 +582,8 @@ HRESULT CFieldPrinter::PrintItemInfo(UInt32 index, const CListStat &st)
     {
       if (!techMode)
         g_StdOut << temp;
-//      g_StdOut.NormalizePrint_UString(FilePath, TempWString, TempAString);	// íœ
-      g_StdOut << FilePath;														// ’Ç‰Á
+//      g_StdOut.NormalizePrint_UString_Path(FilePath, TempWString, TempAString);	// íœ
+      g_StdOut << FilePath;															// ’Ç‰Á
       if (techMode)
         g_StdOut << MY_ENDL;
       continue;
@@ -636,7 +640,7 @@ HRESULT CFieldPrinter::PrintItemInfo(UInt32 index, const CListStat &st)
           else
           {
             char hexStr[kMaxDataSize * 2 + 4];
-            HexToString(hexStr, (const Byte *)data, dataSize);
+            ConvertDataToHex_Lower(hexStr, (const Byte *)data, dataSize);
             g_StdOut << hexStr;
           }
         }
@@ -700,13 +704,15 @@ HRESULT CFieldPrinter::PrintItemInfo(UInt32 index, const CListStat &st)
       {
         TempWString.SetFromBstr(prop.bstrVal);
         // do we need multi-line support here ?
-//        g_StdOut.Normalize_UString(TempWString);	// íœ
-		g_StdOut <<TempWString; 					// ’Ç‰Á
+        if (IsPropId_for_PathString(f.PropID))
+//        g_StdOut.Normalize_UString_Path(TempWString);	// íœ
+		g_StdOut <<TempWString; 						// ’Ç‰Á
+        else
+//          g_StdOut.Normalize_UString(TempWString);	// íœ
+		g_StdOut <<TempWString; 						// ’Ç‰Á
         if (techMode)
-        {
 //          g_StdOut.PrintUString(TempWString, TempAString);	// íœ
           g_StdOut <<TempWString; 								// ’Ç‰Á
-        }
         else
           PrintUString(f.TextAdjustment, width, TempWString, TempAString);
       }
@@ -862,7 +868,7 @@ static void UString_Replace_CRLF_to_LF(UString &s)
     }
     *dest++ = c;
   }
-  s.ReleaseBuf_SetEnd((unsigned)(dest - s.GetBuf()));
+  s.ReleaseBuf_SetEnd((unsigned)(size_t)(dest - s.GetBuf()));
 }
 
 
@@ -875,21 +881,34 @@ static void PrintPropVal_MultiLine(CStdOutStream &so, const wchar_t *val)
     so << "{";
     so << endl;
     UString_Replace_CRLF_to_LF(s);
-    so.Normalize_UString_LF_Allowed(s);
-    so << s;
-    so << endl;
+    UString temp;
+    unsigned start = 0;
+    for (;;)
+    {
+      unsigned size = s.Len() - start;
+      if (size == 0)
+        break;
+      const int next = s.Find(L'\n', start);
+      if (next >= 0)
+        size = (unsigned)next - start;
+      temp.SetFrom(s.Ptr() + start, size);
+      so.NormalizePrint_UString(temp);
+      so << endl;
+      if (next < 0)
+        break;
+      start = (unsigned)next + 1;
+    }
     so << "}";
   }
   else
   {
-    so.Normalize_UString(s);
-    so << s;
+    so.NormalizePrint_UString(s);
   }
   so << endl;
 }
 
 
-static void PrintPropPair(CStdOutStream &so, const char *name, const wchar_t *val, bool multiLine)
+static void PrintPropPair(CStdOutStream &so, const char *name, const wchar_t *val, bool multiLine, bool isPath = false)
 {
   so << name << " = ";
   if (multiLine)
@@ -898,11 +917,21 @@ static void PrintPropPair(CStdOutStream &so, const char *name, const wchar_t *va
     return;
   }
   UString s (val);
-  so.Normalize_UString(s);
+  if (isPath)
+    so.Normalize_UString_Path(s);
+  else
+    so.Normalize_UString(s);
   so << s;
   so << endl;
 }
 
+
+static void PrintPropPair_Path(CStdOutStream &so, const wchar_t *path)
+{
+  PrintPropPair(so, "Path", path,
+        false, // multiLine
+        true); // isPath
+}
 
 static void PrintPropertyPair2(CStdOutStream &so, PROPID propID, const wchar_t *name, const CPropVariant &prop)
 {
@@ -964,7 +993,7 @@ HRESULT Print_OpenArchive_Props(CStdOutStream &so, const CCodecs *codecs, const 
     const CArcErrorInfo &er = arc.ErrorInfo;
     
     so << "--\n";
-    PrintPropPair(so, "Path", arc.Path, false);
+    PrintPropPair_Path(so, arc.Path);
     if (er.ErrorFormatIndex >= 0)
     {
       if (er.ErrorFormatIndex == arc.FormatIndex)
@@ -1031,7 +1060,7 @@ HRESULT Print_OpenArchive_Error(CStdOutStream &so, const CCodecs *codecs, const 
   {
     if (arcLink.NonOpen_ErrorInfo.ErrorFormatIndex >= 0)
     {
-      so.NormalizePrint_UString(arcLink.NonOpen_ArcPath);
+      so.NormalizePrint_UString_Path(arcLink.NonOpen_ArcPath);
       so << endl;
       PrintArcTypeError(so, codecs->Formats[(unsigned)arcLink.NonOpen_ErrorInfo.ErrorFormatIndex].Name, false);
     }
@@ -1108,7 +1137,7 @@ HRESULT ListArchives(
         if (g_ErrStream)
         {
           *g_ErrStream << endl << kError << NError::MyFormatMessage(errorCode) << endl;
-          g_ErrStream->NormalizePrint_UString(arcPath);
+          g_ErrStream->NormalizePrint_UString_Path(arcPath);
           *g_ErrStream << endl << endl;
         }
         numErrors++;
@@ -1120,7 +1149,7 @@ HRESULT ListArchives(
         if (g_ErrStream)
         {
           *g_ErrStream << endl << kError;
-          g_ErrStream->NormalizePrint_UString(arcPath);
+          g_ErrStream->NormalizePrint_UString_Path(arcPath);
           *g_ErrStream << " is not a file" << endl << endl;
         }
         numErrors++;
@@ -1133,7 +1162,7 @@ HRESULT ListArchives(
     CArchiveLink arcLink;
 
     COpenCallbackConsole openCallback;
-    openCallback.Init(&g_StdOut, g_ErrStream, NULL);
+    openCallback.Init(&g_StdOut, g_ErrStream, NULL, listOptions.DisablePercents);
 
     #ifndef Z7_NO_CRYPTO
 
@@ -1162,8 +1191,8 @@ HRESULT ListArchives(
     if (enableHeaders)
     {
       g_StdOut << endl << kListing;
-//      g_StdOut.NormalizePrint_UString(arcPath);	// íœ
-      g_StdOut << endl << arcPath;					// ’Ç‰Á
+//      g_StdOut.NormalizePrint_UString_Path(arcPath);	// íœ
+      g_StdOut << endl << arcPath;						// ’Ç‰Á
       g_StdOut << endl << endl;
     }
     
@@ -1179,7 +1208,7 @@ HRESULT ListArchives(
       if (g_ErrStream)
       {
         *g_ErrStream << endl << kError;
-        g_ErrStream->NormalizePrint_UString(arcPath);
+        g_ErrStream->NormalizePrint_UString_Path(arcPath);
         *g_ErrStream << " : ";
         if (result == S_FALSE)
         {
@@ -1367,7 +1396,7 @@ HRESULT ListArchives(
       if (arcLink.NonOpen_ErrorInfo.ErrorFormatIndex >= 0)
       {
         g_StdOut << "----------\n";
-        PrintPropPair(g_StdOut, "Path", arcLink.NonOpen_ArcPath, false);
+        PrintPropPair_Path(g_StdOut, arcLink.NonOpen_ArcPath);
         PrintArcTypeError(g_StdOut, codecs->Formats[(unsigned)arcLink.NonOpen_ErrorInfo.ErrorFormatIndex].Name, false);
       }
     }

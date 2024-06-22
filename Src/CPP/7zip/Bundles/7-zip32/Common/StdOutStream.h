@@ -19,8 +19,9 @@ class CStdOutStream
 	bool _streamIsOpen;
 	FILE *_stream;
 public:
-	bool IsTerminalMode;
-	int CodePage;
+  bool IsTerminalMode;
+  CBoolPair ListPathSeparatorSlash;
+  int CodePage;
 
 	CStdOutStream ();
 	CStdOutStream(FILE *stream):// ïœçX
@@ -28,7 +29,14 @@ public:
 		// _streamIsOpen(false),
 		IsTerminalMode(false),
 		CodePage(-1)
-		{}
+		{
+			ListPathSeparatorSlash.Val =
+#ifdef _WIN32
+				false;
+#else
+				true;
+#endif
+		}
 	~CStdOutStream ();
 	operator FILE *() { return _stream; }
 	bool Flush() { return true; }
@@ -43,15 +51,15 @@ public:
 	CStdOutStream & operator<<(UInt64 number) throw();
 
 	void CStdOutStream::Convert_UString_to_AString(const UString &s, AString &temp);		// í«â¡
-
 	void PrintUString(const UString &s, AString &temp);
 
-	void Normalize_UString_LF_Allowed(UString &s);
 	void Normalize_UString(UString &s);
+	void Normalize_UString_Path(UString &s);
 
-	void NormalizePrint_UString(const UString &s, UString &tempU, AString &tempA);
+	void NormalizePrint_UString_Path(const UString &s, UString &tempU, AString &tempA);
+	void NormalizePrint_UString_Path(const UString &s);
 	void NormalizePrint_UString(const UString &s);
-	void NormalizePrint_wstr(const wchar_t *s);
+	void NormalizePrint_wstr_Path(const wchar_t *s);
 
 	static void GetCompactMethod(LPCWSTR lpMethod, int nArchiveType, LPSTR lpCompactMethod);
 	static void GetAttributesString(DWORD dwAttributes, bool bEncrypt, LPSTR lpAttributes);

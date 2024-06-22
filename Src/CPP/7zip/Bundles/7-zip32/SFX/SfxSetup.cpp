@@ -36,6 +36,9 @@ using namespace NDir;
 extern
 HINSTANCE g_hInstance;
 HINSTANCE g_hInstance;
+extern
+bool g_DisableUserQuestions;
+bool g_DisableUserQuestions;
 
 static CFSTR const kTempDirPrefix = FTEXT("7zSDJC");		// ïœçX
 

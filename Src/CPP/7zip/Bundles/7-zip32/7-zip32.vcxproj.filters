@@ -834,7 +834,19 @@
     <ClInclude Include="..\..\Common\MultiOutStream.h" />
     <ClInclude Include="..\..\..\..\C\7zVersion.h" />
     <ClInclude Include="..\..\..\..\C\7zWindows.h" />
-    <ClInclude Include="..\..\..\..\C\SwapBytes.h" />
+    <ClInclude Include="..\..\Compress\ZstdDecoder.h">
+      <Filter>Compress</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Compress\LzfseDecoder.h" />
+    <ClInclude Include="..\..\..\..\C\ZstdDec.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\C\SwapBytes.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\C\Xxh64.h">
+      <Filter>C</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="7-zip32.cpp">
@@ -1518,7 +1530,22 @@
     <ClCompile Include="..\..\..\..\C\LzFindOpt.c" />
     <ClCompile Include="..\..\..\Common\DynLimBuf.cpp" />
     <ClCompile Include="..\..\Common\MultiOutStream.cpp" />
-    <ClCompile Include="..\..\..\..\C\SwapBytes.c" />
+    <ClCompile Include="..\..\Archive\ZstdHandler.cpp">
+      <Filter>Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Compress\ZstdDecoder.cpp">
+      <Filter>Compress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Compress\LzfseDecoder.cpp" />
+    <ClCompile Include="..\..\..\..\C\SwapBytes.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\C\Xxh64.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\C\ZstdDec.c">
+      <Filter>C</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="7-zip32.def">

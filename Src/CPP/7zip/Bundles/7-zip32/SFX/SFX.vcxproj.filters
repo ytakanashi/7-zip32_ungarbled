@@ -161,6 +161,9 @@
     <ClCompile Include="..\..\..\..\Windows\Synchronization.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Windows\TimeUtils.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Windows\Window.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
@@ -389,6 +392,9 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Windows\Synchronization.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Windows\TimeUtils.h">
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Windows\Window.h">

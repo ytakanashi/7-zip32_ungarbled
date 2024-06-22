@@ -1263,7 +1263,7 @@ BOOL WINAPI SevenZipSfxFileStoring(LPCSTR _szFileName)
 	}
 
 	NWindows::NFile::NIO::COutFile file;
-	if (file.Create(us2fs(g_StdOut.ConvertUnicodeString(_szFileName)), false) == false)
+	if (file.Create_ALWAYS_or_Open_ALWAYS(us2fs(g_StdOut.ConvertUnicodeString(_szFileName)), false) == false)
 	{
 		g_StdOut.SetLastError(ERROR_FILE_CREATE);
 		return FALSE;

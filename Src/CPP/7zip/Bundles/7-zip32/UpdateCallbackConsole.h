@@ -66,13 +66,18 @@ public:
 //  void SetWindowWidth(unsigned width) { _percent.MaxLen = width - 1; }	// íœ
   void SetWindowWidth(unsigned width) { }	// ’Ç‰Á
 
-  void Init(CStdOutStream *outStream, CStdOutStream *errorStream, CStdOutStream *percentStream)
+  void Init(
+      CStdOutStream *outStream,
+      CStdOutStream *errorStream,
+      CStdOutStream *percentStream,
+      bool disablePercents)
   {
     FailedFiles.Clear();
 
     _so = outStream;
     _se = errorStream;
 //    _percent._so = percentStream;	// íœ
+//    _percent.DisablePrint = disablePercents;	// íœ
   }
 
   void ClosePercents2()

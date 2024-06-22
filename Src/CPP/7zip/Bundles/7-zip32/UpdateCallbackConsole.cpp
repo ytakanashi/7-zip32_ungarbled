@@ -149,7 +149,7 @@ HRESULT CUpdateCallbackConsole::OpenResult(
     if (_se)
     {
       *_se << kError;
-      _se->NormalizePrint_wstr(name);
+      _se->NormalizePrint_wstr_Path(name);
       *_se << endl;
       HRESULT res = Print_OpenArchive_Error(*_se, codecs, arcLink);
       RINOK(res)
@@ -197,7 +197,7 @@ void CCallbackConsoleBase::CommonError(const FString &path, DWORD systemError, b
     *_se << endl << (isWarning ? kWarning : kError)
         << NError::MyFormatMessage(systemError)
         << endl;
-    _se->NormalizePrint_UString(fs2us(path));
+    _se->NormalizePrint_UString_Path(fs2us(path));
     *_se << endl << endl;
     _se->Flush();
   }
@@ -323,7 +323,7 @@ HRESULT CUpdateCallbackConsole::StartArchive(const wchar_t *name, bool updating)
     *_so << (updating ? kUpdatingArchiveMessage : kCreatingArchiveMessage);
     if (name)
     {							// ’Ç‰Á
-//      _so->NormalizePrint_wstr(name);							// íœ
+//      _so->NormalizePrint_wstr_Path(name);					// íœ
       *_so << name;												// ’Ç‰Á
       g_StdOut.GetProgressDialog()->SetArchiveFile(name);		// ’Ç‰Á
     }							// ’Ç‰Á
@@ -402,7 +402,7 @@ HRESULT CUpdateCallbackConsole::DeletingAfterArchiving(const FString &path, bool
         _tempA.Add_Space();
         *_so << _tempA;
         _tempU = fs2us(path);
-        _so->Normalize_UString(_tempU);
+        _so->Normalize_UString_Path(_tempU);
 //        _so->PrintUString(_tempU, _tempA);	// íœ
         *_so << _tempU;							// ’Ç‰Á
         *_so << endl;
@@ -550,7 +550,7 @@ HRESULT CCallbackConsoleBase::PrintProgress(const wchar_t *name, bool isDir, con
       _tempU = name;
       if (isDir)
         NWindows::NFile::NName::NormalizeDirPathPrefix(_tempU);
-      _so->Normalize_UString(_tempU);
+      _so->Normalize_UString_Path(_tempU);
     }
     _so->PrintUString(_tempU, _tempA);
     *_so << endl;
@@ -680,7 +680,7 @@ HRESULT CUpdateCallbackConsole::ReportExtractResult(Int32 opRes, Int32 isEncrypt
       AString s;
       SetExtractErrorMessage(opRes, isEncrypted, s);
       *_se << s << " : " << endl;
-      _se->NormalizePrint_wstr(name);
+      _se->NormalizePrint_wstr_Path(name);
       *_se << endl << endl;
       _se->Flush();
     }
