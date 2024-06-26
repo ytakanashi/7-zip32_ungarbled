@@ -691,8 +691,8 @@ HRESULT CExtractCallbackConsole::BeforeOpen(const wchar_t *name, bool testMode)
   if (_so)
   {
     *_so << endl << (testMode ? kTesting : kExtracting);
-    _so->NormalizePrint_wstr_Path(name);// íœ
-    *_so << endl << name;				// ’Ç‰Á
+//    _so->NormalizePrint_wstr_Path(name);// íœ
+    *_so << name;				// ’Ç‰Á
     *_so << endl;
   }
 
