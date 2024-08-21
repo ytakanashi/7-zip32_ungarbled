@@ -994,11 +994,11 @@ HRESULT CExtractCallbackConsole::ExtractResult(HRESULT result)
   }
   else
   {
-//    NumArcsWithError++;										// íœ
+    // we don't update NumArcsWithError, if error is not related to archive data.
 //    if (result == E_ABORT										// íœ
-//        || result == HRESULT_FROM_WIN32(ERROR_DISK_FULL)		// íœ
-//        )														// íœ
+//        || result == HRESULT_FROM_WIN32(ERROR_DISK_FULL))		// íœ
 //      return result;											// íœ
+//    NumArcsWithError++;										// íœ
   /* ’Ç‰Á‚±‚±‚©‚ç */
   if (result == E_ABORT || result == ERROR_PASSWORD_FILE)
   {

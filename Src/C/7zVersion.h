@@ -1,7 +1,7 @@
 #define MY_VER_MAJOR 24
-#define MY_VER_MINOR 07
+#define MY_VER_MINOR 8
 #define MY_VER_BUILD 0
-#define MY_VERSION_NUMBERS "24.07 + ungarbled patch"
+#define MY_VERSION_NUMBERS "24.08 + ungarbled patch"
 #define MY_VERSION MY_VERSION_NUMBERS
 
 #ifdef MY_CPU_NAME
