@@ -5,7 +5,7 @@
 
 namespace NConsoleClose {
 
-class CCtrlBreakException {};
+// class CCtrlBreakException {};
 }	// ’Ç‰Á
 #ifdef UNDER_CE
 

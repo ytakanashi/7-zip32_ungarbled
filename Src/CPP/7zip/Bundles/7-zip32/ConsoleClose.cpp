@@ -16,7 +16,7 @@
 // namespace NConsoleClose {							// íœ
 
 unsigned g_BreakCounter = 0;
-static const unsigned kBreakAbortThreshold = 2;
+static const unsigned kBreakAbortThreshold = 3;
 
 #ifdef _WIN32
 
@@ -31,8 +31,7 @@ BOOL HandlerRoutine()									// ’Ç‰Á
   }
      íœ‚±‚±‚Ü‚Å */ 
 
-  g_BreakCounter++;
-  if (g_BreakCounter < kBreakAbortThreshold)
+  if (++g_BreakCounter < kBreakAbortThreshold)
     return TRUE;
   return FALSE;
   /*
@@ -51,7 +50,7 @@ namespace NConsoleClose {			// ’Ç‰Á
 CCtrlHandlerSetter::CCtrlHandlerSetter()
 {
 //  if (!SetConsoleCtrlHandler(HandlerRoutine, TRUE))	// íœ
-//    throw "SetConsoleCtrlHandler fails";				// íœ
+//    throw 1019; // "SetConsoleCtrlHandler fails";		// íœ
 }
 
 CCtrlHandlerSetter::~CCtrlHandlerSetter()
@@ -68,8 +67,7 @@ CCtrlHandlerSetter::~CCtrlHandlerSetter()
 
 static void HandlerRoutine(int)
 {
-  g_BreakCounter++;
-  if (g_BreakCounter < kBreakAbortThreshold)
+  if (++g_BreakCounter < kBreakAbortThreshold)
     return;
   exit(EXIT_FAILURE);
 }
