@@ -378,18 +378,6 @@
     <ClInclude Include="..\..\Compress\PpmdZip.h">
       <Filter>Compress\PPMd</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Compress\RangeCoder.h">
-      <Filter>Compress\RangeCoder</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Compress\RangeCoderBit.h">
-      <Filter>Compress\RangeCoder</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Compress\RangeCoderBitTree.h">
-      <Filter>Compress\RangeCoder</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Compress\RangeCoderOpt.h">
-      <Filter>Compress\RangeCoder</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Compress\ShrinkDecoder.h">
       <Filter>Compress\Shrink</Filter>
     </ClInclude>
@@ -813,11 +801,6 @@
     <ClInclude Include="..\..\..\..\C\7zTypes.h">
       <Filter>C</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Windows\PropVariantUtils.h" />
-    <ClInclude Include="..\..\UI\Common\Bench.h" />
-    <ClInclude Include="..\..\..\..\C\DllSecur.h" />
-    <ClInclude Include="..\..\..\..\C\Lzma2DecMt.h" />
-    <ClInclude Include="..\..\..\..\C\MtDec.h" />
     <ClInclude Include="..\..\..\Windows\SystemInfo.h">
       <Filter>Windows</Filter>
     </ClInclude>
@@ -830,14 +813,11 @@
     <ClInclude Include="..\..\Compress\XzEncoder.h">
       <Filter>Archive</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\DynLimBuf.h" />
-    <ClInclude Include="..\..\Common\MultiOutStream.h" />
     <ClInclude Include="..\..\..\..\C\7zVersion.h" />
     <ClInclude Include="..\..\..\..\C\7zWindows.h" />
     <ClInclude Include="..\..\Compress\ZstdDecoder.h">
       <Filter>Compress</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Compress\LzfseDecoder.h" />
     <ClInclude Include="..\..\..\..\C\ZstdDec.h">
       <Filter>C</Filter>
     </ClInclude>
@@ -846,6 +826,45 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\C\Xxh64.h">
       <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\MyBuffer2.h" />
+    <ClInclude Include="..\..\..\Common\MyLinux.h" />
+    <ClInclude Include="..\..\..\Common\MyWindows.h" />
+    <ClInclude Include="..\..\..\..\C\DllSecur.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\DynLimBuf.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\C\Lzma2DecMt.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\C\MtDec.h">
+      <Filter>C</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Windows\PropVariantUtils.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Windows\SecurityUtils.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\MemBlocks.h">
+      <Filter>7zip Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\MultiOutStream.h">
+      <Filter>7zip Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Compress\LzfseDecoder.h">
+      <Filter>Compress</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Compress\BZip2Const.h">
+      <Filter>Compress\BZip2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UI\Common\Bench.h">
+      <Filter>UI Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Crypto\Sha1Cls.h">
+      <Filter>Crypto</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1497,11 +1516,6 @@
     <ClCompile Include="..\..\..\Windows\Registry.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Windows\PropVariantUtils.cpp" />
-    <ClCompile Include="..\..\UI\Common\Bench.cpp" />
-    <ClCompile Include="..\..\..\..\C\DllSecur.c" />
-    <ClCompile Include="..\..\..\..\C\Lzma2DecMt.c" />
-    <ClCompile Include="..\..\..\..\C\MtDec.c" />
     <ClCompile Include="..\..\..\Common\Sha1Prepare.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -1526,17 +1540,12 @@
     <ClCompile Include="..\..\Compress\XzEncoder.cpp">
       <Filter>Archive</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\LzFindPrepare.cpp" />
-    <ClCompile Include="..\..\..\..\C\LzFindOpt.c" />
-    <ClCompile Include="..\..\..\Common\DynLimBuf.cpp" />
-    <ClCompile Include="..\..\Common\MultiOutStream.cpp" />
     <ClCompile Include="..\..\Archive\ZstdHandler.cpp">
       <Filter>Archive</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Compress\ZstdDecoder.cpp">
       <Filter>Compress</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Compress\LzfseDecoder.cpp" />
     <ClCompile Include="..\..\..\..\C\SwapBytes.c">
       <Filter>C</Filter>
     </ClCompile>
@@ -1545,6 +1554,48 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\C\ZstdDec.c">
       <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\XzCrc64Init.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\Xxh64Reg.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\C\DllSecur.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\DynLimBuf.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\C\Lzma2DecMt.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\C\MtDec.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\C\LzFindOpt.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Windows\Synchronization.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Windows\PropVariantUtils.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\MultiOutStream.cpp">
+      <Filter>7zip Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Crypto\MyAesReg.cpp">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Compress\LzfseDecoder.cpp">
+      <Filter>Compress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\LzFindPrepare.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\UI\Common\Bench.cpp">
+      <Filter>UI Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
