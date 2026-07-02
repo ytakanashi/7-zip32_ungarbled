@@ -104,7 +104,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_USRDLL;MY7Z_EXPORTS;NO_REGISTRY;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;Z7_LARGE_PAGES;_7ZIP_ST_9;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_USRDLL;MY7Z_EXPORTS;NO_REGISTRY;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -156,7 +156,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_USRDLL;MY7Z_EXPORTS;NO_REGISTRY;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;Z7_LARGE_PAGES;_7ZIP_ST_9;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_USRDLL;MY7Z_EXPORTS;NO_REGISTRY;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -208,7 +208,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\..\SDK;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_USRDLL;MY7Z_EXPORTS;NO_REGISTRY;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;Z7_LARGE_PAGES;_7ZIP_ST_9;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_USRDLL;MY7Z_EXPORTS;NO_REGISTRY;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -262,7 +262,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\..\SDK;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_USRDLL;MY7Z_EXPORTS;NO_REGISTRY;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;Z7_LARGE_PAGES;_7ZIP_ST_9;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_USRDLL;MY7Z_EXPORTS;NO_REGISTRY;Z7_LONG_PATH;Z7_DO_NOT_DEFINE_WIN32_WINNT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -3481,7 +3481,7 @@
     <ClInclude Include="..\..\IStream.h" />
     <ClInclude Include="..\..\MyVersion.h" />
     <ClInclude Include="..\..\PropID.h" />
-    <ClInclude Include="..\..\..\Windows\Defs.h" />
+    <ClInclude Include="..\..\..\Windows\WinDefs.h" />
     <ClInclude Include="..\..\..\Windows\FileDir.h" />
     <ClInclude Include="..\..\..\Windows\FileFind.h" />
     <ClInclude Include="..\..\..\Windows\FileIO.h" />

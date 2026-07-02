@@ -61,7 +61,7 @@ HRESULT CUpdateCallbackConsole::OpenResult(
     const CArc &arc = arcLink.Arcs[level];
     const CArcErrorInfo &er = arc.ErrorInfo;
     
-    UInt32 errorFlags = er.GetErrorFlags();
+    const UInt32 errorFlags = er.GetErrorFlags();
 
     if (errorFlags != 0 || !er.ErrorMessage.IsEmpty())
     {
@@ -69,7 +69,10 @@ HRESULT CUpdateCallbackConsole::OpenResult(
       {
         *_se << endl;
         if (level != 0)
-          *_se << arc.Path << endl;
+        {
+          _se->NormalizePrint_UString_Path(arc.Path);
+          *_se << endl;
+        }
       }
       
       if (errorFlags != 0)
@@ -81,7 +84,11 @@ HRESULT CUpdateCallbackConsole::OpenResult(
       if (!er.ErrorMessage.IsEmpty())
       {
         if (_se)
-          *_se << "ERRORS:" << endl << er.ErrorMessage << endl;
+        {
+          *_se << "ERRORS:" << endl;
+          _se->NormalizePrint_UString(er.ErrorMessage);
+          *_se << endl;
+        }
       }
       
       if (_se)
@@ -99,7 +106,10 @@ HRESULT CUpdateCallbackConsole::OpenResult(
       {
         *_so << endl;
         if (level != 0)
+        {
+          _so->NormalizePrint_UString_Path(arc.Path);
           *_so << arc.Path << endl;
+        }
       }
       
       if (warningFlags != 0)
@@ -111,7 +121,11 @@ HRESULT CUpdateCallbackConsole::OpenResult(
       if (!er.WarningMessage.IsEmpty())
       {
         if (_so)
-          *_so << "WARNINGS:" << endl << er.WarningMessage << endl;
+        {
+          *_so << "WARNINGS:" << endl;
+          _so->NormalizePrint_UString(er.WarningMessage);
+          *_so << endl;
+        }
       }
       
       if (_so)
@@ -300,7 +314,7 @@ HRESULT CUpdateCallbackConsole::StartOpenArchive(const wchar_t *name)
   {
     *_so << kOpenArchiveMessage;
     if (name)
-      *_so << name;
+      _so->NormalizePrint_wstr_Path(name);
     else
       *_so << k_StdOut_ArcName;
     *_so << endl;
