@@ -314,7 +314,11 @@ HRESULT CUpdateCallbackConsole::StartOpenArchive(const wchar_t *name)
   {
     *_so << kOpenArchiveMessage;
     if (name)
-      _so->NormalizePrint_wstr_Path(name);
+    {							// ’Ç‰Á(26020002)
+//      _so->NormalizePrint_wstr_Path(name);					// íœ(26020002)
+      *_so << name;												// ’Ç‰Á(26020002)
+      g_StdOut.GetProgressDialog()->SetArchiveFile(name);		// ’Ç‰Á(26020002)
+    }							// ’Ç‰Á(26020002)
     else
       *_so << k_StdOut_ArcName;
     *_so << endl;
