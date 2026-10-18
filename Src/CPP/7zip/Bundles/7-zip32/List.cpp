@@ -364,7 +364,7 @@ struct CListStat2
     NumDirs += st.NumDirs;
   }
   UInt64 GetNumStreams() const { return MainFiles.NumFiles + AltStreams.NumFiles; }
-  CListStat &GetStat(bool altStreamsMode) { return altStreamsMode ? AltStreams : MainFiles; }
+  CListStat &GetStat(bool altStreamsMode) Z7_lifetimebound { return altStreamsMode ? AltStreams : MainFiles; }
 };
 
 class CFieldPrinter

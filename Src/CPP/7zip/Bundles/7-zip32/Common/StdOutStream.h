@@ -24,7 +24,7 @@ public:
   int CodePage;
 
 	CStdOutStream ();
-	CStdOutStream(FILE *stream):// •ÏX
+	CStdOutStream(FILE *stream Z7_lifetimebound):// •ÏX
 		_stream(stream),
 		// _streamIsOpen(false),
 		IsTerminalMode(false),
@@ -41,14 +41,14 @@ public:
 	operator FILE *() { return _stream; }
 	bool Flush() { return true; }
 	
-	CStdOutStream & operator<<(CStdOutStream & (* aFunction)(CStdOutStream  &));
-	CStdOutStream & operator<<(const char *string);
-	CStdOutStream & operator<<(const wchar_t *string);
-	CStdOutStream & operator<<(char c);
-	CStdOutStream & operator<<(Int32 number) throw();
-	CStdOutStream & operator<<(Int64 number) throw();
-	CStdOutStream & operator<<(UInt32 number) throw();
-	CStdOutStream & operator<<(UInt64 number) throw();
+	CStdOutStream & operator<<(CStdOutStream & (* aFunction)(CStdOutStream  &)) Z7_lifetimebound;
+	CStdOutStream & operator<<(const char *string) Z7_lifetimebound;
+	CStdOutStream & operator<<(const wchar_t *string) Z7_lifetimebound;
+	CStdOutStream & operator<<(char c) Z7_lifetimebound;
+	CStdOutStream & operator<<(Int32 number) throw() Z7_lifetimebound;
+	CStdOutStream & operator<<(Int64 number) throw() Z7_lifetimebound;
+	CStdOutStream & operator<<(UInt32 number) throw() Z7_lifetimebound;
+	CStdOutStream & operator<<(UInt64 number) throw() Z7_lifetimebound;
 
 	void CStdOutStream::Convert_UString_to_AString(const UString &s, AString &temp);		// ’Ç‰Á
 	void PrintUString(const UString &s, AString &temp);
@@ -111,7 +111,7 @@ protected:
 	/* ’Ç‰Á(19000002)‚±‚±‚Ü‚Å */
 };
 
-CStdOutStream & endl(CStdOutStream & anOut);
+CStdOutStream & endl(CStdOutStream & anOut Z7_lifetimebound);
 
 extern CStdOutStream g_StdOut;
 extern CStdOutStream g_StdErr;	// •ÏX
